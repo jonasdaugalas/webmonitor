@@ -1,0 +1,75 @@
+<div class="widget">
+    <div class="title">{{config.title}}</div>
+
+    <div class="controls" *ngIf="config.controlsEnabled">
+        <div class="btn-group btn-sm">
+            <button [class]="timer ? (config.started ? 'btn btn-success' : 'btn btn-primary') : 'btn disabled'"
+                    *ngIf="config.startEnabled"
+                    (click)="onClickStart()">
+                <clr-icon [attr.shape]="(timer && config.started) ? 'stop' : 'play'"></clr-icon>
+                {{(timer && config.started) ? 'Stop' : 'Start'}}
+            </button>
+            <button class="btn"
+                    *ngIf="config.refreshEnabled"
+                    (click)="onClickRefresh()">
+                <clr-icon shape="refresh"></clr-icon>
+                Refresh
+            </button>
+            <clr-checkbox type="checkbox" class="btn"
+                          [(ngModel)]="config.queriesOpen"
+                          *ngIf="config.queriesEnabled">
+                <clr-icon shape="search"></clr-icon>
+                Queries
+            </clr-checkbox>
+            <clr-checkbox type="checkbox" class="btn"
+                          [(ngModel)]="config.optionsOpen"
+                          *ngIf="config.optionsEnabled">
+                <clr-icon shape="cog"></clr-icon>
+                Options
+            </clr-checkbox>
+        </div>
+    </div>
+
+    <div class="info" *ngIf="config.infoEnabled">
+        <span *ngIf="config.startEnabled">
+            timer: <code class="clr-code">{{timer ? timer.interval : '-'}}s</code>
+        </span>
+        <span *ngFor="let item of infoItems">
+            {{item[0]}}: <code class="clr-code">{{item[1]}}</code>
+        </span>
+    </div>
+
+    <div class="queries" *ngIf="config.queriesEnabled" [hidden]="!config.queriesOpen">
+        <ng-content select=".widget-queries"></ng-content>
+    </div>
+
+    <ng-content select=".widget-content">
+    </ng-content>
+
+    <clr-modal
+        [(clrModalOpen)]="config.optionsOpen"
+        *ngIf="config.optionsEnabled"
+        [clrModalSize]="'md'">
+        <h3 class="modal-title">Widget options</h3>
+        <div class="modal-body" style="height: 500px">
+            <clr-tabs>
+                <clr-tab>
+                    <button clrTabLink>General</button>
+                    <clr-tab-content>
+                        <wm-widget-general-settings
+                            [config]="config"
+                            [(timer)]="timer">
+                        </wm-widget-general-settings>
+                    </clr-tab-content>
+                </clr-tab>
+
+                <clr-tab>
+                    <button clrTabLink>Widget</button>
+                    <clr-tab-content>
+                        <ng-content select=".widget-options"></ng-content>
+                    </clr-tab-content>
+                </clr-tab>
+            </clr-tabs>
+        </div>
+    </clr-modal>
+</div>

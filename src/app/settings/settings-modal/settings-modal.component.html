@@ -1,0 +1,20 @@
+<clr-modal #modal [clrModalSize]="'xl'">
+
+    <h3 class="modal-title">Settings</h3>
+
+    <div class="modal-body main-container">
+        <div class="content-container">
+            <div class="content-area">
+                <ng-template #settingsOutlet></ng-template>
+            </div>
+            <clr-vertical-nav>
+                <a clrVerticalNavLink
+                   *ngFor="let s of settings"
+                   [class.active]="s === activeSetting"
+                   (click)="selectView(s)">
+                    {{s.label}}
+                </a>
+            </clr-vertical-nav>
+        </div>
+    </div>
+</clr-modal>

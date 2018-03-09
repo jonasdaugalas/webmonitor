@@ -1,0 +1,14 @@
+.main-text {
+    width: 100%;
+    text-align: center;
+    font-size: 36pt;
+    line-height: normal;
+    font-weight: bold;
+}
+
+.sub-text {
+    width: 100%;
+    text-align: center;
+    font-size: 16pt;
+    line-height: 16pt;
+}

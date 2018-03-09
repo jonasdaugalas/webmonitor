@@ -1,0 +1,40 @@
+.dashboard-widget {
+    position: relative;
+    flex-basis: initial;
+    flex-grow: 0;
+    flex-shrink: 0;
+    overflow: hidden;
+    min-width: 200px;
+    min-height: 160px;
+    padding: 1px;
+}
+
+.dashboard-widget-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.layout-mode-curtain {
+    position: absolute;
+    background-color: #00000060;
+    border: 4px dashed red;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+}
+
+.layout-mode-buttons {
+    position: absolute;
+    z-index: 3;
+    color: red;
+    text-align: center;
+}
+
+#widget-rearrange-handle {
+    cursor: grab;
+}
+
+/* .nav-text { */
+/*     border: none; */
+/*     background-color: transparent; */
+/* } */

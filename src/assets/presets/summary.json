@@ -1,0 +1,45 @@
+{
+    "timers": [3, 4.1, 5.4],
+    "widgets": [{
+        "type": "single",
+        "config": {
+            "container": {
+                "width": 40,
+                "height": 200
+            },
+            "wrapper": {
+                "title": "container title"
+            },
+            "widget": {
+                "test": "content test"
+            }
+        }
+    }, {
+        "type": "wtf",
+        "config": {}
+    }, {
+        "type": "per-channel",
+        "config": {
+            "wrapper": {
+                "title": "container title",
+                "queriesEnabled": false
+            }
+        }
+    }, {
+        "type": "label",
+        "config": {
+            "widget": {
+                "post": " documents",
+                "aggregation": "count",
+                "path": "shelflist/brilsummary"
+            },
+            "wrapper": {
+                "title": "brilsummary count",
+                "started": false,
+                "queriesEnabled": true,
+                "optionsEnabled": true,
+                "initialTimer": 1
+            }
+        }
+    }]
+}

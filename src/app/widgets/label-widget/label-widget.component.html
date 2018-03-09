@@ -1,0 +1,15 @@
+<wm-widget [config]="config ? config.wrapper : undefined"
+           [info]="info"
+           (timer)="onTimerTick()"
+           (refresh)="refresh()">
+    <div class="widget-options">label widget options</div>
+    <div class="widget-queries">label widget queries</div>
+    <div class="widget-content">
+        <div class="main-text text-primary">
+            {{config.widget.pre}}{{value}}{{config.widget.post}}
+        </div>
+        <div class="sub-text">
+            {{config.widget.sub}}
+        </div>
+    </div>
+</wm-widget>

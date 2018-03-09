@@ -1,0 +1,19 @@
+<form class="compact resize-form">
+    <h4>Size</h4>
+    <div>
+        <label>Width (%):</label><br />
+        <input
+            type="number"
+            name="inputWidgetWidth"
+            [ngModel]="width"
+            (ngModelChange)="resize$.next({value: $event, direction: 'width'})">
+    </div>
+    <div>
+        <label>Height (px):</label><br />
+        <input
+            type="number"
+            name="inputWidgetHeight"
+            [ngModel]="height"
+            (ngModelChange)="resize$.next({value: $event, direction: 'height'})">
+    </div>
+</form>

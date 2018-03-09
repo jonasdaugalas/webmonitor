@@ -1,0 +1,43 @@
+<div class="form">
+    <section class="form-block">
+        <label>Create new timer</label>
+        <div class="form-group">
+            <label>Interval (seconds)</label>
+            <input #intervalInput type="number" min="0.5" max="60" step="0.1" value="8.0" />
+        </div>
+        <button class="btn btn-primary"
+                (click)="create(intervalInput.value)">
+            Create
+        </button>
+    </section>
+
+    <section class="form-block">
+
+        <label>Existing timers</label>
+
+        <clr-datagrid>
+            <clr-dg-column>Id</clr-dg-column>
+            <clr-dg-column>Interval</clr-dg-column>
+            <clr-dg-column>Subsribers</clr-dg-column>
+
+            <clr-dg-row *clrDgItems="let timer of timers; let i = index" [clrDgItem]="timer">
+                <clr-dg-action-overflow>
+                    <button class="action-item" (click)="remove(timer)">Remove</button>
+                </clr-dg-action-overflow>
+                <clr-dg-cell>{{i}}</clr-dg-cell>
+                <clr-dg-cell>{{timer.interval}}</clr-dg-cell>
+                <clr-dg-cell>{{timer.observerCount}}</clr-dg-cell>
+            </clr-dg-row>
+        </clr-datagrid>
+
+        <button class="btn"
+                (click)="updateTimers()">
+            Refresh
+        </button>
+
+        <button class="btn btn-danger"
+                (click)="removeAll()">
+            Remove all
+        </button>
+    </section>
+</div>
