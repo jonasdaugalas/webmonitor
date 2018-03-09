@@ -45,12 +45,8 @@ export class AppComponent implements OnDestroy {
                 widgets: [{
                     "type": "single",
                     "config": {
-                        "container": {
-                            "width": 100
-                        },
-                        "wrapper": {
-                            "title": "SANDBOX",
-                        }
+                        "container": {"width": 100},
+                        "wrapper": {"title": "SANDBOX"}
                     }
                 }]
             };
