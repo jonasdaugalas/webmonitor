@@ -31,7 +31,7 @@ export class AppLocationService implements OnDestroy {
         this.onLocationChange(path);
     }
 
-    path() {
+    getPath() {
         return this.location.path();
     }
 

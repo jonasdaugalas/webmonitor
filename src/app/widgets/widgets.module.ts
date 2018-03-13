@@ -6,6 +6,7 @@ import { provideRoutes } from '@angular/router';
     providers: [
         //provideRoutes: for making angular-cli compile lazy loading modules
         provideRoutes([
+            { path: '^', loadChildren: 'app/widgets/static-label-widget/static-label-widget.module#StaticLabelWidgetModule'},
             { path: '^', loadChildren: 'app/widgets/test-widget/test-widget.module#TestWidgetModule'},
             { path: '^', loadChildren: 'app/widgets/label-widget/label-widget.module#LabelWidgetModule'}
         ])

@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { DatabaseService } from './database.service';
 import { TimersService } from './timers.service';
 import { EventBusService } from './event-bus.service';
+import { SandboxPresetService } from './sandbox-preset.service';
 
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DynamicWidgetComponent } from './dynamic-widget/dynamic-widget.component';
@@ -32,7 +33,8 @@ import { DashboardContainerResizeFormComponent } from './dashboard/dashboard-con
         SystemJsNgModuleLoader,
         DatabaseService,
         TimersService,
-        EventBusService
+        EventBusService,
+        SandboxPresetService
     ],
     exports: [
         DashboardComponent

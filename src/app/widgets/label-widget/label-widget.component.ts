@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DatabaseService } from '../../core/database.service';
 
 @Component({
-    selector: 'app-label-widget',
+    selector: 'wm-label-widget',
     templateUrl: './label-widget.component.html',
     styleUrls: ['./label-widget.component.css']
 })

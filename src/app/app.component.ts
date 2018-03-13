@@ -4,6 +4,11 @@ import { AppLocationService } from './app-location';
 import { ROUTES } from './preset-routes';
 import { Subscription } from 'rxjs/Subscription';
 import { PresetResolveService } from './preset-resolve.service';
+import { SandboxPresetService } from 'app/core/sandbox-preset.service';
+
+
+const SANDBOX_PATH = '/--sandbox';
+
 
 @Component({
     selector: 'webmonitor-app',
@@ -14,23 +19,29 @@ export class AppComponent implements OnDestroy {
 
     presetRoutes = ROUTES;
     currentLocationSubs: Subscription;
+    sandboxConfigSubs: Subscription;
     presetConfig: any;
     hideDashboard = false;
 
 
     constructor(
+        protected sandboxPreset: SandboxPresetService,
         protected eventBus: EventBusService,
         protected locationService: AppLocationService,
         protected presetResolver: PresetResolveService) {
 
-        this.onLocationChange(this.locationService.path());
+        this.onLocationChange(this.locationService.getPath());
         this.currentLocationSubs = this.locationService.location$.subscribe(
             this.onLocationChange.bind(this));
+
+        this.sandboxConfigSubs = this.sandboxPreset.config$.subscribe(
+            this.onSandboxPresetChange.bind(this));
 
     }
 
     ngOnDestroy() {
         this.currentLocationSubs.unsubscribe();
+        this.sandboxConfigSubs.unsubscribe();
     }
 
     onLocationChange(path: string) {
@@ -40,16 +51,8 @@ export class AppComponent implements OnDestroy {
             return;
         }
         this.hideDashboard = false;
-        if (path === '/--sandbox') {
-            this.presetConfig = {
-                widgets: [{
-                    "type": "single",
-                    "config": {
-                        "container": {"width": 100},
-                        "wrapper": {"title": "SANDBOX"}
-                    }
-                }]
-            };
+        if (path === SANDBOX_PATH) {
+            this.presetConfig = this.sandboxPreset.getConfig();
             return;
         }
         const route = this.presetRoutes.find(el => el.path === path);
@@ -64,6 +67,12 @@ export class AppComponent implements OnDestroy {
             err => {
                 this.presetConfig = null;
             });
+    }
+
+    onSandboxPresetChange(newConfig) {
+        if (this.locationService.getPath() === SANDBOX_PATH) {
+            this.presetConfig = this.sandboxPreset.getConfig();
+        }
     }
 
     play() {

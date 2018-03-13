@@ -1,0 +1,20 @@
+.pretext {
+    font-size: 16px;
+    font-weight: lighter;
+    line-height: 1.5em;
+    text-align: center;
+}
+
+.maintext {
+    font-size: 28px;
+    font-weight: bold;
+    line-height: 1.5em;
+    text-align: center;
+}
+
+.posttext {
+    font-size: 16px;
+    font-weight: lighter;
+    line-height: 1.5em;
+    text-align: center;
+}
