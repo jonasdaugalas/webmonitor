@@ -1,3 +1,20 @@
-<p>
-  preset-import works!
-</p>
+<div class="form">
+    <section class="form-block">
+        <div #editorContainer style="height: 500px"></div>
+
+        <button class="btn btn-primary btn-block" (click)="importConfig()">
+            Import as sandbox preset
+        </button>
+
+        <clr-alert
+            *ngIf="showAlert"
+            [clrAlertType]="alertType"
+            [clrAlertClosable]="false">
+            <div clr-alert-item class="alert-item">
+                <span class="alert-text">
+                    {{alertMessage}}
+                </span>
+            </div>
+        </clr-alert>
+    </section>
+</div>

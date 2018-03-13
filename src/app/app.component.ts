@@ -18,11 +18,10 @@ const SANDBOX_PATH = '/--sandbox';
 export class AppComponent implements OnDestroy {
 
     presetRoutes = ROUTES;
-    currentLocationSubs: Subscription;
-    sandboxConfigSubs: Subscription;
     presetConfig: any;
     hideDashboard = false;
-
+    protected currentLocationSubs: Subscription;
+    protected sandboxConfigSubs: Subscription;
 
     constructor(
         protected sandboxPreset: SandboxPresetService,
@@ -33,7 +32,6 @@ export class AppComponent implements OnDestroy {
         this.onLocationChange(this.locationService.getPath());
         this.currentLocationSubs = this.locationService.location$.subscribe(
             this.onLocationChange.bind(this));
-
         this.sandboxConfigSubs = this.sandboxPreset.config$.subscribe(
             this.onSandboxPresetChange.bind(this));
 
@@ -45,16 +43,17 @@ export class AppComponent implements OnDestroy {
     }
 
     onLocationChange(path: string) {
-        console.log('onLocationChange', path);
         if (path === '') {
             this.hideDashboard = true;
             return;
         }
         this.hideDashboard = false;
+
         if (path === SANDBOX_PATH) {
             this.presetConfig = this.sandboxPreset.getConfig();
             return;
         }
+
         const route = this.presetRoutes.find(el => el.path === path);
         if (!route) {
             this.presetConfig = null;

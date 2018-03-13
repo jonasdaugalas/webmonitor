@@ -49,7 +49,6 @@ export class SettingsModalComponent implements OnInit, OnDestroy {
     }
 
     open() {
-        console.log('show settings');
         this.modal.open();
     }
 
