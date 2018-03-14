@@ -15,6 +15,7 @@ import * as APP_CONFIG from './config';
 })
 export class AppComponent implements OnDestroy {
 
+    sandboxPath = SANDBOX_PATH;
     presetRoutes = ROUTES;
     presetConfig: any;
     hideDashboard = false;
