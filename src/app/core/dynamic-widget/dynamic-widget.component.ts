@@ -3,15 +3,10 @@ import {
     SystemJsNgModuleLoader, NgModuleFactory
 } from '@angular/core';
 
-const moduleSelector = {
-    'single': 'app/widgets/test-widget/test-widget.module#TestWidgetModule',
-    'per-channel': 'app/widgets/test-widget/test-widget.module#TestWidgetModule',
-    'static-label': 'app/widgets/static-label-widget/static-label-widget.module#StaticLabelWidgetModule',
-    'label': 'app/widgets/label-widget/label-widget.module#LabelWidgetModule'
-};
+import { widgetModuleSelector } from 'app/widgets/widget-module-selector';
 
 @Component({
-    selector: 'app-dynamic-widget',
+    selector: 'wm-dynamic-widget',
     templateUrl: './dynamic-widget.component.html',
     styleUrls: ['./dynamic-widget.component.css']
 })
@@ -30,12 +25,12 @@ export class DynamicWidgetComponent implements OnInit {
     }
 
     load() {
-        if (!moduleSelector[this.widgetType]) {
+        if (!widgetModuleSelector[this.widgetType]) {
             console.error('No such widget.', this.widgetType);
             this.message = 'No such widget: ' + this.widgetType;
             return;
         }
-        this.moduleLoader.load(moduleSelector[this.widgetType])
+        this.moduleLoader.load(widgetModuleSelector[this.widgetType])
             .then((moduleFactory: NgModuleFactory<any>) => {
                 const entryComponent = (<any>moduleFactory.moduleType).entry;
                 const ngModuleRef = moduleFactory.create(this.content.parentInjector);
