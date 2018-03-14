@@ -1,3 +1,5 @@
+export const SANDBOX_PATH = '/--sandbox';
+
 export class PresetRoute {
     title: string;
     path: string;

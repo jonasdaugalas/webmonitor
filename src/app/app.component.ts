@@ -1,13 +1,11 @@
 import { Component, OnDestroy } from '@angular/core';
 import { EventBusService } from './core/event-bus.service';
 import { AppLocationService } from './app-location';
-import { ROUTES } from './preset-routes';
+import { ROUTES, SANDBOX_PATH } from './preset-routes';
 import { Subscription } from 'rxjs/Subscription';
 import { PresetResolveService } from './preset-resolve.service';
 import { SandboxPresetService } from 'app/core/sandbox-preset.service';
-
-
-const SANDBOX_PATH = '/--sandbox';
+import * as APP_CONFIG from './config';
 
 
 @Component({
@@ -34,7 +32,7 @@ export class AppComponent implements OnDestroy {
             this.onLocationChange.bind(this));
         this.sandboxConfigSubs = this.sandboxPreset.config$.subscribe(
             this.onSandboxPresetChange.bind(this));
-
+        this.sandboxPreset.setConfig(APP_CONFIG.initialSandboxPreset);
     }
 
     ngOnDestroy() {

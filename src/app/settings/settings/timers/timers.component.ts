@@ -1,22 +1,33 @@
-import { Component, OnInit } from '@angular/core';
-import { TimersService, Timer } from '../../../core/timers.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
+import { TimersService, Timer } from 'app/core/timers.service';
 
 @Component({
     templateUrl: './timers.component.html',
     styleUrls: ['./timers.component.css']
 })
-export class TimersComponent implements OnInit {
+export class TimersComponent implements OnInit, OnDestroy {
 
+    protected timerUpdateSubs: Subscription;
     timers = [];
 
     constructor(protected timersService: TimersService) { }
 
     ngOnInit() {
-        this.updateTimers();
+        this.timerUpdateSubs = this.timersService.timers$.subscribe(timers => {
+            this.updateTimers(timers);
+        });
     }
 
-    updateTimers() {
-        this.timers = this.timersService.getTimers().map(timer => {
+    ngOnDestroy() {
+        this.timerUpdateSubs.unsubscribe();
+    }
+
+    updateTimers(timers) {
+        if (!timers) {
+            timers = this.timersService.getTimers();
+        }
+        this.timers = timers.map(timer => {
             return {
                 interval: timer.interval.toFixed(1),
                 observerCount: timer.getObserverCount(),
@@ -27,17 +38,13 @@ export class TimersComponent implements OnInit {
 
     remove(timer) {
         this.timersService.remove(timer.timer);
-        this.updateTimers();
     }
 
     removeAll() {
         this.timersService.removeAll();
-        this.updateTimers();
     }
 
     create(interval) {
         this.timersService.create(interval);
-        this.updateTimers();
     }
-
 }

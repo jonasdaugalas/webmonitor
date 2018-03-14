@@ -35,7 +35,6 @@ export class DynamicWidgetComponent implements OnInit {
             this.message = 'No such widget: ' + this.widgetType;
             return;
         }
-        console.log('dynamic', this.config);
         this.moduleLoader.load(moduleSelector[this.widgetType])
             .then((moduleFactory: NgModuleFactory<any>) => {
                 const entryComponent = (<any>moduleFactory.moduleType).entry;

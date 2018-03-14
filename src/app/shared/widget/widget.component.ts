@@ -17,7 +17,6 @@ export class WidgetComponent implements OnInit, OnDestroy {
     protected _config: any;
     @Input() set config(newConfig: any) {
         this._config = this.parseConfig(newConfig);
-        console.log(this._config);
     }
     get config() {
         return this._config;
@@ -113,7 +112,6 @@ export class WidgetComponent implements OnInit, OnDestroy {
                     this.changeDetector.detectChanges();
                 },
                 () => {
-                    console.log('timer completed', this.config.title);
                     this.stop();
                     this._timer = undefined;
                     this.changeDetector.detectChanges();
@@ -131,7 +129,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
         return true;
     }
 
-    protected parseConfig(newConfig: any) {
+    protected parseConfig(config: any) {
         const defaults = {
             title: '',
             startEnabled: true,
@@ -141,9 +139,12 @@ export class WidgetComponent implements OnInit, OnDestroy {
             optionsOpen: false,
             queriesEnabled: true,
             queriesOpen: false,
-            initialTimer: undefined
+            initialTimer: null
         }
-        return Object.assign(defaults, newConfig);
+        Object.keys(defaults).forEach(key => {
+            config[key] = config.hasOwnProperty(key) ? config[key] : defaults[key];
+        });
+        return config;
     }
 
     protected handle_global_startstop(event) {

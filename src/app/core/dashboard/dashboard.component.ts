@@ -1,8 +1,6 @@
 import {
     Component, OnInit, HostListener, OnDestroy, AfterViewInit, Input
 } from '@angular/core';
-import interact = require('interactjs');
-import { DraggableOptions } from 'interactjs';
 import { TimersService } from '../timers.service';
 
 
@@ -17,9 +15,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input('config') set config(newConfig: any) {
         this._config = newConfig;
         this.configChanged();
-    }
-    get config() {
-        return this._config;
     }
 
     timersConfig: Array<number>;
@@ -36,7 +31,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     };
 
     @HostListener('window:keydown.esc', ['$event']) onEscKeyDown(event) {
-        console.log(event);
         this.layoutMode = false;
     }
 
@@ -99,7 +93,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         widget['config']['container']['height'] = dimensions.height;
         widget['config']['container']['width'] = dimensions.width;
         this.fixContainerDimensions(widget);
-        console.log(widget['config']['container']);
+    }
+
+    exportConfig() {
+        return {
+            timers: this.timers.getTimers().map(t => t.interval),
+            widgets: this.widgets
+        }
     }
 
     hasProperty(object, property) {

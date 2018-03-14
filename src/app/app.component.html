@@ -5,7 +5,7 @@
     <header class="header header-6">
         <div class="branding">
             <a href="/" class="nav-link">
-                <clr-icon shape="line-chart" class="is-solid"></clr-icon>
+                <clr-icon shape="bar-chart" class="is-solid is-inverse"></clr-icon>
                 <span class="title">webmonitor</span>
             </a>
         </div>
@@ -33,31 +33,41 @@
         </div>
 
         <div class="header-actions">
-
-            <a class="nav-link nav-icon" (click)="play()">
+            <a class="nav-link nav-icon tooltip tooltip-bottom-left tooltip-xs"
+               (click)="play()">
                 <clr-icon shape="play" class="is-solid"></clr-icon>
+                <span class="tooltip-content">
+                    Start
+                </span>
             </a>
 
-            <a class="nav-link nav-icon" (click)="stop()">
+            <a class="nav-link nav-icon tooltip tooltip-bottom-left tooltip-xs"
+               (click)="stop()">
                 <clr-icon shape="stop" class="is-solid"></clr-icon>
+                <span class="tooltip-content">
+                    Stop
+                </span>
             </a>
 
-            <a class="nav-link nav-icon"
+            <a class="nav-link nav-icon tooltip tooltip-bottom-left tooltip-xs"
                (click)="dashboard.layoutMode = !dashboard.layoutMode">
                 <clr-icon
                     shape="grid-view"
                     [class.is-solid]="dashboard.layoutMode">
                 </clr-icon>
+                <span class="tooltip-content">
+                    Layout mode
+                </span>
             </a>
 
-            <a class="nav-link nav-icon"
+            <a class="nav-link nav-icon tooltip tooltip-bottom-left tooltip-xs"
                (click)="settings.open()">
                 <clr-icon shape="cog"></clr-icon>
+                <span class="tooltip-content">
+                    Settings
+                </span>
             </a>
         </div>
-
-
-
     </header>
 
     <div class="content-container">

@@ -8,7 +8,6 @@ import { DashboardComponent } from 'app/core/dashboard/dashboard.component';
 import { TimersComponent } from '../settings/timers/timers.component';
 import { PresetExportComponent } from '../settings/preset-export/preset-export.component';
 import { PresetImportComponent } from '../settings/preset-import/preset-import.component';
-import { TestComponent } from '../settings/test/test.component';
 
 type SettingView = {label: string, component: any}
 
@@ -21,11 +20,7 @@ const settingsViews: Array<SettingView> = [{
 }, {
     label: 'Preset import',
     component: PresetImportComponent
-}, {
-    label: 'Test',
-    component: TestComponent
-}]
-
+}];
 
 
 @Component({

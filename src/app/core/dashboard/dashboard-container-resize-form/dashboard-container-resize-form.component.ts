@@ -25,7 +25,6 @@ export class DashboardContainerResizeFormComponent implements OnInit, OnDestroy 
             .debounceTime(1000)
             .takeUntil(this.ngDestroy$)
             .subscribe(event => {
-                console.log('resize$', event);
                 if (event.direction === 'height') {
                     this.dimensionsChange.emit({
                         width: this.width,

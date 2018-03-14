@@ -9,7 +9,6 @@ export class TestWidgetComponent implements OnInit {
 
     protected _config: any;
     @Input() set config(newConfig: any) {
-        console.log('setting new config', newConfig);
         this._config = newConfig;
     }
     get config() {

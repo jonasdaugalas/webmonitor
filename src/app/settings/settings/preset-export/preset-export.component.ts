@@ -33,7 +33,7 @@ export class PresetExportComponent implements OnInit, AfterViewInit {
 
     exportDashboard() {
         if (this.dashboard) {
-            this.editor.set(this.dashboard.config);
+            this.editor.set(this.dashboard.exportConfig());
         } else {
             this.editor.set({});
         }

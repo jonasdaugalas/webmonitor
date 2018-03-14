@@ -27,7 +27,6 @@ export class LabelWidgetComponent implements OnInit {
     constructor(protected dbService: DatabaseService) { }
 
     ngOnInit() {
-        console.log(this.config);
         if (!this.config.hasOwnProperty('wrapper')) {
             this.config['wrapper'] = {};
         }
