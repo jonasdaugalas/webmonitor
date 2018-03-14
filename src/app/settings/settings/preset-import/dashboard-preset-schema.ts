@@ -1,9 +1,14 @@
+import { widgetModuleSelector } from 'app/widgets/widget-module-selector';
+
 export const SCHEMA = {
     definitions: {
         widget: {
             type: 'object',
             properties: {
-                type: { type: 'string'},
+                type: {
+                    type: 'string',
+                    enum: Object.keys(widgetModuleSelector)
+                },
                 config: { '$ref': '#/definitions/widget_config'}
             },
             required: ['type', 'config'],

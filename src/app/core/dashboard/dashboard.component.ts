@@ -15,6 +15,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input('config') set config(newConfig: any) {
         this._config = newConfig;
         this.configChanged();
+        console.log(this.widgets);
+    }
+    get config() {
+        return this._config;
     }
 
     timersConfig: Array<number>;
