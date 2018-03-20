@@ -4,8 +4,8 @@
     flex-grow: 0;
     flex-shrink: 0;
     overflow: hidden;
-    min-width: 200px;
-    min-height: 160px;
+    min-width: 100px;
+    min-height: 40px;
     padding: 1px;
 }
 
@@ -34,7 +34,6 @@
     cursor: grab;
 }
 
-/* .nav-text { */
-/*     border: none; */
-/*     background-color: transparent; */
-/* } */
+.popper-content {
+    z-index: 4;
+}

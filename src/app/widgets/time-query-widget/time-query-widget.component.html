@@ -1,0 +1,7 @@
+<wm-widget [config]="config ? config.wrapper : undefined"
+           [info]="info">
+    <div class="widget-content">
+        <wm-date-range-form (query)="query($event)"></wm-date-range-form>
+    </div>
+
+</wm-widget>

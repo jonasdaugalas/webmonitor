@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'
 import { ClarityModule } from '@clr/angular';
 import { DragulaModule } from 'ng2-dragula';
+import { NgxPopperModule } from 'ngx-popper';
 import { SharedModule } from '../shared/shared.module';
 
 import { DatabaseService } from './database.service';
@@ -22,7 +23,13 @@ import { DashboardContainerResizeFormComponent } from './dashboard/dashboard-con
         ClarityModule.forRoot(),
         FormsModule,
         DragulaModule,
-        SharedModule
+        SharedModule,
+        NgxPopperModule.forRoot({
+            disableAnimation: true,
+            disableDefaultStyling: true,
+            positionFixed: true,
+            hideOnClickOutside: true
+        })
     ],
     declarations: [
         DashboardComponent,

@@ -24,6 +24,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
     infoItems = [];
     @Input('info') set info(newInfo) {
+        newInfo = newInfo || {};
         this.infoItems = Object.keys(newInfo).map(key => {
             return [key, newInfo[key]];
         });
@@ -130,6 +131,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
 
     protected parseConfig(config: any) {
+        config = config || {};
         const defaults = {
             title: '',
             startEnabled: true,

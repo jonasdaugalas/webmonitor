@@ -1,1 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
+
+.inline-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+}
+
+.inline-form > * {
+    flex: 0 0 auto;
+    margin: 0.5em 1.5em;
+}
+
+.inline-form > .form-group > label{
+    font-weight: bold;
+    padding-right: 0.5em;
+}

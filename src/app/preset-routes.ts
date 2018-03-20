@@ -14,4 +14,8 @@ export const ROUTES: Array<PresetRoute> = [{
     title: 'Luminosity',
     path: '/lumi',
     config_url: 'assets/presets/lumi.json'
+}, {
+    title: 'Test',
+    path: '/test',
+    config_url: 'assets/presets/test.json'
 }];

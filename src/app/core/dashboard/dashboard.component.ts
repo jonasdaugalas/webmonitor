@@ -90,13 +90,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         cont['height'] = typeof cont['height'] === 'number' ? cont['height'] : 360;
         cont['width'] = (cont['width'] < 5) ? 5 : cont['width'];
         cont['width'] = cont['width'] > 100 ? 100 : cont['width'];
-        cont['height'] = cont['height'] < 160 ? 160 : cont['height'];
+        cont['height'] = cont['height'] < 40 ? 40 : cont['height'];
     }
 
     resizeContainer(dimensions, widget) {
         widget['config']['container']['height'] = dimensions.height;
         widget['config']['container']['width'] = dimensions.width;
         this.fixContainerDimensions(widget);
+    }
+
+    onResizeFormShow(event) {
+        event['popperContent']['popperViewRef']['nativeElement'].style.zIndex = 4;
     }
 
     exportConfig() {

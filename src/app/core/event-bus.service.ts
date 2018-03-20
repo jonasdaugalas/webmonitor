@@ -36,6 +36,9 @@ export class EventBusService {
     }
 
     emit(channel: number, event: Event) {
+        if (!Number.isInteger(channel)) {
+            return;
+        }
         this.events$.next({channel: channel, event: event});
     }
 

@@ -1,0 +1,23 @@
+<div class="inline-form">
+    <div class="form-group">
+        <label>Date from:</label>
+        <input type="text"
+               [owlDateTimeTrigger]="dtBegin" [owlDateTime]="dtBegin"
+               [(ngModel)]="timeRange"
+               [selectMode]="'rangeFrom'">
+        <owl-date-time #dtBegin></owl-date-time>
+    </div>
+
+    <div class="form-group">
+        <label>Date to:</label>
+        <input type="text"
+               [owlDateTimeTrigger]="dtEnd" [owlDateTime]="dtEnd"
+               [(ngModel)]="timeRange"
+               [selectMode]="'rangeTo'">
+        <owl-date-time #dtEnd></owl-date-time>
+    </div>
+
+    <button class="btn btn-primary" (click)="query()">
+        Query
+    </button>
+</div>
