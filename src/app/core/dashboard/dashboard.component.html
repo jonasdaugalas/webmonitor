@@ -27,6 +27,7 @@
 
                 <clr-icon shape="resize" size="36"
                           [popper]="resizeForm"
+                          [popperPlacement]="'right-start'"
                           (popperOnShown)="onResizeFormShow($event)"
                           [popperTrigger]="'click'"
                           [popperHideOnScroll]="true"

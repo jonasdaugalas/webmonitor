@@ -11,7 +11,11 @@ import { TimersService } from '../timers.service';
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
-    _config: any;
+    resizeForms = new Set();
+    timersConfig: Array<number>;
+    widgets: Array<any>;
+
+    protected _config: any;
     @Input('config') set config(newConfig: any) {
         this._config = newConfig;
         this.configChanged();
@@ -21,10 +25,17 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         return this._config;
     }
 
-    timersConfig: Array<number>;
-    widgets: Array<any>;
+    protected _layoutMode = false;
+    set layoutMode(newMode) {
+        this._layoutMode = newMode;
+        this.resizeForms.forEach(f => {
+            f.hide();
+        })
+    }
+    get layoutMode() {
+        return this._layoutMode;
+    }
 
-    layoutMode = false;
     dragulaOptions = {
         invalid: function (el, handle) {
             if (handle.id === 'widget-rearrange-handle') {
@@ -101,6 +112,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
 
     onResizeFormShow(event) {
         event['popperContent']['popperViewRef']['nativeElement'].style.zIndex = 4;
+        this.resizeForms.add(event['popperContent']);
     }
 
     exportConfig() {
