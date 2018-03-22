@@ -1,0 +1,11 @@
+<wm-widget [config]="config ? config.wrapper : undefined"
+           [info]="info">
+    <div class="widget-content">
+        <wm-fill-run-ls-form
+            [fillEnabled]="config.widget.fillEnabled"
+            [runEnabled]="config.widget.runEnabled"
+            [lsEnabled]="config.widget.lsEnabled"
+            (query)="query($event)">
+        </wm-fill-run-ls-form>
+    </div>
+</wm-widget>

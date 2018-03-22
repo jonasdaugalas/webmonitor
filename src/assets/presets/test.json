@@ -14,10 +14,35 @@
             }
         }
     }, {
+        "type": "fill-run-ls-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 80
+            },
+            "wrapper": {
+                "title": "Dashboard fill-run-ls query"
+            },
+            "widget": {
+                "channel": 2,
+                "fillEnabled": true,
+                "runEnabled": true,
+                "lsEnabled": true
+            }
+        }
+    }, {
+        "type": "label",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 200
+            }
+        }
+    }, {
         "type": "event-bus-tester",
         "config": {
             "container": {
-                "width": 40,
+                "width": 50,
                 "height": 200
             }
         }

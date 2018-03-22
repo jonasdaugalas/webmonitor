@@ -95,4 +95,8 @@ export class LabelWidgetComponent implements OnInit {
         });
     }
 
+    query(range) {
+        console.log(range);
+    }
+
 }

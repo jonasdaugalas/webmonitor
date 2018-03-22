@@ -7,6 +7,7 @@ import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 import { WidgetComponent } from './widget/widget.component';
 import { SettingsComponent } from './widget/settings/settings.component';
 import { DateRangeFormComponent } from './date-range-form/date-range-form.component';
+import { FillRunLsFormComponent } from './fill-run-ls-form/fill-run-ls-form.component';
 
 @NgModule({
     imports: [
@@ -19,11 +20,13 @@ import { DateRangeFormComponent } from './date-range-form/date-range-form.compon
     declarations: [
         WidgetComponent,
         SettingsComponent,
-        DateRangeFormComponent
+        DateRangeFormComponent,
+        FillRunLsFormComponent
     ],
     exports: [
-        WidgetComponent, DateRangeFormComponent, CommonModule, ClarityModule,
-        OwlNativeDateTimeModule, OwlDateTimeModule, FormsModule
+        CommonModule, ClarityModule, FormsModule,
+        OwlNativeDateTimeModule, OwlDateTimeModule,
+        WidgetComponent, DateRangeFormComponent, FillRunLsFormComponent
     ]
 })
 export class SharedModule { }
