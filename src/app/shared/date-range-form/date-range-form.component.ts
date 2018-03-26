@@ -20,7 +20,16 @@ export class DateRangeFormComponent implements OnInit {
     }
 
     query() {
-        this.onQuery.emit(this.timeRange.slice());
+        this.onQuery.emit({
+            'from': this.timeRange[0],
+            'to': this.timeRange[1],
+            'tsFrom': this.makeUTCTS(this.timeRange[0]),
+            'tsTo': this.makeUTCTS(this.timeRange[1])
+        });
+    }
+
+    makeUTCTS(date: Date) {
+        return date.getTime() - date.getTimezoneOffset() * 60000;
     }
 
 }

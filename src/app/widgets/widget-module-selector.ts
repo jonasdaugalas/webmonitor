@@ -5,5 +5,6 @@ export const widgetModuleSelector = {
     'label': 'app/widgets/label-widget/label-widget.module#LabelWidgetModule',
     'time-query': 'app/widgets/time-query-widget/time-query-widget.module#TimeQueryWidgetModule',
     'fill-run-ls-query': 'app/widgets/fill-run-ls-query-widget/fill-run-ls-query-widget.module#FillRunLsQueryWidgetModule',
-    'event-bus-tester': 'app/widgets/event-bus-test-widget/event-bus-test-widget.module#EventBusTestWidgetModule'
+    'event-bus-tester': 'app/widgets/event-bus-test-widget/event-bus-test-widget.module#EventBusTestWidgetModule',
+    'numeric-field': 'app/widgets/numeric-field/numeric-field.module#NumericFieldModule',
 };

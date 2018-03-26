@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class WidgetComponent implements OnInit, OnDestroy {
 
-    protected _config: any;
+    protected _config = {};
     @Input() set config(newConfig: any) {
         this._config = this.parseConfig(newConfig);
     }
