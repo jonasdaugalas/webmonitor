@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+// import * as Plotly from 'plotly.js';
+// declare var Plotly: any;
 
 @Component({
-  selector: 'app-numeric-field',
-  templateUrl: './numeric-field.component.html',
-  styleUrls: ['./numeric-field.component.css']
+    selector: 'wm-numeric-field-widget',
+    templateUrl: './numeric-field.component.html',
+    styleUrls: ['./numeric-field.component.css']
 })
 export class NumericFieldComponent implements OnInit {
 
-  constructor() { }
+    constructor() { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        // console.log(Plotly);
+    }
 
 }

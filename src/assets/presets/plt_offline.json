@@ -1,0 +1,45 @@
+{
+    "widgets": [{
+        "type": "array-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 500
+            },
+            "wrapper": {
+                "title": "Depletion",
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "optionsEnabled": true
+            },
+            "widget": {
+                "index": "data-plttest",
+                "nestedPath": "data",
+                "field": "depletion",
+                "tooltipFields": ["fill"],
+                "series": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+            }
+        }
+    }, {
+        "type": "array-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 500
+            },
+            "wrapper": {
+                "title": "Cluster size",
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "optionsEnabled": true
+            },
+            "widget": {
+                "index": "data-plttest",
+                "nestedPath": "data",
+                "field": "cluster_size",
+                "tooltipFields": ["fill"],
+                "series": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+            }
+        }
+    }]
+}
