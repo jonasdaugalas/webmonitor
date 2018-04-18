@@ -20,12 +20,12 @@
     border: 4px dashed red;
     height: 100%;
     width: 100%;
-    z-index: 2;
+    z-index: 20;
 }
 
 .layout-mode-buttons {
     position: absolute;
-    z-index: 3;
+    z-index: 21;
     color: red;
     text-align: center;
 }
@@ -34,6 +34,7 @@
     cursor: grab;
 }
 
-.popper-content {
-    z-index: 4;
+popper-content {
+    position: absolute;
+    z-index: 22;
 }
