@@ -1,5 +1,14 @@
 export { environment } from 'app/../environments/environment';
 
+export const DATA_SOURCES = {
+    es_daq_realtime: {
+        endpoint: 'http://srv-s2d16-22-01:9200'
+    },
+    es_analysis: {
+        endpoint: 'http://srv-s2d16-25-01:9200'
+    }
+}
+
 export const initialSandboxPreset = {
     widgets: [{
         type: 'static-label',

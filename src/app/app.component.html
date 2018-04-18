@@ -7,6 +7,7 @@
             <a href="/" class="nav-link">
                 <clr-icon shape="bar-chart" class="is-solid is-inverse"></clr-icon>
                 <span class="title">webmonitor</span>
+                <span>dev</span>
             </a>
         </div>
         <div class="header-nav">
@@ -17,11 +18,11 @@
                         <clr-icon shape="caret down"></clr-icon>
                     </button>
                     <clr-dropdown-menu *clrIfOpen>
-                        <a *ngFor="let p of presetRoutes"
-                           [locationLink]="p.path"
-                           clrDropdownItem>
-                            {{p.title}}
-                        </a>
+                        <template *ngFor="let p of presetRoutes">
+                            <a *ngIf="p.title" [locationLink]="p.path" clrDropdownItem>
+                                {{p.title}}
+                            </a>
+                        </template>
                         <div class="dropdown-divider"></div>
                         <a [locationLink]="sandboxPath"
                            clrDropdownItem>

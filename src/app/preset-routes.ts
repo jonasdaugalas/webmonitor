@@ -1,21 +1,23 @@
 export const SANDBOX_PATH = '/--sandbox';
 
 export class PresetRoute {
-    title: string;
+    title?: string;
     path: string;
     config_url: string;
 }
 
 export const ROUTES: Array<PresetRoute> = [{
-    title: 'Summary',
     path: '/summary',
     config_url: 'assets/presets/summary.json'
 }, {
-    title: 'Luminosity',
     path: '/lumi',
     config_url: 'assets/presets/lumi.json'
 }, {
-    title: 'Test',
+    title: 'TEST',
     path: '/test',
     config_url: 'assets/presets/test.json'
+}, {
+    title: 'PLT offline',
+    path: '/plt_offline',
+    config_url: 'assets/presets/plt_offline.json'
 }];
