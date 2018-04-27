@@ -45,10 +45,13 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
             refreshEnabled: true
         }, this.config['wrapper'] || {});
         const wi = this.config['widget'] = this.config['widget'] || {};
+        console.log(wi, this.db.parseDatabase(wi['database']));
+        if (!this.db.parseDatabase(wi['database'])) {
+            wi['database'] = 'default';
+        }
     }
 
     ngAfterViewInit() {
-        console.log(this.plot);
         Plotly.plot(
             this.plot.nativeElement,
             this.chartData,
@@ -66,7 +69,6 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     reflow() {};
 
     refresh() {
-
     }
 
 }

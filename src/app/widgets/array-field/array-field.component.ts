@@ -49,16 +49,18 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
 
     ngAfterViewInit() {
         console.log(this.plot);
-        Plotly.plot(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
+        Plotly.plot(
+            this.plot.nativeElement,
+            this.chartData,
+            this.chartLayout,
+            this.chartConfig);
+        this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.reflow();
         this.refresh();
     }
 
-    reflow() {
-        setTimeout(() => {
-            Plotly.relayout(this.plot.nativeElement, {width: null, height: null});
-        });
-    }
+    // reflow reassigned in ngAfterViewInit
+    reflow() {}
 
     refresh() {
         const wi = this.config['widget'];

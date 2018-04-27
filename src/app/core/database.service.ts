@@ -1,16 +1,34 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import * as config from 'app/config';
 
 @Injectable()
 export class DatabaseService {
 
-    dbURL = 'http://srv-s2d16-22-01.cms:9200';
+    defaultDB = config.DATA_SOURCES.es_daq_realtime.endpoint;
 
     constructor(protected http: HttpClient) {
 
     }
 
-    query(url, body={}) {
-        return this.http.post(this.dbURL + '/' + url, body);
+    parseDatabase(selector: string) {
+        if (selector.startsWith('http')) {
+            return selector;
+        }
+        if (config.DATA_SOURCES.hasOwnProperty(selector)) {
+            return config.DATA_SOURCES[selector]['endpoint'];
+        }
+        if (selector.toLowerCase() === 'default') {
+            return this.defaultDB;
+        }
+        return null;
+    }
+
+    query(url, body={}, db=this.defaultDB) {
+        const dbUrl = this.parseDatabase(db);
+        if (!dbUrl) {
+            return;
+        }
+        return this.http.post(dbUrl + '/' + url, body);
     }
 }

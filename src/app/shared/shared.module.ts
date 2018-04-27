@@ -8,6 +8,7 @@ import { WidgetComponent } from './widget/widget.component';
 import { SettingsComponent } from './widget/settings/settings.component';
 import { DateRangeFormComponent } from './date-range-form/date-range-form.component';
 import { FillRunLsFormComponent } from './fill-run-ls-form/fill-run-ls-form.component';
+import { QuickRangeFormComponent } from './quick-range-form/quick-range-form.component';
 
 @NgModule({
     imports: [
@@ -21,7 +22,8 @@ import { FillRunLsFormComponent } from './fill-run-ls-form/fill-run-ls-form.comp
         WidgetComponent,
         SettingsComponent,
         DateRangeFormComponent,
-        FillRunLsFormComponent
+        FillRunLsFormComponent,
+        QuickRangeFormComponent
     ],
     exports: [
         CommonModule, ClarityModule, FormsModule,

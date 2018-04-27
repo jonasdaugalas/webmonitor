@@ -54,7 +54,35 @@
                 "height": 400
             },
             "widget": {
-                "series": []
+                "database": "daq_ES6",
+                "sources": [{
+                    "index": "bril-fastbestlumi",
+                    "fields": [{
+                        "name": "avg",
+                        "seriesName": "Bestlumi",
+                        "color": "#ff9000"
+                    }],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
+                    }
+                }, {
+                    "index": "bril-fastdetluminosity",
+                    "fields": [{
+                        "name": "avg",
+                        "seriesName": "pltzero",
+                        "color": "#1859a9",
+                        "terms": {
+                            "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                        }
+                    }, {
+                        "name": "avg",
+                        "seriesName": "hfet",
+                        "color": "#e700ff",
+                        "terms": {
+                            "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                        }
+                    }]
+                }]
             }
         }
     }, {
@@ -63,9 +91,6 @@
             "container": {
                 "width": 50,
                 "height": 400
-            },
-            "wrapper": {
-
             }
         }
     }]
