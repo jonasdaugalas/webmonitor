@@ -35,7 +35,7 @@
         "config": {
             "container": {
                 "width": 50,
-                "height": 200
+                "height": 100
             }
         }
     }, {
@@ -43,15 +43,29 @@
         "config": {
             "container": {
                 "width": 50,
-                "height": 200
+                "height": 100
             }
         }
     }, {
         "type": "numeric-field",
         "config": {
             "container": {
-                "width": 100,
+                "width": 50,
                 "height": 400
+            },
+            "widget": {
+                "series": []
+            }
+        }
+    }, {
+        "type": "array-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+
             }
         }
     }]

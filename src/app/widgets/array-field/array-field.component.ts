@@ -2,6 +2,7 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
+import * as ChartUtils from 'app/shared/chart-utils';
 
 // import * as Plotly from 'plotly.js';
 declare var Plotly: any;
@@ -17,39 +18,26 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
     @ViewChild('plot') protected plot: ElementRef;
     fields: Array<string>;
     chartData = [];
-    chartLayout = {
-        margin: {
-            b: 40,
-            l: 60,
-            r: 40,
-            t: 20
-        },
-        showlegend: true,
-        legend: {
-            orientation: "h"
-        },
-        xaxis: {
+    chartLayout = Object.assign(ChartUtils.getDefaultLayout(), {
+        'xaxis': {
             title: "Date UTC",
             ticks: "outside",
             type: "date"
-        },
-        autosize: true
-    };
-    chartConfig = {
-        modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'toImage'],
-        displaylogo: false
-    }
+        }
+    });
+    chartConfig = ChartUtils.getDefaultConfig();
 
     constructor( protected db: DatabaseService ) {}
 
     ngOnInit() {
-        const wr = this.config['wrapper'];
+        const wr = this.config['wrapper'] = this.config['wrapper'] || {};
+        const wi = this.config['widget'] = this.config['widget'] || {};
+        wi['series'] = wi['series'] || [];
         wr['controlsEnabled'] = true;
         wr['optionsEnabled'] = false;
         wr['queriesEnabled'] = false;
         wr['startEnabled'] = false;
         wr['refreshEnabled'] = true;
-        const wi = this.config['widget'];
         this.fields = ['timestamp']
             .concat(wi['tooltipFields'])
             .concat([wi['field']])
