@@ -31,10 +31,6 @@ export class EventBusService {
         return filtered.map(x => x.event);
     }
 
-    subscribe(channel: number, filter: string|undefined): Subscription {
-        return this.getEvents(channel, filter).subscribe();
-    }
-
     emit(channel: number, event: Event) {
         if (!Number.isInteger(channel)) {
             return;

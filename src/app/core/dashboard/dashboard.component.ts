@@ -2,6 +2,7 @@ import {
     Component, OnInit, HostListener, OnDestroy, AfterViewInit, Input
 } from '@angular/core';
 import { TimersService } from '../timers.service';
+import { EventBusService } from 'app/core/event-bus.service';
 
 
 @Component({
@@ -19,7 +20,6 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     @Input('config') set config(newConfig: any) {
         this._config = newConfig;
         this.configChanged();
-        console.log(this.widgets);
     }
     get config() {
         return this._config;
@@ -49,7 +49,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.layoutMode = false;
     }
 
-    constructor(protected timers: TimersService) {
+    constructor(protected timers: TimersService,
+                protected eventBus: EventBusService) {
     }
 
     ngOnInit() {
@@ -108,6 +109,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         widget['config']['container']['height'] = dimensions.height;
         widget['config']['container']['width'] = dimensions.width;
         this.fixContainerDimensions(widget);
+        this.eventBus.emit(0, {type: 'global_reflow', payload: null});
     }
 
     onResizeFormShow(event) {
