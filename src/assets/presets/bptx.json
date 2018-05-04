@@ -1,0 +1,87 @@
+{
+    "widgets": [{
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 33.33,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "Average phase"
+            },
+            "widget": {
+                "database": "daq_ES6",
+                "sources": [{
+                    "index": "bril-bptxprocessormon",
+                    "timestampField": "timestamp",
+                    "fields": [{
+                        "name": "avg_phase_b1",
+                        "seriesName": "Phase B1"
+                    }, {
+                        "name": "avg_phase_b2",
+                        "seriesName": "Phase B2"
+                    }],
+                    "terms": {
+                        "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 33.33,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "Average lengths"
+            },
+            "widget": {
+                "database": "daq_ES6",
+                "sources": [{
+                    "index": "bril-bptxprocessormon",
+                    "timestampField": "timestamp",
+                    "fields": [{
+                        "name": "avg_length_b1",
+                        "seriesName": "Length B1"
+                    }, {
+                        "name": "avg_length_b2",
+                        "seriesName": "Length B2"
+                    }],
+                    "terms": {
+                        "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 33.33,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "Average intensities"
+            },
+            "widget": {
+                "database": "daq_ES6",
+                "sources": [{
+                    "index": "bril-bptxprocessormon",
+                    "timestampField": "timestamp",
+                    "fields": [{
+                        "name": "avg_intensity_b1",
+                        "seriesName": "Intensity B1"
+                    }, {
+                        "name": "avg_intensity_b2",
+                        "seriesName": "Intensity B2"
+                    }],
+                    "terms": {
+                        "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                    }
+                }]
+            }
+        }
+    }]
+}

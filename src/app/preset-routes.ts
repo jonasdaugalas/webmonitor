@@ -17,6 +17,10 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/test',
     config_url: 'assets/presets/test.json'
 }, {
+    title: 'BPTX',
+    path: '/bptx',
+    config_url: 'assets/presets/bptx.json'
+}, {
     title: 'PLT offline',
     path: '/plt_offline',
     config_url: 'assets/presets/plt_offline.json'
