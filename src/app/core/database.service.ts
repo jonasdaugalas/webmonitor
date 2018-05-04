@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import * as config from 'app/config';
 
 @Injectable()
@@ -30,5 +30,18 @@ export class DatabaseService {
             return;
         }
         return this.http.post(dbUrl + '/' + url, body);
+    }
+
+    queryNDJson(url, body='', db=this.defaultDB) {
+        const headers = new HttpHeaders({'Content-Type':'application/x-ndjson'});
+        const dbUrl = this.parseDatabase(db);
+        if (!dbUrl) {
+            return;
+        }
+        return this.http.post(dbUrl + '/' + url, body, {headers: headers});
+    }
+
+    multiSearch(body, db=this.defaultDB) {
+        return this.queryNDJson('_msearch', body, db);
     }
 }
