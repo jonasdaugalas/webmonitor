@@ -12,6 +12,11 @@ export function getDefaultLayout() {
         legend: {
             orientation: "h"
         },
+        xaxis: {
+            title: "Date UTC",
+            ticks: "outside",
+            type: "date"
+        },
         autosize: true
     };
 };
@@ -30,4 +35,8 @@ export function makeDefaultReflowFunction(element) {
             Plotly.relayout(element, {width: null, height: null});
         });
     }
+}
+
+export function subscribeReflow(eventBus, reflow) {
+    return eventBus.getEvents(0, 'global_reflow').subscribe(reflow);
 }
