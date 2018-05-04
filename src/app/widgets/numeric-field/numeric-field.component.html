@@ -1,10 +1,8 @@
 <wm-widget [config]="config.wrapper"
            (refresh)="refresh()">
-    <div class="widget-options">
-        options
-    </div>
+    <div class="widget-options"></div>
     <div class="widget-queries">
-        queries
+        <wm-date-range-form (query)="rangeQuery($event)"></wm-date-range-form>
     </div>
     <div class="widget-content">
         <div #plot style="height: 100%; width: 100%"></div>

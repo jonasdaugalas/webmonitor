@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject ,  BehaviorSubject ,  interval ,  Subscription } from 'rxjs';
 import 'rxjs/add/operator/share';
-import { interval } from 'rxjs/observable/interval';
-import { Subscription } from 'rxjs/Subscription';
 
 export interface Timer {
     interval: number;

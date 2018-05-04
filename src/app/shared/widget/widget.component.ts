@@ -4,7 +4,7 @@ import {
 } from '@angular/core';
 import { TimersService, Timer } from '../../core/timers.service';
 import { EventBusService } from '../../core/event-bus.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'wm-widget',

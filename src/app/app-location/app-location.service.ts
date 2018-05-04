@@ -1,7 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Location } from '@angular/common';
-import { ISubscription } from 'rxjs/Subscription';
-import { Subject } from 'rxjs/Subject';
+import { SubscriptionLike as ISubscription ,  Subject } from 'rxjs';
 
 
 @Injectable()

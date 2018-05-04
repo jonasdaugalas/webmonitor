@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject ,  Observable ,  Subscription } from 'rxjs';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
+
 
 export class Event {
     constructor(public type: string, public payload: any) {}

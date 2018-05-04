@@ -2,7 +2,7 @@ import {
     Component, OnInit, Input, Output, OnDestroy, EventEmitter
 } from '@angular/core';
 import { Timer, TimersService } from '../../../core/timers.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'wm-widget-general-settings',

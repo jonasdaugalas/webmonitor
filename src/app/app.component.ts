@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { EventBusService } from './core/event-bus.service';
 import { AppLocationService } from './app-location';
 import { ROUTES, SANDBOX_PATH } from './preset-routes';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { PresetResolveService } from './preset-resolve.service';
 import { SandboxPresetService } from 'app/core/sandbox-preset.service';
 import * as APP_CONFIG from './config';

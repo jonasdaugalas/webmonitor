@@ -1,7 +1,7 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';

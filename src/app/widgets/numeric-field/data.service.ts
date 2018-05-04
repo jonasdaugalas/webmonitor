@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
+import 'rxjs/add/operator/map';
 
 interface FieldParameter {
     name: string;
@@ -36,9 +37,21 @@ export class DataService {
             const body = {
                 "_source": this.parseQueryFields(source),
                 "size": size,
-                "sort": {}
+                "sort": {},
+                "query": {
+                    "bool": {
+                        "filter": []
+                    }
+                }
             };
             body['sort'][source.timestampField] = "desc";
+            if (source.terms) {
+                Object.keys(source.terms).forEach(k => {
+                    const term = {};
+                    term[k] = source.terms[k];
+                    body['query']['bool']['filter'].push({"term": term});
+                });
+            }
             fullBody += JSON.stringify(header) + '\n'
                 + JSON.stringify(body) + '\n';
         });

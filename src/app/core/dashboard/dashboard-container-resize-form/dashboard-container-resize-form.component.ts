@@ -1,9 +1,10 @@
 import {
     Component, OnInit, OnDestroy, Input, Output, EventEmitter
 } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/takeUntil';
+import { Subject } from 'rxjs';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/takeUntil';
+
 
 @Component({
     selector: 'dashboard-container-resize-form',
