@@ -1,5 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 
+.owl-dt-container {
+    font-size: 14px !important;
+}
+
 .inline-form {
     display: flex;
     flex-wrap: wrap;
