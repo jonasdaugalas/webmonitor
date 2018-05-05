@@ -10,16 +10,54 @@ export function getDefaultLayout() {
         },
         showlegend: true,
         legend: {
-            orientation: "h"
-        },
-        xaxis: {
-            title: "Date UTC",
-            ticks: "outside",
-            type: "date"
+            orientation: 'v',
+            bgcolor: '#EAFAFF90',
+            bordercolor: 'whitesmoke',
+            borderwidth: 1
         },
         autosize: true
     };
 };
+
+export function getLegendConfig(preset) {
+    const common = {
+        orientation: 'v',
+        bgcolor: '#EAFAFF90',
+        bordercolor: 'whitesmoke',
+        borderwidth: 1
+    }
+    switch(preset) {
+    case 'outside-left': {
+        return Object.assign(common, {
+            x: -0.05,
+            xanchor: 'right'
+        });
+    }
+    case 'left': {
+        return Object.assign(common, {
+            x: 0,
+            xanchor: 'left'
+        });
+    }
+    case 'outside-right': {
+        return Object.assign(common, {
+            x: 1,
+            xanchor: 'left'
+        });
+    }
+    case 'right': {
+        return Object.assign(common, {
+            x: 1,
+            xanchor: 'right'
+        });
+    }
+    default: {
+        return Object.assign(common, {
+            orientation: 'h'
+        });
+    }
+    }
+}
 
 
 export function getDefaultConfig() {
