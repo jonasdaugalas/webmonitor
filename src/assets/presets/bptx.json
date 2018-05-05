@@ -1,4 +1,5 @@
 {
+    "timers": [4],
     "widgets": [{
         "type": "numeric-field",
         "config": {
@@ -7,10 +8,14 @@
                 "height": 400
             },
             "wrapper": {
-                "title": "Average phase"
+                "title": "Average phase",
+                "initialTimer": 0
             },
             "widget": {
+                "legend": "left",
+                "yAxisTitle": "Phase (degrees)",
                 "database": "daq_ES6",
+                "liveWindow": 1800000,
                 "sources": [{
                     "index": "bril-bptxprocessormon",
                     "timestampField": "timestamp",
@@ -35,9 +40,10 @@
                 "height": 400
             },
             "wrapper": {
-                "title": "Average lengths"
+                "title": "Average length"
             },
             "widget": {
+                "legend": "left",
                 "database": "daq_ES6",
                 "sources": [{
                     "index": "bril-bptxprocessormon",
@@ -63,9 +69,10 @@
                 "height": 400
             },
             "wrapper": {
-                "title": "Average intensities"
+                "title": "Average intensity"
             },
             "widget": {
+                "legend": "left",
                 "database": "daq_ES6",
                 "sources": [{
                     "index": "bril-bptxprocessormon",
