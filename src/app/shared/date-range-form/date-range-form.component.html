@@ -17,6 +17,10 @@
         <owl-date-time #dtEnd></owl-date-time>
     </div>
 
+    <clr-checkbox [(clrChecked)]="utc" [clrInline]="true">
+        UTC
+    </clr-checkbox>
+
     <button class="btn btn-primary" (click)="query()">
         Query
     </button>
