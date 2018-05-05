@@ -81,6 +81,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     }
 
     onClickRefresh() {
+        this.stop();
         this.refreshEmmiter.emit();
     }
 
