@@ -44,6 +44,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
         return this._timer;
     }
     timerSubscription: Subscription;
+    timersSubscription: Subscription;
     eventsSubscription: Subscription;
 
 
@@ -53,6 +54,11 @@ export class WidgetComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         const initiallyStarted = this.config.started;
+        this.timersSubscription = this.timers.timers$.subscribe(newTimers => {
+            if (newTimers.indexOf(this.timer) < 0) {
+                this.timer = undefined;
+            }
+        });
         if (Number.isInteger(this.config.initialTimer)) {
             try {
                 this.timer = this.timers.getTimers()[this.config.initialTimer];
@@ -69,6 +75,9 @@ export class WidgetComponent implements OnInit, OnDestroy {
         this.makeStop();
         if (this.eventsSubscription) {
             this.eventsSubscription.unsubscribe();
+        }
+        if (this.timersSubscription) {
+            this.timersSubscription.unsubscribe();
         }
     }
 
