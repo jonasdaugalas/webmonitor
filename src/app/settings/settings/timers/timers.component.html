@@ -3,10 +3,10 @@
         <label>Create new timer</label>
         <div class="form-group">
             <label>Interval (seconds)</label>
-            <input #intervalInput type="number" min="0.5" max="60" step="0.1" value="8.0" />
+            <input [(ngModel)]="intervalInput" type="number" min="0.5" step="0.1" />
         </div>
         <button class="btn btn-primary"
-                (click)="create(intervalInput.value)">
+                (click)="create(intervalInput)">
             Create
         </button>
     </section>

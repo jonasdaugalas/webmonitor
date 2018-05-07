@@ -9,6 +9,7 @@ import { TimersService, Timer } from 'app/core/timers.service';
 export class TimersComponent implements OnInit, OnDestroy {
 
     protected timerUpdateSubs: Subscription;
+    intervalInput = 8;
     timers = [];
 
     constructor(protected timersService: TimersService) { }
@@ -45,6 +46,9 @@ export class TimersComponent implements OnInit, OnDestroy {
     }
 
     create(interval) {
+        if (interval < 0.5) {
+            return;
+        }
         this.timersService.create(interval);
     }
 }
