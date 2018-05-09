@@ -1,7 +1,7 @@
 export { environment } from 'app/../environments/environment';
 
 export const DATA_SOURCES = {
-    es_daq_realtime: {
+    daq_ES2: {
         endpoint: 'http://srv-s2d16-22-01:9200'
     },
     es_analysis: {
