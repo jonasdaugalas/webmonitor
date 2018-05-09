@@ -1,0 +1,14 @@
+<wm-widget [config]="config.wrapper"
+           (refresh)="onRefreshEvent()"
+           (start)="onStartEvent()"
+           (timer)="updateLive()"
+           #widgetWrapper>
+
+    <div class="widget-options"></div>
+
+    <div class="widget-queries"></div>
+
+    <div class="widget-content">
+        <div #plot style="height: 100%; width: 100%"></div>
+    </div>
+</wm-widget>

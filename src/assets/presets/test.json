@@ -3,7 +3,7 @@
         "type": "time-query",
         "config": {
             "container": {
-                "width": 100,
+                "width": 50,
                 "height": 80
             },
             "wrapper": {
@@ -17,7 +17,7 @@
         "type": "fill-run-ls-query",
         "config": {
             "container": {
-                "width": 100,
+                "width": 50,
                 "height": 80
             },
             "wrapper": {
@@ -31,11 +31,47 @@
             }
         }
     }, {
-        "type": "label",
+        "type": "array-snapshot",
         "config": {
             "container": {
                 "width": 50,
-                "height": 100
+                "height": 400
+            },
+            "widget": {
+                "type": "bar",
+                "database": "daq_ES6",
+                "index": "bril-detluminosity",
+                "timestampField": "timestamp",
+                "fields": [{
+                    "name": "bx",
+                    "seriesName": "Phase B2"
+                }],
+                "terms": {
+                    "detectorname": "bcm1flumi",
+                    "context" : "http://srv-s2d16-15-01.cms:6868"
+                }
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "widget": {
+                "chartType": "scattergl",
+                "database": "daq_ES2",
+                "documentType": "bptxprocessorMon",
+                "index": "shelflist",
+                "timestampField": "timestamp",
+                "fields": [{
+                    "name": "phase_b2",
+                    "seriesName": "Phase B2"
+                }, {
+                    "name": "phase_b1",
+                    "seriesName": "Phase B1"
+                }]
             }
         }
     }, {
@@ -43,54 +79,7 @@
         "config": {
             "container": {
                 "width": 50,
-                "height": 100
-            }
-        }
-    }, {
-        "type": "numeric-field",
-        "config": {
-            "container": {
-                "width": 50,
-                "height": 400
-            },
-            "widget": {
-                "database": "daq_ES6",
-                "sources": [{
-                    "index": "bril-fastbestlumi",
-                    "fields": [{
-                        "name": "avg",
-                        "seriesName": "Bestlumi",
-                        "color": "#ff9000"
-                    }],
-                    "terms": {
-                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
-                    }
-                }, {
-                    "index": "bril-fastdetluminosity",
-                    "fields": [{
-                        "name": "avg",
-                        "seriesName": "pltzero",
-                        "color": "#1859a9",
-                        "terms": {
-                            "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
-                        }
-                    }, {
-                        "name": "avg",
-                        "seriesName": "hfet",
-                        "color": "#e700ff",
-                        "terms": {
-                            "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
-                        }
-                    }]
-                }]
-            }
-        }
-    }, {
-        "type": "array-field",
-        "config": {
-            "container": {
-                "width": 50,
-                "height": 400
+                "height": 300
             }
         }
     }]

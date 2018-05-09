@@ -1,5 +1,5 @@
 {
-    "timers": [4],
+    "timers": [19],
     "widgets": [{
         "type": "numeric-field",
         "config": {
@@ -9,7 +9,8 @@
             },
             "wrapper": {
                 "title": "Average phase",
-                "initialTimer": 0
+                "initialTimer": 0,
+                "started": true
             },
             "widget": {
                 "legend": "left",
