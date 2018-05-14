@@ -7,8 +7,8 @@ export const buttonDownloadImage = {
     click: function(gd) {
         const opts = {
             format: 'png',
-            width: 1200,
-            height: 700
+            width: 900,
+            height: 600
         };
         Plotly.downloadImage(gd, opts);
     }

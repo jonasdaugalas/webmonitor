@@ -38,7 +38,7 @@ export class ArraySnapshotComponent implements OnInit {
     ngOnInit() {
         const wr = this.config['wrapper'] = Object.assign({
             controlsEnabled: true,
-            infoEnabled: true,
+            // infoEnabled: true,
             optionsEnabled: true,
             queriesEnabled: false,
             startEnabled: true,
@@ -109,13 +109,15 @@ export class ArraySnapshotComponent implements OnInit {
                 y: newData[0][f.name],
                 name: f.seriesName,
                 type: this.config['widget']['chartType'] || 'bar',
-                mode: 'markers'
+                mode: 'markers',
+                marker: { size: 5 }
             };
             this.chartData.push(newSeries);
             this.series.push(newSeries);
         });
-        Plotly.redraw(this.plot.nativeElement, this.chartData);
-        this.autorange();
+        this.updateAnnotation(newData);
+        this.setAutorange();
+        Plotly.redraw(this.plot.nativeElement, this.chartData, this.chartLayout);
         this.updateInfo(newData);
     }
 
@@ -129,12 +131,25 @@ export class ArraySnapshotComponent implements OnInit {
         return this.refresh();
     }
 
-    autorange() {
+    updateAnnotation(newData) {
+        this.chartLayout['annotations'] = [{
+            y: 1,
+            x: 0.5,
+            xref: 'paper',
+            yref: 'paper',
+            xanchor: 'middle',
+            yanchor: 'top',
+            text: newData[0]['timestamp'],
+            showarrow: false,
+            font: { size: 18 }
+        }];
+    }
+
+    setAutorange() {
         const xaxis = this.plot.nativeElement['layout']['xaxis'];
         const yaxis = this.plot.nativeElement['layout']['yaxis'];
         xaxis['autorange'] = true;
         yaxis['autorange'] = true;
-        Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis, yaxis: yaxis});
     }
 
 }
