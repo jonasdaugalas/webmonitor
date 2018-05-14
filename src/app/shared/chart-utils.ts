@@ -1,5 +1,19 @@
 declare var Plotly: any;
 
+export const buttonDownloadImage = {
+    name: 'toImage',
+    title: 'Download plot as a png',
+    icon: Plotly.Icons.camera,
+    click: function(gd) {
+        const opts = {
+            format: 'png',
+            width: 1200,
+            height: 700
+        };
+        Plotly.downloadImage(gd, opts);
+    }
+};
+
 export function getDefaultLayout() {
     return {
         margin: {
@@ -63,6 +77,7 @@ export function getLegendConfig(preset) {
 export function getDefaultConfig() {
     return {
         modeBarButtonsToRemove: ['sendDataToCloud', 'lasso2d', 'toImage'],
+        modeBarButtonsToAdd: [buttonDownloadImage],
         displaylogo: false
     }
 }
