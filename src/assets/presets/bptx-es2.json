@@ -15,10 +15,11 @@
             "widget": {
                 "legend": "left",
                 "yAxisTitle": "Phase (degrees)",
-                "database": "daq_ES6",
+                "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "index": "bril-bptxprocessormon",
+                    "documentType": "bptxprocessorMon",
+                    "index": "shelflist",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_phase_b1",
@@ -47,10 +48,11 @@
             },
             "widget": {
                 "legend": "left",
-                "database": "daq_ES6",
+                "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "index": "bril-bptxprocessormon",
+                    "documentType": "bptxprocessorMon",
+                    "index": "shelflist",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_length_b1",
@@ -79,10 +81,11 @@
             },
             "widget": {
                 "legend": "left",
-                "database": "daq_ES6",
+                "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "index": "bril-bptxprocessormon",
+                    "documentType": "bptxprocessorMon",
+                    "index": "shelflist",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_intensity_b1",
@@ -111,8 +114,9 @@
             },
             "widget": {
                 "chartType": "scattergl",
-                "database": "daq_ES6",
-                "index": "bril-bptxprocessormon",
+                "database": "daq_ES2",
+                "documentType": "bptxprocessorMon",
+                "index": "shelflist",
                 "timestampField": "timestamp",
                 "xAxisTitle": "Bunch index",
                 "yAxisTitle": "Phase offset (ps)",

@@ -13,15 +13,19 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/lumi',
     config_url: 'assets/presets/lumi.json'
 }, {
-    title: 'TEST',
-    path: '/test',
-    config_url: 'assets/presets/test.json'
-}, {
     title: 'BPTX',
     path: '/bptx',
+    config_url: 'assets/presets/bptx-es2.json'
+}, {
+    title: 'BPTX -ES6-',
+    path: '/bptx-new',
     config_url: 'assets/presets/bptx.json'
 }, {
     title: 'PLT offline',
     path: '/plt_offline',
     config_url: 'assets/presets/plt_offline.json'
+}, {
+    title: '-test-es2-es6-',
+    path: '/test',
+    config_url: 'assets/presets/test.json'
 }];
