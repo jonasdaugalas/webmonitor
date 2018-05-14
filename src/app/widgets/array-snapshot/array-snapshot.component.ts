@@ -24,6 +24,7 @@ export class ArraySnapshotComponent implements OnInit {
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     series = [];
+    info = {};
 
     constructor(
         protected eventBus: EventBusService,
@@ -37,6 +38,7 @@ export class ArraySnapshotComponent implements OnInit {
     ngOnInit() {
         const wr = this.config['wrapper'] = Object.assign({
             controlsEnabled: true,
+            infoEnabled: true,
             optionsEnabled: true,
             queriesEnabled: false,
             startEnabled: true,
@@ -61,16 +63,18 @@ export class ArraySnapshotComponent implements OnInit {
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
-        this.refresh();
+        if (!this.config['wrapper']['started']) {
+            this.refresh();
+        }
     }
 
     configureLayout(widget) {
         const update = {
             xaxis: {
-                title: widget['xAxisTitle'],
+                title: widget['xAxisTitle']
             },
             yaxis: {
-                title: widget['yAxisTitle'],
+                title: widget['yAxisTitle']
             },
             legend: ChartUtils.getLegendConfig(widget['legend']),
             barmode: 'group',
@@ -111,41 +115,26 @@ export class ArraySnapshotComponent implements OnInit {
             this.series.push(newSeries);
         });
         Plotly.redraw(this.plot.nativeElement, this.chartData);
+        this.autorange();
+        this.updateInfo(newData);
     }
 
-queryRange(range) {
-    // this.widgetWrapper.stop();
-    // const obs = this.dataService.queryRange(
-    //     this.queryParams, range['strFrom'], range['strTo'])
-    //     .map(this.setData.bind(this))
-    //     .share();
-    // obs.subscribe();
-    // return obs;
-}
+    updateInfo(newData) {
+        this.info = {
+            timestamp: newData[0][this.queryParams.timestampField]
+        }
+    }
 
-updateLive() {
-    // if (this.series.length < 1) {
-    //     this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
-    //     return;
-    // }
-    // const lastXPerSource = this.getLastXPerSource();
-    // this.dataService.queryNewestSince(this.queryParams, lastXPerSource)
-    //     .subscribe(resp => {
-    //         this.queryParams.sources.forEach((source, i) => {
-    //             const hits = resp[i].filter(hit => hit[source.timestampField] !== lastXPerSource[i]);
-    //             if (hits.length < 1) {
-    //                 return;
-    //             }
-    //             source.fields.forEach((field, j) => {
-    //                 const series = this.series[i][j];
-    //                 series.x = series.x.concat(hits.map(hit => hit[source.timestampField]));
-    //                 series.y = series.y.concat(hits.map(hit => hit[field.name]));
-    //                 this.dropPointsOutsideLiveWindow(series);
-    //             });
-    //         });
-    //         this.setXZoomToLiveWindow(lastXPerSource);
-    //         Plotly.redraw(this.plot.nativeElement, this.chartData);
-    //     });
-}
+    updateLive() {
+        return this.refresh();
+    }
+
+    autorange() {
+        const xaxis = this.plot.nativeElement['layout']['xaxis'];
+        const yaxis = this.plot.nativeElement['layout']['yaxis'];
+        xaxis['autorange'] = true;
+        yaxis['autorange'] = true;
+        Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis, yaxis: yaxis});
+    }
 
 }
