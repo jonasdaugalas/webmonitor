@@ -13,8 +13,9 @@ interface FieldParameter {
 
 interface SourceParameter {
     index: string;
-    timestampField?: string;
     fields: Array<FieldParameter>;
+    documentType?: string;
+    timestampField?: string;
     terms?: { string: any };
 }
 
@@ -84,7 +85,8 @@ export class DataService {
 
     protected makeSingleSourceQuery(source: SourceParameter) {
         const header = {
-            index: source.index
+            index: source.index,
+            type: source.documentType
         };
         const body = {
             "_source": this.parseQueryFields(source),

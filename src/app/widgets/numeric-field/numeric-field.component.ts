@@ -62,7 +62,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
-        this.refresh();
+        if (!this.config['wrapper']['started']) {
+            this.refresh();
+        }
     }
 
     configureLayout(widget) {
