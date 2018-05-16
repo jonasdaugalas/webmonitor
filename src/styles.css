@@ -23,3 +23,7 @@
 div.plotly-notifier {
     visibility: hidden;
 }
+
+.js-plotly-plot .plotly .modebar {
+    z-index: 2 !important;
+}
