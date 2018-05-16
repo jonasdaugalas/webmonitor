@@ -46,4 +46,12 @@ export class DatabaseService {
     multiSearch(body, db=this.defaultDB) {
         return this.queryNDJson('_msearch', body, db);
     }
+
+    stringifyToNDJSON(values) {
+        let result = '';
+        values.forEach(v => {
+            result += JSON.stringify(v) + '\n';
+        });
+        return result;
+    }
 }
