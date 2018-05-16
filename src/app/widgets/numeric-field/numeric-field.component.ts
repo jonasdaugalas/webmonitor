@@ -46,6 +46,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
             refreshEnabled: true
         }, this.config['wrapper'] || {});
         const wi = this.config['widget'] = this.config['widget'] || {};
+        wi['refreshSize'] = wi['refreshSize'] || 100;
         if (!this.db.parseDatabase(wi['database'])) {
             wi['database'] = 'default';
         }
@@ -89,8 +90,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
     }
 
-    refresh() {
-        const obs = this.dataService.queryNewest(this.queryParams, 40)
+    refresh(size?) {
+        size = size || this.config['widget']['refreshSize'];
+        const obs = this.dataService.queryNewest(this.queryParams, size)
             .map(this.setData.bind(this))
             .share();
         obs.subscribe();
@@ -106,8 +108,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
                 const newSeries = {
                     x: newData[i].map(hit => hit[s.timestampField]),
                     y: newData[i].map(hit => hit[f.name]),
-                    name: f.seriesName,
-                    type: 'scatter'
+                    name: f.seriesName || f.name,
+                    type: 'scatter',
+                    line: { width: 1}
                 };
                 seriesOfCurrentSource.push(newSeries);
                 this.chartData.push(newSeries);
