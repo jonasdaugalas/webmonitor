@@ -93,3 +93,11 @@ export function makeDefaultReflowFunction(element) {
 export function subscribeReflow(eventBus, reflow) {
     return eventBus.getEvents(0, 'global_reflow').subscribe(reflow);
 }
+
+export function setAutorange(layout) {
+    const xaxis = layout['xaxis'] = (layout['xaxis'] || {});
+    const yaxis = layout['yaxis'] = (layout['yaxis'] || {});
+    xaxis['autorange'] = true;
+    yaxis['autorange'] = true;
+    return layout;
+}
