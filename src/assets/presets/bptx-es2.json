@@ -1,11 +1,11 @@
 {
-    "timers": [19],
+    "timers": [29],
     "widgets": [{
         "type": "numeric-field",
         "config": {
             "container": {
                 "width": 33.33,
-                "height": 400
+                "height": 320
             },
             "wrapper": {
                 "title": "BPTX average phase",
@@ -14,12 +14,11 @@
             },
             "widget": {
                 "legend": "left",
-                "yAxisTitle": "Phase (degrees)",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "documentType": "bptxprocessorMon",
                     "index": "shelflist",
+                    "documentType": "bptxprocessorMon",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_phase_b1",
@@ -39,7 +38,7 @@
         "config": {
             "container": {
                 "width": 33.33,
-                "height": 400
+                "height": 320
             },
             "wrapper": {
                 "title": "BPTX average length",
@@ -51,8 +50,8 @@
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "documentType": "bptxprocessorMon",
                     "index": "shelflist",
+                    "documentType": "bptxprocessorMon",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_length_b1",
@@ -72,7 +71,7 @@
         "config": {
             "container": {
                 "width": 33.33,
-                "height": 400
+                "height": 320
             },
             "wrapper": {
                 "title": "BPTX average intensity",
@@ -84,8 +83,8 @@
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "sources": [{
-                    "documentType": "bptxprocessorMon",
                     "index": "shelflist",
+                    "documentType": "bptxprocessorMon",
                     "timestampField": "timestamp",
                     "fields": [{
                         "name": "avg_intensity_b1",
@@ -101,25 +100,95 @@
             }
         }
     }, {
+        "type": "numeric-field",
+        "config": {
+
+            "container": {
+                "width": 33.33,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BRIL summary: BPTX number of bunches",
+                "initialTimer": 0,
+                "started": true
+            },
+
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "yAxisTitle": "Coincidences",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "B1_bunches"},
+                        {"name": "B2_bunches"},
+                        {"name": "B1orB2"},
+                        {"name": "B1andB2"},
+                        {"name": "B1notB2"},
+                        {"name": "B2notB1"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 33.33,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BRIL summary: BPTX phase",
+                "initialTimer": 0,
+                "started": true
+            },
+
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "yAxisTitle": "Phase",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "bptx_phase"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
         "type": "array-snapshot",
         "config": {
             "container": {
                 "width": 33.33,
-                "height": 400
+                "height": 320
             },
             "wrapper": {
-                "title": "BPTX per BX phase",
+                "title": "BPTX phases",
                 "initialTimer": 0,
                 "started": true
             },
             "widget": {
                 "chartType": "scattergl",
                 "database": "daq_ES2",
-                "documentType": "bptxprocessorMon",
                 "index": "shelflist",
+                "documentType": "bptxprocessorMon",
                 "timestampField": "timestamp",
+                "legend": "left",
                 "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase offset (ps)",
+                "shelflist": "Phase offset (ps)",
+                "documentType": "bptxprocessorMon",
                 "fields": [{
                     "name": "phase_b1",
                     "seriesName": "Phase B1"
@@ -127,6 +196,168 @@
                     "name": "phase_b2",
                     "seriesName": "Phase B2"
                 }]
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX phase B1",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "phase_b1",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX phase B2",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "phase_b2",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX intensity B1",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "intensity_b1",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX intensity B2",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "intensity_b2",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX length B1",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "length_b1",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX length B2",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "bptxprocessorMon",
+                "timestampField": "timestamp",
+                "field": "length_b2",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "shelflist": {
+                    "documentType": "bptxprocessorMon",
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
             }
         }
     }]

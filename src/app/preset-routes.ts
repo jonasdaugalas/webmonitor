@@ -7,17 +7,11 @@ export class PresetRoute {
 }
 
 export const ROUTES: Array<PresetRoute> = [{
-    path: '/summary',
-    config_url: 'assets/presets/summary.json'
-}, {
-    path: '/lumi',
-    config_url: 'assets/presets/lumi.json'
-}, {
     title: 'BPTX',
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'
 }, {
-    title: 'BPTX -ES6-',
+    title: 'BPTX -Elasticearch 6 test-',
     path: '/bptx-new',
     config_url: 'assets/presets/bptx.json'
 }, {
@@ -25,7 +19,6 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/plt_offline',
     config_url: 'assets/presets/plt_offline.json'
 }, {
-    title: '-test-es2-es6-',
     path: '/test',
     config_url: 'assets/presets/test.json'
 }];

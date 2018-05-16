@@ -40,15 +40,9 @@
             },
             "wrapper": {
                 "initialTimer": 0,
-                "started": true
+                "started": false
             },
             "widget": {
-                "database": "daq_ES6",
-                "index": "bril-bptxprocessormon",
-                "timestampField": "timestamp",
-                "field": "intensity_b1",
-                "liveWindow": 3600000,
-                "refreshSize": 100
             }
         }
     }, {
