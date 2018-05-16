@@ -148,7 +148,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
                         this.dropPointsOutsideLiveWindow(series);
                     });
                 });
-                this.setXZoomToLiveWindow(lastXPerSource);
+                this.setXZoomToLiveWindow();
                 Plotly.redraw(this.plot.nativeElement, this.chartData);
             });
     }

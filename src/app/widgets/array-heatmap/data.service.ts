@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export const MAX_QUERY_SIZE = 2000;
@@ -27,7 +28,9 @@ export class DataService {
         query[1]['size'] = size
         return this.db.multiSearch(
             this.db.stringifyToNDJSON(query), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(
+                map(this.extractResponseFields.bind(this))
+            ) as Observable<Array<any>>;
     }
 
     queryRange(params: Parameters, min, max) {
@@ -41,9 +44,27 @@ export class DataService {
         query[1]['query']['bool']['filter'].push({"range": range});
         return this.db.multiSearch(
             this.db.stringifyToNDJSON(query), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(
+                map(this.extractResponseFields.bind(this))
+            ) as Observable<Array<any>>;
     }
 
+    queryNewestSince(params: Parameters, since, includeEqual=true) {
+        let query = this.makeQueryTemplate(params);
+        query[1]['size'] = MAX_QUERY_SIZE_FOR_NEWEST;
+        const range = {};
+        if (includeEqual) {
+            range[params.timestampField] = {"gte": since}
+        } else {
+            range[params.timestampField] = {"gt": since}
+        }
+        query[1]['query']['bool']['filter'].push({"range": range});
+        return this.db.multiSearch(
+            this.db.stringifyToNDJSON(query), params.database)
+            .pipe(
+                map(this.extractResponseFields.bind(this))
+            ) as Observable<Array<any>>;
+    }
 
     protected makeQueryTemplate(params: Parameters) {
         const header = {
@@ -74,7 +95,7 @@ export class DataService {
         return [params.timestampField || 'timestamp', params.field];
     }
 
-    protected extractResponseFields(response) {
+    protected extractResponseFields(response): Array<any> {
         return response['responses'][0]['hits']['hits'].reverse()
             .map(hit => hit['_source']);
     }

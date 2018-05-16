@@ -2,40 +2,13 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { map, share, tap } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
 declare var Plotly: any;
-
-
-function getChartSeriesTemplate() {
-    return {
-        type: 'heatmap',
-        z: [],
-        zauto: false,
-        x: [],
-        y: undefined,
-        xtype: "array",
-        hoverinfo: "x+y+z+text",
-        colorbar: {
-            // title: "",
-            titleside: "right",
-            x: 1,
-            xpad: 3,
-            ypad: 3,
-            tickangle: -90
-        },
-        colorscale: [
-            [0, 'rgb(0,0,255)'],
-            [0.25, 'rgb(0,255,255)'],
-            [0.5, 'rgb(0,255,0)'],
-            [0.75, 'rgb(255,255,0)'],
-            [1, 'rgb(255,0,0)']
-        ]
-    };
-}
 
 
 @Component({
@@ -75,6 +48,8 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
             refreshEnabled: true
         }, this.config['wrapper'] || {});
         const wi = this.config['widget'] = this.config['widget'] || {};
+        wi['liveWindow'] = wi['liveWindow'] || 600000;
+        wi['refreshSize'] = wi['refreshSize'] || 100;
         if (!this.db.parseDatabase(wi['database'])) {
             wi['database'] = 'default';
         }
@@ -118,13 +93,16 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     onStartEvent() {
-        // this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
+        this.updateLive();
     }
 
-    refresh() {
-        const obs = this.dataService.queryNewest(this.queryParams, 200)
-            .map(this.setData.bind(this))
-            .share();
+    refresh(size?) {
+        size = size || this.config['widget']['refreshSize'];
+        const obs = this.dataService.queryNewest(this.queryParams, size)
+            .pipe(
+                map(this.setData.bind(this)),
+                share()
+            );
         obs.subscribe();
         return obs;
     }
@@ -136,7 +114,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
             Plotly.redraw(this.plot.nativeElement, this.chartData);
             return;
         }
-        const newSeries = getChartSeriesTemplate();
+        const newSeries = this.getChartSeriesTemplate();
         newSeries.x = newData.map(hit => hit[this.queryParams.timestampField]);
         newSeries.z = [];
         const nRows = newData[0][this.queryParams.field].length;
@@ -152,12 +130,67 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         this.widgetWrapper.stop();
         const obs = this.dataService.queryRange(
             this.queryParams, range['strFrom'], range['strTo'])
-            .map(this.setData.bind(this))
-            .share();
+            .pipe(
+                map(this.setData.bind(this)),
+                share()
+            );
         obs.subscribe(() => {
             this.setXZoom(range['strFrom'], range['strTo']);
         });
         return obs;
+    }
+
+    updateLive() {
+        if (this.chartData.length < 1 || this.chartData[0].x.length < 1) {
+            this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
+            return;
+        } else {
+            this.dropPointsOutsideLiveWindow();
+            this.setXZoomToLiveWindow();
+        }
+        const x = this.chartData[0].x;
+        const lastX = x[x.length -1];
+        this.dataService.queryNewestSince(this.queryParams, lastX, false)
+            .pipe(
+                tap(newData => {
+                    if (newData.length < 1) {
+                        return;
+                    }
+                    this.chartData[0].x = this.chartData[0].x.concat(
+                        newData.map(hit => hit[this.queryParams.timestampField]));
+                    const z = this.chartData[0].z;
+                    const nRows = z.length;
+                    for (let r = 0; r < nRows; ++r) {
+                        z[r] = z[r].concat(newData.map(hit => hit[this.queryParams.field][r]));
+                    }
+                    this.dropPointsOutsideLiveWindow();
+                    this.setXZoomToLiveWindow();
+                    Plotly.redraw(this.plot.nativeElement, this.chartData);
+                }))
+            .subscribe(() => {
+                this.setXZoomToLiveWindow();
+                if (this.dropPointsOutsideLiveWindow()) {
+                    Plotly.redraw(this.plot.nativeElement, this.chartData);
+                }
+            });
+    }
+
+    dropPointsOutsideLiveWindow() {
+        const x = this.chartData[0].x;
+        const lastX = new Date(x[x.length -1]);
+        const lastXTime = lastX.getTime();
+        const liveWindow = this.config['widget']['liveWindow'];
+        const z = this.chartData[0].z;
+        const nRows = z.length;
+        let dropped = 0;
+        while(lastXTime - (new Date(x[0])).getTime() > liveWindow) {
+            dropped += 1;
+            x.shift();
+            for (let r = 0; r < nRows; ++r) {
+                z[r].shift();
+            }
+        }
+        return dropped;
     }
 
     setXZoom(min, max) {
@@ -166,63 +199,46 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         Plotly.relayout(this.plot.nativeElement, this.chartLayout);
     }
 
-    // updateLive() {
-    //     if (this.series.length < 1) {
-    //         this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
-    //         return;
-    //     }
-    //     const lastXPerSource = this.getLastXPerSource();
-    //     this.dataService.queryNewestSince(this.queryParams, lastXPerSource)
-    //         .subscribe(resp => {
-    //             this.queryParams.sources.forEach((source, i) => {
-    //                 const hits = resp[i].filter(hit => hit[source.timestampField] !== lastXPerSource[i]);
-    //                 if (hits.length < 1) {
-    //                     return;
-    //                 }
-    //                 source.fields.forEach((field, j) => {
-    //                     const series = this.series[i][j];
-    //                     series.x = series.x.concat(hits.map(hit => hit[source.timestampField]));
-    //                     series.y = series.y.concat(hits.map(hit => hit[field.name]));
-    //                     this.dropPointsOutsideLiveWindow(series);
-    //                 });
-    //             });
-    //             this.setXZoomToLiveWindow(lastXPerSource);
-    //             Plotly.redraw(this.plot.nativeElement, this.chartData);
-    //         });
-    // }
+    setXZoomToLiveWindow() {
+        const x = this.chartData[0].x;
+        const lastX = new Date(x[x.length -1]);
+        const max = lastX.getTime();
+        const min = max - this.config['widget']['liveWindow'];
+        this.setXZoom(
+            (new Date(min)).toISOString(),
+            (new Date(max)).toISOString());
+        Plotly.relayout(this.plot.nativeElement, this.chartLayout);
+    }
 
-    // getLastXPerSource() {
-    //     return this.series.map(s => {
-    //         const x = s[0].x;
-    //         return x[x.length -1];
-    //     })
-    // }
+    getChartSeriesTemplate() {
+        return {
+            type: 'heatmap',
+            z: [],
+            zauto: false,
+            x: [],
+            xgap: 0.2,
+            connectgaps: false,
+            y: undefined,
+            xtype: "array",
+            hoverinfo: "x+y+z+text",
+            colorbar: {
+                title: this.config['widget']['zAxisTitle'],
+                titleside: "right",
+                x: 1,
+                thickness: 14,
+                tickangle: -90
+            },
+            colorscale: [
+                [0, 'rgb(0,0,255)'],
+                [0.25, 'rgb(0,255,255)'],
+                [0.5, 'rgb(0,255,0)'],
+                [0.75, 'rgb(255,255,0)'],
+                [1, 'rgb(255,0,0)']
+            ]
+        };
+    }
 
-    // dropPointsOutsideLiveWindow(series) {
-    //     const lastX = new Date(series.x[series.x.length -1]);
-    //     const liveWindow = this.config['widget']['liveWindow'];
-    //     while(lastX.getTime() - (new Date(series.x[0])).getTime() > liveWindow) {
-    //         series.x.shift();
-    //         series.y.shift();
-    //     }
-    // }
 
-    // setXZoomToLiveWindow(lastPerSource?) {
-    //     if (!lastPerSource) {
-    //         lastPerSource = this.getLastXPerSource();
-    //     }
-    //     const max = Math.max.apply(null, lastPerSource.map(x => (new Date(x)).getTime()));
-    //     if (!Number.isInteger(max)) {
-    //         return;
-    //     }
-    //     const min = max - this.config['widget']['liveWindow'];
-    //     const xaxis = this.plot.nativeElement['layout']['xaxis'];
-    //     const newRange = [
-    //         (new Date(min)).toISOString(),
-    //         (new Date(max)).toISOString()];
-    //     xaxis['range'] = newRange;
-    //     xaxis['autorange'] = false;
-    //     Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis});
-    // }
+
 
 }
