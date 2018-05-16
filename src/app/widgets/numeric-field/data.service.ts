@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 
 export const MAX_QUERY_SIZE = 10000;
 export const MAX_QUERY_SIZE_FOR_NEWEST = 200;

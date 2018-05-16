@@ -9,4 +9,5 @@ export const widgetModuleSelector = {
     'numeric-field': 'app/widgets/numeric-field/numeric-field.module#NumericFieldModule',
     'array-field': 'app/widgets/array-field/array-field.module#ArrayFieldModule',
     'array-snapshot': 'app/widgets/array-snapshot/array-snapshot.module#ArraySnapshotModule',
+    'array-heatmap': 'app/widgets/array-heatmap/array-heatmap.module#ArrayHeatmapModule'
 };

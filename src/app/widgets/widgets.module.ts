@@ -15,6 +15,7 @@ import { provideRoutes } from '@angular/router';
             { path: '^', loadChildren: 'app/widgets/numeric-field/numeric-field.module#NumericFieldModule'},
             { path: '^', loadChildren: 'app/widgets/array-snapshot/array-snapshot.module#ArraySnapshotModule'},
             { path: '^', loadChildren: 'app/widgets/array-field/array-field.module#ArrayFieldModule'},
+            { path: '^', loadChildren: 'app/widgets/array-heatmap/array-heatmap.module#ArrayHeatmapModule'}
         ])
     ]
 })

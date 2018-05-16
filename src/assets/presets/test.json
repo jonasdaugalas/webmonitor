@@ -32,7 +32,7 @@
             }
         }
     }, {
-        "type": "array-snapshot",
+        "type": "array-heatmap",
         "config": {
             "container": {
                 "width": 50,
@@ -40,49 +40,13 @@
             },
             "wrapper": {
                 "initialTimer": 0,
-                "started": true
+                "started": false
             },
             "widget": {
-                "type": "bar",
                 "database": "daq_ES6",
-                "index": "bril-detluminosity",
+                "index": "bril-bptxprocessormon",
                 "timestampField": "timestamp",
-                "fields": [{
-                    "name": "bx",
-                    "seriesName": "Phase B2"
-                }],
-                "terms": {
-                    "detectorname": "bcm1flumi",
-                    "context" : "http://srv-s2d16-15-01.cms:6868"
-                }
-            }
-        }
-    }, {
-        "type": "array-snapshot",
-        "config": {
-            "container": {
-                "width": 50,
-                "height": 400
-            },
-            "wrapper": {
-                "initialTimer": 0,
-                "started": true
-            },
-            "widget": {
-                "chartType": "scattergl",
-                "database": "daq_ES2",
-                "documentType": "bptxprocessorMon",
-                "index": "shelflist",
-                "timestampField": "timestamp",
-                "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase offset (ps)",
-                "fields": [{
-                    "name": "phase_b1",
-                    "seriesName": "Phase B1"
-                }, {
-                    "name": "phase_b2",
-                    "seriesName": "Phase B2"
-                }]
+                "field": "intensity_b1"
             }
         }
     }, {
