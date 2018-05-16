@@ -49,6 +49,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.layoutMode = false;
     }
 
+    @HostListener('window:resize', ['$event']) onWindowResize(event) {
+        this.eventBus.emit(0, {type: 'global_reflow', payload: null});
+    }
+
     constructor(protected timers: TimersService,
                 protected eventBus: EventBusService) {
     }
