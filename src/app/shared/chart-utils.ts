@@ -17,10 +17,10 @@ export const buttonDownloadImage = {
 export function getDefaultLayout() {
     return {
         margin: {
-            b: 40,
+            b: 48,
             l: 60,
-            r: 40,
-            t: 30
+            r: 36,
+            t: 12
         },
         showlegend: true,
         legend: {
