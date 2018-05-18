@@ -32,19 +32,36 @@
             }
         }
     }, {
-        "type": "array-heatmap",
+        "type": "array-snapshot",
         "config": {
             "container": {
-                "width": 50,
-                "height": 400
+                "width": 33.33,
+                "height": 320
             },
             "wrapper": {
+                "title": "BPTX phases",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
+                "chartType": "scattergl",
+                "database": "daq_ES6",
+                "index": "bril-bptxprocessormon",
+                "timestampField": "timestamp",
+                "legend": "left",
+                "xAxisTitle": "Bunch index",
+                "yAxisTitle": "Phase offset (ps)",
+                "fields": [{
+                    "name": "phase_b1",
+                    "seriesName": "Phase B1"
+                }, {
+                    "name": "phase_b2",
+                    "seriesName": "Phase B2"
+                }]
             }
         }
+
+
     }, {
         "type": "event-bus-tester",
         "config": {
