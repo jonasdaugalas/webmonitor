@@ -10,6 +10,25 @@
     <div class="widget-queries"></div>
 
     <div class="widget-content">
+        <clr-alert
+            [clrAlertType]="'alert-danger'"
+            [clrAlertClosable]="false"
+            *ngIf="needWebGLFallback">
+            <div clr-alert-item class="alert-item">
+                <span class="alert-text">
+                    This chart relies on WebGL technology, which is not
+                    supported by this browser. Would you like to try using
+                    fallback methods?
+                </span>
+                <div class="alert-actions">
+                    <button class="btn alert-action"
+                            (click)="tryWebGLFallback()">
+                        Try fallback
+                    </button>
+                </div>
+            </div>
+        </clr-alert>
+
         <div #plot style="height: 100%; width: 100%"></div>
     </div>
 </wm-widget>

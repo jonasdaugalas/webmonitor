@@ -101,3 +101,14 @@ export function setAutorange(layout) {
     yaxis['autorange'] = true;
     return layout;
 }
+
+export function detectWebGLContext() {
+    const canvas = document.createElement("canvas");
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    let detected = false;
+    if (gl && gl instanceof WebGLRenderingContext) {
+        detected = true;
+    }
+    canvas.remove();
+    return detected;
+}

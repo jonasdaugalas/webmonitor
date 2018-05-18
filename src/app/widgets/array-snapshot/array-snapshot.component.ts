@@ -25,6 +25,7 @@ export class ArraySnapshotComponent implements OnInit {
     queryParams;
     series = [];
     info = {};
+    needWebGLFallback = false;
 
     constructor(
         protected eventBus: EventBusService,
@@ -38,13 +39,17 @@ export class ArraySnapshotComponent implements OnInit {
     ngOnInit() {
         const wr = this.config['wrapper'] = Object.assign({
             controlsEnabled: true,
-            // infoEnabled: true,
             optionsEnabled: true,
             queriesEnabled: false,
             startEnabled: true,
             refreshEnabled: true
         }, this.config['wrapper'] || {});
         const wi = this.config['widget'] = this.config['widget'] || {};
+        if (wi['chartType'] && wi['chartType'].toLowerCase() === 'scattergl') {
+            if (!ChartUtils.detectWebGLContext()) {
+                this.needWebGLFallback = true;
+            }
+        }
         console.log(wi);
         this.queryParams = {
             database: wi['database'],
@@ -57,6 +62,9 @@ export class ArraySnapshotComponent implements OnInit {
     }
 
     ngAfterViewInit() {
+        if (this.needWebGLFallback) {
+            return;
+        }
         Plotly.plot(this.plot.nativeElement,
                     this.chartData, this.chartLayout, this.chartConfig);
         this.configureLayout(this.config['widget']);
@@ -93,6 +101,9 @@ export class ArraySnapshotComponent implements OnInit {
     }
 
     refresh() {
+        if (this.needWebGLFallback) {
+            return;
+        }
         const obs = this.dataService.queryNewest(this.queryParams)
             .map(this.setData.bind(this))
             .share();
@@ -101,7 +112,6 @@ export class ArraySnapshotComponent implements OnInit {
     }
 
     setData(newData) {
-        console.log(newData);
         this.chartData.length = 0;
         this.series.length = 0;
         this.queryParams.fields.forEach((f, i) => {
@@ -150,6 +160,16 @@ export class ArraySnapshotComponent implements OnInit {
         const yaxis = this.plot.nativeElement['layout']['yaxis'];
         xaxis['autorange'] = true;
         yaxis['autorange'] = true;
+    }
+
+    tryWebGLFallback() {
+        if (this.needWebGLFallback &&
+            this.config['widget']['chartType'] === 'scattergl') {
+            this.config['widget']['chartType'] = 'scatter';
+            this.needWebGLFallback = false;
+            this.ngAfterViewInit();
+        }
+
     }
 
 }

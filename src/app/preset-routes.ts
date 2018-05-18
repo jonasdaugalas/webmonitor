@@ -11,7 +11,7 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'
 }, {
-    title: 'BPTX -Elasticearch 6 test-',
+    title: 'BPTX -Elasticsearch 6 test-',
     path: '/bptx-new',
     config_url: 'assets/presets/bptx.json'
 }, {

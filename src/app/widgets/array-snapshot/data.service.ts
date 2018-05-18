@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
-import 'rxjs/add/operator/map';
+import { map } from 'rxjs/operators';
 
 
 interface FieldParameter {
@@ -28,9 +28,11 @@ export class DataService {
 
     queryNewest(params: Parameters) {
         let queries = this.makeQuery(params);
-        console.log(this.toNDJSON(queries));
         return this.db.multiSearch(this.toNDJSON(queries), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(
+                map(this.extractResponseFields.bind(this))
+            );
+
     }
 
     protected toNDJSON(values) {
