@@ -2,13 +2,13 @@ export { environment } from 'app/../environments/environment';
 
 export const DATA_SOURCES = {
     daq_ES2: {
-        endpoint: 'http://srv-s2d16-22-01:9200'
+        endpoint: 'http://srv-s2d16-22-01.cms:9200'
     },
     es_analysis: {
-        endpoint: 'http://srv-s2d16-25-01:9200'
+        endpoint: 'http://srv-s2d16-25-01.cms:9200'
     },
     daq_ES6: {
-        endpoint: 'http://cmsos-iaas-bril:9200'
+        endpoint: 'http://cmsos-iaas-bril.cms:9200'
     }
 }
 
