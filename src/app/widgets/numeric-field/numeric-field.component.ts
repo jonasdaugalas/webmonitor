@@ -25,7 +25,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     chartLayout = ChartUtils.getDefaultLayout();
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
+    flatFields = [];
     series = [];
+    initialShowHideSeriesDone = false;
 
     constructor(
         protected db: DatabaseService,
@@ -54,17 +56,24 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
             database: wi['database'],
             sources: wi['sources']
         };
+        wi['sources'].forEach(s => {
+            this.flatFields = this.flatFields.concat(s['fields']);
+        });
     }
 
     ngAfterViewInit() {
         Plotly.plot(this.plot.nativeElement,
                     this.chartData, this.chartLayout, this.chartConfig);
+        this.makeSeries();
         this.configureLayout(this.config['widget']);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
+        this.plot.nativeElement.on('plotly_legendclick', event => {
+            this.onLegendClick(event);
+        });
         if (!this.config['wrapper']['started']) {
-            this.refresh();
+            this.refresh().subscribe();
         }
     }
 
@@ -100,22 +109,12 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     setData(newData) {
-        this.chartData.length = 0;
-        this.series.length = 0;
-        this.queryParams.sources.forEach((s, i) => {
-            const seriesOfCurrentSource = [];
-            s.fields.forEach(f => {
-                const newSeries = {
-                    x: newData[i].map(hit => hit[s.timestampField]),
-                    y: newData[i].map(hit => hit[f.name]),
-                    name: f.seriesName || f.name,
-                    type: 'scatter',
-                    line: { width: 1}
-                };
-                seriesOfCurrentSource.push(newSeries);
-                this.chartData.push(newSeries);
+        this.queryParams.sources.forEach((source, i) => {
+            source.fields.forEach((field, j) => {
+                const series = this.series[i][j];
+                series.x = newData[i].map(hit => hit[source.timestampField]);
+                series.y = newData[i].map(hit => hit[field.name]);
             });
-            this.series.push(seriesOfCurrentSource);
         });
         Plotly.redraw(this.plot.nativeElement, this.chartData);
         this.autorange();
@@ -196,5 +195,30 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         xaxis['autorange'] = true;
         yaxis['autorange'] = true;
         Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis, yaxis: yaxis});
+    }
+
+    makeSeries() {
+        this.chartData.length = 0;
+        this.series.length = 0;
+        this.queryParams.sources.forEach((s, i) => {
+            const seriesOfCurrentSource = [];
+            s.fields.forEach((field, j) => {
+                const newSeries = {
+                    x: [],
+                    y: [],
+                    name: field.seriesName || field.name,
+                    type: 'scatter',
+                    line: { width: 1},
+                    visible: (field['hidden'] ? 'legendonly' : true)
+                };
+                seriesOfCurrentSource.push(newSeries);
+                this.chartData.push(newSeries);
+            });
+            this.series.push(seriesOfCurrentSource);
+        });
+    }
+
+    onLegendClick(event) {
+        this.flatFields[event.expandedIndex]['hidden'] = !this.flatFields[event.expandedIndex]['hidden'];
     }
 }
