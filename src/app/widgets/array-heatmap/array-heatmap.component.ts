@@ -100,6 +100,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         size = size || this.config['widget']['refreshSize'];
         const obs = this.dataService.queryNewest(this.queryParams, size)
             .pipe(
+                map(this.filterZValues.bind(this)),
                 map(this.setData.bind(this)),
                 share()
             );
@@ -108,7 +109,6 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     setData(newData) {
-        console.log(newData);
         this.chartData.length = 0;
         if (!newData) {
             Plotly.redraw(this.plot.nativeElement, this.chartData);
@@ -131,6 +131,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         const obs = this.dataService.queryRange(
             this.queryParams, range['strFrom'], range['strTo'])
             .pipe(
+                map(this.filterZValues.bind(this)),
                 map(this.setData.bind(this)),
                 share()
             );
@@ -152,6 +153,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         const lastX = x[x.length -1];
         this.dataService.queryNewestSince(this.queryParams, lastX, false)
             .pipe(
+                map(this.filterZValues.bind(this)),
                 tap(newData => {
                     if (newData.length < 1) {
                         return;
@@ -238,6 +240,17 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         };
     }
 
+    filterZValues(data) {
+        const threshold = this.config['widget']['filterZThreshold'];
+        if (!Number.isFinite(threshold)) {
+            return data;
+        }
+        data.forEach(hit => {
+            hit[this.queryParams.field] = hit[this.queryParams.field]
+                .map(val => val < threshold ? null : val);
+        });
+        return data;
+    }
 
 
 
