@@ -54,4 +54,49 @@ export class DatabaseService {
         });
         return result;
     }
+
+    transformQueryWithNestedPath(query, nestedPath) {
+        if (!nestedPath) {
+            return query;
+        }
+        console.log('transforming', query);
+        if (query.hasOwnProperty('_source')) {
+            query['_source'] = query['_source'].map(v => nestedPath + '.' + v);
+        }
+        if (query.hasOwnProperty('sort')) {
+            const transformSortLevel = (singleSortLevel) => {
+                const transformed = {};
+                Object.keys(singleSortLevel).forEach(k => {
+                    if (typeof singleSortLevel[k] === 'string') {
+                        singleSortLevel[k] = {
+                            'nested_path': nestedPath,
+                            'order': singleSortLevel[k]
+                        };
+                    } else {
+                        singleSortLevel[k]['nested_path'] = nestedPath;
+                    }
+                    transformed[nestedPath + '.' + k] = singleSortLevel[k];
+                });
+                return transformed;
+            };
+            if (Array.isArray(query['sort'])) {
+                query['sort'] = query['sort'].map(transformSortLevel);
+            } else {
+                query['sort'] = transformSortLevel(query['sort']);
+            }
+        }
+        if (query.hasOwnProperty('query')) {
+            const filters = query['query']['bool']['filter'];
+            const newFilters = filters.map(f => {
+                const filterName = Object.keys(f)[0];
+                const fieldName = Object.keys(f[filterName])[0];
+                const newFilter = {};
+                newFilter[filterName] = {};
+                newFilter[filterName][nestedPath + '.' + fieldName] = f[filterName][fieldName];
+                return newFilter;
+            });
+            query['query']['bool']['filter'] = newFilters;
+        }
+        return query;
+    }
 }
