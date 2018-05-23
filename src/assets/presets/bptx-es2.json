@@ -15,6 +15,7 @@
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
+                "yAxisTitle": "Phase [ps]",
                 "liveWindow": 3600000,
                 "sources": [{
                     "index": "shelflist",
@@ -41,7 +42,8 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BPTX average length",
+                "title": "BPTX average per-bunch length",
+                "yAxisTitle": "Length [ns]",
                 "initialTimer": 0,
                 "started": true
             },
@@ -74,7 +76,8 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BPTX average intensity",
+                "title": "BPTX average per-bunch intensity",
+                "yAxisTitle": "×10^11 protons",
                 "initialTimer": 0,
                 "started": true
             },
@@ -108,7 +111,7 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BRIL summary: BPTX number of bunches",
+                "title": "BPTX number of bunches",
                 "initialTimer": 0,
                 "started": true
             },
@@ -128,8 +131,8 @@
                         {"name": "B2_bunches"},
                         {"name": "B1orB2"},
                         {"name": "B1andB2"},
-                        {"name": "B1notB2"},
-                        {"name": "B2notB1"}],
+                        {"name": "B1notB2", "hidden": true},
+                        {"name": "B2notB1", "hidden": true}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -144,7 +147,7 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BRIL summary: BPTX phase",
+                "title": "BPTX phase (from summary)",
                 "initialTimer": 0,
                 "started": true
             },
@@ -153,7 +156,7 @@
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
-                "yAxisTitle": "Phase",
+                "yAxisTitle": "Phase [ns]",
                 "refreshSize": 900,
                 "sources": [{
                     "index": "shelflist",
@@ -175,7 +178,7 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BPTX phases",
+                "title": "BPTX bunch-by-bunch phases",
                 "initialTimer": 0,
                 "started": true
             },
@@ -185,14 +188,16 @@
                 "index": "shelflist",
                 "documentType": "bptxprocessorMon",
                 "timestampField": "timestamp",
-                "legend": "left",
+                "legend": "right",
                 "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase offset (ps)",
+                "yAxisTitle": "Phase [ns]",
                 "fields": [{
                     "name": "phase_b1",
+                    "mask": "intensity_b1",
                     "seriesName": "Phase B1"
                 }, {
                     "name": "phase_b2",
+                    "mask": "intensity_b2",
                     "seriesName": "Phase B2"
                 }]
             }
@@ -218,6 +223,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "Phase [ns]",
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -244,6 +250,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "Phase [ns]",
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -270,6 +277,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -296,6 +304,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -322,6 +331,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -348,6 +358,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }

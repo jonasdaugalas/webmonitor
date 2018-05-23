@@ -32,6 +32,32 @@
             }
         }
     }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX phase B1",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES6",
+                "index": "bril-bptxprocessormon",
+                "timestampField": "timestamp",
+                "field": "intensity_b1",
+                "liveWindow": 3600000,
+                "refreshSize": 100,
+                "yAxisTitle": "Bunch index",
+                "filterZThreshold": 100,
+                "terms": {
+                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
+                }
+            }
+        }
+    }, {
         "type": "array-snapshot",
         "config": {
             "container": {
@@ -41,27 +67,27 @@
             "wrapper": {
                 "title": "BPTX phases",
                 "initialTimer": 0,
-                "started": true
+                "started": false
             },
             "widget": {
                 "chartType": "scattergl",
                 "database": "daq_ES6",
                 "index": "bril-bptxprocessormon",
                 "timestampField": "timestamp",
-                "legend": "left",
+                "legend": "right",
                 "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase offset (ps)",
+                "yAxisTitle": "Phase [ns]",
                 "fields": [{
                     "name": "phase_b1",
+                    "mask": "intensity_b1",
                     "seriesName": "Phase B1"
                 }, {
                     "name": "phase_b2",
+                    "mask": "intensity_b2",
                     "seriesName": "Phase B2"
                 }]
             }
         }
-
-
     }, {
         "type": "event-bus-tester",
         "config": {
