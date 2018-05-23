@@ -12,6 +12,7 @@ interface Parameters {
     documentType?: string;
     timestampField?: string;
     field: string;
+    nestedPath?: string;
     terms?: { string: any };
 }
 
@@ -21,14 +22,14 @@ export class DataService {
 
     constructor(protected db: DatabaseService) { }
 
-
-
     queryNewest(params: Parameters, size) {
         let query = this.makeQueryTemplate(params);
         query[1]['size'] = size
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
         return this.db.multiSearch(
             this.db.stringifyToNDJSON(query), params.database)
             .pipe(
+                map(resp => [resp, params.nestedPath]),
                 map(this.extractResponseFields.bind(this))
             ) as Observable<Array<any>>;
     }
@@ -42,9 +43,11 @@ export class DataService {
             "lte": max
         }
         query[1]['query']['bool']['filter'].push({"range": range});
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
         return this.db.multiSearch(
             this.db.stringifyToNDJSON(query), params.database)
             .pipe(
+                map(resp => [resp, params.nestedPath]),
                 map(this.extractResponseFields.bind(this))
             ) as Observable<Array<any>>;
     }
@@ -59,9 +62,11 @@ export class DataService {
             range[params.timestampField] = {"gt": since}
         }
         query[1]['query']['bool']['filter'].push({"range": range});
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
         return this.db.multiSearch(
             this.db.stringifyToNDJSON(query), params.database)
             .pipe(
+                map(resp => [resp, params.nestedPath]),
                 map(this.extractResponseFields.bind(this))
             ) as Observable<Array<any>>;
     }
@@ -95,9 +100,15 @@ export class DataService {
         return [params.timestampField || 'timestamp', params.field];
     }
 
-    protected extractResponseFields(response): Array<any> {
-        return response['responses'][0]['hits']['hits'].reverse()
+    protected extractResponseFields(responseWithNestedPath): Array<any> {
+        let response = responseWithNestedPath[0];
+        const nestedPath = responseWithNestedPath[1];
+        response = response['responses'][0]['hits']['hits'].reverse()
             .map(hit => hit['_source']);
+        if (nestedPath) {
+            response = response.map(hit => hit[nestedPath]);
+        }
+        return response;
     }
 
 }
