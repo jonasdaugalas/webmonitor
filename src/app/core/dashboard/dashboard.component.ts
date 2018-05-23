@@ -3,6 +3,8 @@ import {
 } from '@angular/core';
 import { TimersService } from '../timers.service';
 import { EventBusService } from 'app/core/event-bus.service';
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 
 @Component({
@@ -49,9 +51,13 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.layoutMode = false;
     }
 
-    @HostListener('window:resize', ['$event']) onWindowResize(event) {
-        this.eventBus.emit(0, {type: 'global_reflow', payload: null});
-    }
+    $onWindowResize = fromEvent(window, 'resize')
+        .pipe(
+            debounceTime(1000))
+        .subscribe(() => {
+            this.eventBus.emit(0, {type: 'global_reflow', payload: null});
+        });
+
 
     constructor(protected timers: TimersService,
                 protected eventBus: EventBusService) {
@@ -86,6 +92,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {}
 
     ngOnDestroy() {
+        this.$onWindowResize.unsubscribe();
     }
 
     fixContainerDimensions(widget) {
