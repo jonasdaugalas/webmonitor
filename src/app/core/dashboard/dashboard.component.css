@@ -12,6 +12,7 @@
 .dashboard-widget-container {
     display: flex;
     flex-wrap: wrap;
+    padding-bottom: 50vh;
 }
 
 .layout-mode-curtain {
