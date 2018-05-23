@@ -147,7 +147,7 @@
                 "height": 320
             },
             "wrapper": {
-                "title": "BPTX phase (from summary)",
+                "title": "BPTX deltaT (from summary)",
                 "initialTimer": 0,
                 "started": true
             },
@@ -156,14 +156,13 @@
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
-                "yAxisTitle": "Phase [ns]",
                 "refreshSize": 900,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
                     "timestampField": "timestamp",
                     "fields": [
-                        {"name": "bptx_phase"}],
+                        {"name": "bptx_deltaT"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
