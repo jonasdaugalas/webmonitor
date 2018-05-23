@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
+import { DataService } from '../array-heatmap/data.service';
 
 // import * as Plotly from 'plotly.js';
 declare var Plotly: any;
@@ -16,7 +17,6 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
 
     @Input('config') config;
     @ViewChild('plot') protected plot: ElementRef;
-    fields: Array<string>;
     chartData = [];
     chartLayout = Object.assign(ChartUtils.getDefaultLayout(), {
         'xaxis': {
@@ -26,8 +26,10 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
         }
     });
     chartConfig = ChartUtils.getDefaultConfig();
+    queryParams;
 
-    constructor( protected db: DatabaseService ) {}
+    constructor( protected db: DatabaseService,
+                 protected dataService: DataService) {}
 
     ngOnInit() {
         const wr = this.config['wrapper'] = this.config['wrapper'] || {};
@@ -38,12 +40,15 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
         wr['queriesEnabled'] = false;
         wr['startEnabled'] = false;
         wr['refreshEnabled'] = true;
-        this.fields = ['timestamp']
-            .concat(wi['tooltipFields'])
-            .concat([wi['field']])
-            .filter(Boolean);
-        if (wi['nestedPath']) {
-            this.fields = this.fields.map(val => wi['nestedPath'] + '.' + val);
+        this.queryParams = {
+            database: wi['database'],
+            index: wi['index'],
+            documentType: wi['documentType'],
+            timestampField: wi['timestampField'] || 'timestamp',
+            field: wi['field'],
+            tooltipFields: wi['tooltipFields'],
+            nestedPath: wi['nestedPath'],
+            terms: wi['terms']
         }
     }
 
@@ -63,21 +68,11 @@ export class ArrayFieldComponent implements OnInit, AfterViewInit {
     reflow() {}
 
     refresh() {
-        const wi = this.config['widget'];
-        const url = wi['index'] + '/_search';
-        const body = {
-            'size': 1000,
-            '_source': this.fields
-        };
-        this.db.query(url, body).subscribe(resp => {
-            if (wi['nestedPath']) {
-                this.setChartData(resp['hits']['hits'].map(hit => hit['_source'][wi['nestedPath']]));
-            } else {
-                this.setChartData(resp['hits']['hits']);
-            }
-        }, err => {
-            this.setChartData(null);
-        });
+        this.dataService.queryNewest(this.queryParams, 1000)
+            .subscribe(
+                this.setChartData.bind(this),
+                err => {this.setChartData(null);}
+            );
     }
 
     setChartData(hits) {
