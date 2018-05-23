@@ -115,8 +115,12 @@ export class ArraySnapshotComponent implements OnInit {
         this.chartData.length = 0;
         this.series.length = 0;
         this.queryParams.fields.forEach((f, i) => {
+            let y = newData[0][f.name];
+            if (f.mask) {
+                y = this.applyMask(y, newData[0][f.mask]);
+            }
             const newSeries = {
-                y: newData[0][f.name],
+                y: y,
                 name: f.seriesName,
                 type: this.config['widget']['chartType'] || 'bar',
                 mode: 'markers',
@@ -129,6 +133,10 @@ export class ArraySnapshotComponent implements OnInit {
         this.setAutorange();
         Plotly.redraw(this.plot.nativeElement, this.chartData, this.chartLayout);
         this.updateInfo(newData);
+    }
+
+    applyMask(data, mask) {
+        return data.map((v, i) => mask[i] ? v : null);
     }
 
     updateInfo(newData) {

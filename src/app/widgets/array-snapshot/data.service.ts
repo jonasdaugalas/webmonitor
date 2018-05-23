@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 interface FieldParameter {
     name: string;
     seriesName?: string;
+    mask?: string;
     color?: string;
 }
 
@@ -73,6 +74,9 @@ export class DataService {
         const fields = [params.timestampField || 'timestamp'];
         params.fields.forEach(f => {
             fields.push(f.name);
+            if (f.mask) {
+                fields.push(f.mask);
+            }
         });
         return fields;
     }
