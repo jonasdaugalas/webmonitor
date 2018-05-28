@@ -1,6 +1,6 @@
 {
     "widgets": [{
-        "type": "array-field",
+        "type": "array-lines",
         "config": {
             "container": {
                 "width": 50,
@@ -9,19 +9,24 @@
             "wrapper": {
                 "title": "Depletion",
                 "controlsEnabled": true,
-                "queriesEnabled": true,
-                "optionsEnabled": true
+                "queriesEnabled": false,
+                "optionsEnabled": false,
+                "startEnabled": false
             },
             "widget": {
+                "database": "daq_ES2",
                 "index": "data-plttest",
                 "nestedPath": "data",
                 "field": "depletion",
+                "legend": "outside-right",
+                "timestampUNIX": true,
+                "refreshSize": 1000,
                 "tooltipFields": ["fill"],
                 "series": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
             }
         }
     }, {
-        "type": "array-field",
+        "type": "array-lines",
         "config": {
             "container": {
                 "width": 50,
@@ -30,13 +35,18 @@
             "wrapper": {
                 "title": "Cluster size",
                 "controlsEnabled": true,
-                "queriesEnabled": true,
-                "optionsEnabled": true
+                "queriesEnabled": false,
+                "optionsEnabled": false,
+                "startEnabled": false
             },
             "widget": {
+                "database": "daq_ES2",
                 "index": "data-plttest",
                 "nestedPath": "data",
                 "field": "cluster_size",
+                "legend": "outside-right",
+                "timestampUNIX": true,
+                "refreshSize": 1000,
                 "tooltipFields": ["fill"],
                 "series": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
             }
