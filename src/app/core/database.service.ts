@@ -59,7 +59,6 @@ export class DatabaseService {
         if (!nestedPath) {
             return query;
         }
-        console.log('transforming', query);
         if (query.hasOwnProperty('_source')) {
             query['_source'] = query['_source'].map(v => nestedPath + '.' + v);
         }

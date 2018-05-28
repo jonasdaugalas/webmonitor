@@ -36,7 +36,7 @@ export function getDefaultLayout() {
 export function getLegendConfig(preset) {
     const common = {
         orientation: 'v',
-        bgcolor: '#EAFAFF90',
+        bgcolor: '#EAFAFFC0',
         bordercolor: 'whitesmoke',
         borderwidth: 1
     }
