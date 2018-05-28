@@ -190,11 +190,8 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     autorange() {
-        const xaxis = Object.assign({}, this.plot.nativeElement['layout']['xaxis']);
-        const yaxis = Object.assign({}, this.plot.nativeElement['layout']['yaxis']);
-        xaxis['autorange'] = true;
-        yaxis['autorange'] = true;
-        Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis, yaxis: yaxis});
+        const mod = ChartUtils.setAutorange(this.plot.nativeElement['layout']);
+        Plotly.relayout(this.plot.nativeElement, mod);
     }
 
     makeSeries() {
