@@ -7,7 +7,7 @@ export const widgetModuleSelector = {
     'fill-run-ls-query': 'app/widgets/fill-run-ls-query-widget/fill-run-ls-query-widget.module#FillRunLsQueryWidgetModule',
     'event-bus-tester': 'app/widgets/event-bus-test-widget/event-bus-test-widget.module#EventBusTestWidgetModule',
     'numeric-field': 'app/widgets/numeric-field/numeric-field.module#NumericFieldModule',
-    'array-field': 'app/widgets/array-field/array-field.module#ArrayFieldModule',
     'array-snapshot': 'app/widgets/array-snapshot/array-snapshot.module#ArraySnapshotModule',
-    'array-heatmap': 'app/widgets/array-heatmap/array-heatmap.module#ArrayHeatmapModule'
+    'array-lines': 'app/widgets/array-field/array-lines.module#ArrayLinesModule',
+    'array-heatmap': 'app/widgets/array-field/array-heatmap.module#ArrayHeatmapModule'
 };
