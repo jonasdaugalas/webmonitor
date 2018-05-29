@@ -99,7 +99,15 @@ export function setAutorange(layout) {
     const yaxis = layout['yaxis'] = (layout['yaxis'] || {});
     xaxis['autorange'] = true;
     yaxis['autorange'] = true;
-    return layout;
+    return {xaxis: xaxis, yaxis: yaxis};
+}
+
+export function setXRange(layout, min, max) {
+    const xaxis = layout['xaxis'] = (layout['xaxis'] || {});
+    const newRange = [min, max];
+    xaxis['range'] = newRange;
+    xaxis['autorange'] = false;
+    return {xaxis: xaxis};
 }
 
 export function detectWebGLContext() {
@@ -111,4 +119,12 @@ export function detectWebGLContext() {
     }
     canvas.remove();
     return detected;
+}
+
+export function parseUNIXTimestamp(ts) {
+    return new Date(ts*1000);
+}
+
+export function parseStringTimestamp(ts) {
+    return new Date(ts);
 }
