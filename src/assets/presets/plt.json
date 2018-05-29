@@ -1,17 +1,65 @@
 {
+    "timers": [12],
     "widgets": [{
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 33.33,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "PLT Analog Current",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+
+
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "yAxisTitle": "Phase [ps]",
+                "liveWindow": 7200000,
+                "refreshSize": 1000,
+                "sources": [{
+                    "index": "shelflist",
+                    "timestampField": "timestamp",
+                    "documentType": "pltcurrents",
+                    "fields": [{
+                        "name": "PLT_HmF",
+                        "seriesName": "mZfar"
+                    }, {
+                        "name": "PLT_HmN",
+                        "seriesName": "mZnear"
+                    }, {
+                        "name": "PLT_HpF",
+                        "seriesName": "pZfar"
+                    }, {
+                        "name": "PLT_HpN",
+                        "seriesName": "pZnear"
+                    }],
+                    "terms": {
+                        "flash_key" : "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
         "type": "array-lines",
         "config": {
             "container": {
-                "width": 50,
-                "height": 500
+                "width": 33.33,
+                "height": 400
             },
             "wrapper": {
                 "title": "PLT Coincidences M",
+                "started": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
-                "optionsEnabled": true,
-                "startEnabled": true
+                "startEnabled": true,
+                "initialTimer": 0
             },
             "widget": {
                 "database": "daq_ES2",
@@ -19,7 +67,8 @@
                 "documentType": "pltprocessorMon",
                 "field": "tot_hit_pertelescope",
                 "legend": "left",
-                "refreshSize": 100,
+                "liveWindow": 7200000,
+                "refreshSize": 1000,
                 "series": [0, 1, 3, 4, 6, 7, 9, 10],
                 "legendNames": ["Ch1", "Ch2", "Ch4", "Ch5", "Ch7", "Ch8", "Ch10", "Ch11"],
                 "terms": {
@@ -32,15 +81,16 @@
         "type": "array-lines",
         "config": {
             "container": {
-                "width": 50,
-                "height": 500
+                "width": 33.33,
+                "height": 400
             },
             "wrapper": {
                 "title": "PLT Coincidences P",
                 "controlsEnabled": true,
                 "queriesEnabled": true,
-                "optionsEnabled": true,
-                "startEnabled": true
+                "startEnabled": true,
+                "started": true,
+                "initialTimer": 0
             },
             "widget": {
                 "database": "daq_ES2",
@@ -48,7 +98,8 @@
                 "documentType": "pltprocessorMon",
                 "field": "tot_hit_pertelescope",
                 "legend": "left",
-                "refreshSize": 100,
+                "liveWindow": 7200000,
+                "refreshSize": 1000,
                 "series": [12, 13, 15, 16, 18, 19, 21, 22],
                 "legendNames": ["Ch13", "Ch14", "Ch16", "Ch17", "Ch19", "Ch20", "Ch22", "Ch23"],
                 "terms": {

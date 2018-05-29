@@ -4,14 +4,11 @@ import {
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { DataService } from './data.service';
+import { WidgetComponent } from 'app/shared/widget/widget.component';
+import { map, tap, share } from 'rxjs/operators';
 
 // import * as Plotly from 'plotly.js';
 declare var Plotly: any;
-
-function parseUNIXTimestamp(t) {
-    return new Date(t*1000).toISOString();
-}
-
 
 @Component({
     selector: 'wm-widget-array-lines',
@@ -22,6 +19,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
 
     @Input('config') config;
     @ViewChild('plot') protected plot: ElementRef;
+    @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
     chartData = [];
     chartLayout = Object.assign(ChartUtils.getDefaultLayout(), {
         'xaxis': {
@@ -32,7 +30,10 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     });
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
-    parseTimestamp = (timestamp) => timestamp;
+    parseToDate = ChartUtils.parseStringTimestamp;
+    parseToChartTimestamp = (ts) => ts;
+    parseToMilliseconds = (ts) => this.parseToDate(ts).getTime();
+    reflow = () => undefined;
 
     constructor( protected db: DatabaseService,
                  protected dataService: DataService) {}
@@ -40,11 +41,11 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         const wr = this.config['wrapper'] = this.config['wrapper'] || {};
         const wi = this.config['widget'] = this.config['widget'] || {};
-        this.chartLayout['legend'] = ChartUtils.getLegendConfig(wi['legend']);
         wi['series'] = wi['series'] || [];
-        if (wi['timestampUNIX']) {
-            this.parseTimestamp = parseUNIXTimestamp;
+        if (wr['startEnabled']) {
+            wi['liveWindow'] = wi['liveWindow'] || 600000;
         }
+        this.chartLayout['legend'] = ChartUtils.getLegendConfig(wi['legend']);
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],
@@ -55,11 +56,14 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             nestedPath: wi['nestedPath'],
             terms: wi['terms']
         }
+        if (wi['timestampUNIX']) {
+            this.parseToDate = ChartUtils.parseUNIXTimestamp;
+            this.parseToChartTimestamp = (ts) => this.parseToDate(ts).toISOString();
+        }
         this.makeSeries();
     }
 
     ngAfterViewInit() {
-        console.log(this.plot);
         Plotly.plot(
             this.plot.nativeElement,
             this.chartData,
@@ -67,29 +71,78 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             this.chartConfig);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.reflow();
+        if (!this.config['wrapper']['started']) {
+            this.refresh();
+        }
+    }
+
+    onRefreshEvent() {
         this.refresh();
     }
 
-    // reflow reassigned in ngAfterViewInit
-    reflow() {}
+    onStartEvent() {
+        this.updateLive();
+    }
+
 
     refresh(size?) {
         size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
-        this.dataService.queryNewest(this.queryParams, size)
-            .subscribe(
-                this.setChartData.bind(this),
-                err => {this.setChartData(null);}
-            );
+        const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
+            tap(this.setChartData.bind(this)),
+            share()
+        );
+        obs.subscribe(
+            () => undefined,
+            err => {this.setChartData(null);}
+        );
+        return obs;
     }
 
     setChartData(hits) {
         const wi = this.config['widget'];
         wi['series'].forEach((s, i) => {
             this.chartData[i].y = hits.map(hit => hit[wi['field']][s]);
-            this.chartData[i].x = hits.map(hit => this.parseTimestamp(hit[this.queryParams.timestampField]));
+            this.chartData[i].x = hits.map(hit => this.parseToChartTimestamp(hit[this.queryParams.timestampField]));
             this.chartData[i].text = hits.map(this.makeTooltipText.bind(this));
         });
+        ChartUtils.setAutorange(this.chartLayout);
         Plotly.redraw(this.plot.nativeElement);
+    }
+
+    queryRange(range) {
+        this.widgetWrapper.stop();
+        const obs = this.dataService.queryRange(
+            this.queryParams, range['strFrom'], range['strTo']).pipe(
+                map(this.setChartData.bind(this)),
+                share()
+            );
+        obs.subscribe();
+        return obs;
+    }
+
+    updateLive() {
+        if (this.chartData.length < 1 || this.chartData[0].x.length < 1) {
+            this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
+            return;
+        }
+        const x = this.chartData[0].x;
+        const lastX = x[x.length - 1];
+        this.dataService.queryNewestSince(this.queryParams, lastX)
+            .subscribe(hits => {
+                const wi = this.config['widget'];
+                wi['series'].forEach((s, i) => {
+                    const trace = this.chartData[i];
+                    trace.y = trace.y.concat(
+                        hits.map(hit => hit[wi['field']][s]));
+                    trace.x = trace.x.concat(
+                        hits.map(hit => this.parseToChartTimestamp(hit[this.queryParams.timestampField])));
+                    trace.text = trace.text.concat(
+                        hits.map(this.makeTooltipText.bind(this)));
+                    this.dropPointsOutsideLiveWindow(trace);
+                });
+                this.setXZoomToLiveWindow();
+                Plotly.redraw(this.plot.nativeElement, this.chartData);
+            });
     }
 
     makeTooltipText(hit) {
@@ -103,6 +156,31 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
         return lines.join('\n');
     }
 
+
+    dropPointsOutsideLiveWindow(trace) {
+        const lastX = this.parseToMilliseconds(trace.x[trace.x.length -1]);
+        const liveWindow = this.config['widget']['liveWindow'];
+        while(lastX - this.parseToMilliseconds(trace.x[0]) > liveWindow) {
+            trace.x.shift();
+            trace.y.shift();
+            trace.text.shift();
+        }
+    }
+
+    setXZoomToLiveWindow() {
+        if (this.chartData.length < 1) {
+            return;
+        }
+        const trace = this.chartData[0];
+        const max = this.parseToMilliseconds(trace.x[trace.x.length -1]);
+        const min = max - this.config['widget']['liveWindow'];
+        const mod = ChartUtils.setXRange(
+            this.plot.nativeElement['layout'],
+            (new Date(min)).toISOString(),
+            (new Date(max)).toISOString());
+        Plotly.relayout(this.plot.nativeElement, mod);
+    }
+
     makeSeries() {
         this.chartData.length = 0;
         const wi = this.config['widget'];
@@ -111,6 +189,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             const newSeries = {
                 x: [],
                 y: [],
+                text: [],
                 name: names[i] || wi['field'] + '.' + s,
                 type: 'scatter',
                 line: { width: 1},

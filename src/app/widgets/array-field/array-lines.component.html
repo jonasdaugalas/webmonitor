@@ -1,10 +1,10 @@
 <wm-widget [config]="config.wrapper"
-           (refresh)="refresh()">
+           (refresh)="onRefreshEvent()"
+           (start)="onStartEvent()"
+           (timer)="updateLive()">
     <div class="widget-options">
-        options
     </div>
     <div class="widget-queries">
-        queries
     </div>
     <div class="widget-content">
         <div #plot style="height: 100%; width: 100%"></div>
