@@ -1,9 +1,9 @@
 import {
     Component, OnInit, Input, ViewChild, ViewContainerRef,
-    SystemJsNgModuleLoader, NgModuleFactory
+    SystemJsNgModuleLoader, NgModuleFactory, getModuleFactory
 } from '@angular/core';
 
-import { widgetModuleSelector } from 'app/widgets/widget-module-selector';
+import { DynamicWidgetService } from './dynamic-widget.service';
 
 @Component({
     selector: 'wm-dynamic-widget',
@@ -18,31 +18,16 @@ export class DynamicWidgetComponent implements OnInit {
     @Input('type') widgetType: string;
     @Input('config') config: any;
 
-    constructor(protected moduleLoader: SystemJsNgModuleLoader) { }
+    constructor(protected dynamicWidgets: DynamicWidgetService) {}
 
     ngOnInit() {
         this.load();
     }
 
     load() {
-        if (!widgetModuleSelector[this.widgetType]) {
-            console.error('No such widget.', this.widgetType);
-            this.message = 'No such widget: ' + this.widgetType;
-            return;
-        }
-        this.moduleLoader.load(widgetModuleSelector[this.widgetType])
-            .then((moduleFactory: NgModuleFactory<any>) => {
-                const entryComponent = (<any>moduleFactory.moduleType).entry;
-                const ngModuleRef = moduleFactory.create(this.content.parentInjector);
-                let componentFactory = ngModuleRef.componentFactoryResolver.resolveComponentFactory(entryComponent);
-                let componentRef = this.content.createComponent(componentFactory);
-                componentRef.instance['config'] = this.config;
-                componentRef.changeDetectorRef.detectChanges();
-                componentRef.onDestroy(()=> {
-                    componentRef.changeDetectorRef.detach();
-                });
-                this.loaded = true;
-            });
+        this.dynamicWidgets.loadWidget(this.widgetType, this.content, this.config)
+            .then(loaded => this.loaded = loaded,
+                  err => this.message = err);
     }
 
 }
