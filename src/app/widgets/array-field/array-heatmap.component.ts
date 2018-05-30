@@ -165,9 +165,6 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
                     for (let r = 0; r < nRows; ++r) {
                         z[r] = z[r].concat(newData.map(hit => hit[this.queryParams.field][r]));
                     }
-                    this.dropPointsOutsideLiveWindow();
-                    this.setXZoomToLiveWindow();
-                    Plotly.redraw(this.plot.nativeElement, this.chartData);
                 }))
             .subscribe(() => {
                 this.setXZoomToLiveWindow();
