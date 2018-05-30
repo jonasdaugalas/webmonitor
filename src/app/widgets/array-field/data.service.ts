@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { QueryCache } from 'app/shared/query-cache/query-cache';
 
 export const MAX_QUERY_SIZE = 2000;
 export const MAX_QUERY_SIZE_FOR_NEWEST = 200;
@@ -20,18 +21,24 @@ interface Parameters {
 @Injectable()
 export class DataService {
 
-    constructor(protected db: DatabaseService) { }
+    queryCache = new QueryCache(1000);
+
+    constructor(protected db: DatabaseService) {}
+
+    protected _query(queryStr, params) {
+        const queryObs = this.db.multiSearch(queryStr, params.db)
+            .pipe(
+                map(resp => [resp, params.nestedPath]),
+                map(this.extractResponseFields.bind(this))
+            );
+        return this.queryCache.ask(params.database + queryStr, queryObs) as Observable<Array<any>>;
+    }
 
     queryNewest(params: Parameters, size) {
         let query = this.makeQueryTemplate(params);
         query[1]['size'] = size
         this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
-        return this.db.multiSearch(
-            this.db.stringifyToNDJSON(query), params.database)
-            .pipe(
-                map(resp => [resp, params.nestedPath]),
-                map(this.extractResponseFields.bind(this))
-            ) as Observable<Array<any>>;
+        return this._query(this.db.stringifyToNDJSON(query), params);
     }
 
     queryRange(params: Parameters, min, max) {
@@ -44,12 +51,7 @@ export class DataService {
         }
         query[1]['query']['bool']['filter'].push({"range": range});
         this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
-        return this.db.multiSearch(
-            this.db.stringifyToNDJSON(query), params.database)
-            .pipe(
-                map(resp => [resp, params.nestedPath]),
-                map(this.extractResponseFields.bind(this))
-            ) as Observable<Array<any>>;
+        return this._query(this.db.stringifyToNDJSON(query), params);
     }
 
     queryNewestSince(params: Parameters, since, includeEqual=true) {
@@ -63,12 +65,7 @@ export class DataService {
         }
         query[1]['query']['bool']['filter'].push({"range": range});
         this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
-        return this.db.multiSearch(
-            this.db.stringifyToNDJSON(query), params.database)
-            .pipe(
-                map(resp => [resp, params.nestedPath]),
-                map(this.extractResponseFields.bind(this))
-            ) as Observable<Array<any>>;
+        return this._query(this.db.stringifyToNDJSON(query), params);
     }
 
     protected makeQueryTemplate(params: Parameters) {

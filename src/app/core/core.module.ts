@@ -8,6 +8,7 @@ import { DragulaModule } from 'ng2-dragula';
 import { NgxPopperModule } from 'ngx-popper';
 import { SharedModule } from '../shared/shared.module';
 
+import { DynamicWidgetService } from './dynamic-widget/dynamic-widget.service';
 import { DatabaseService } from './database.service';
 import { TimersService } from './timers.service';
 import { EventBusService } from './event-bus.service';
@@ -38,6 +39,7 @@ import { DashboardContainerResizeFormComponent } from './dashboard/dashboard-con
     ],
     providers: [
         SystemJsNgModuleLoader,
+        DynamicWidgetService,
         DatabaseService,
         TimersService,
         EventBusService,
