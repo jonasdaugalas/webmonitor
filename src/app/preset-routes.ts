@@ -7,13 +7,13 @@ export class PresetRoute {
 }
 
 export const ROUTES: Array<PresetRoute> = [{
+    title: 'Summary',
+    path: '/summary',
+    config_url: 'assets/presets/summary.json'
+}, {
     title: 'BPTX',
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'
-}, {
-    title: 'BPTX -Elasticsearch 6 test-',
-    path: '/bptx-new',
-    config_url: 'assets/presets/bptx.json'
 }, {
     title: 'PLT',
     path: '/plt',

@@ -1,44 +1,276 @@
 {
-    "timers": [3, 4.1, 5.4],
+    "timers": [7],
     "widgets": [{
-        "type": "single",
+        "type": "numeric-field",
         "config": {
             "container": {
-                "width": 40,
-                "height": 200
+                "width": 50,
+                "height": 320
             },
             "wrapper": {
-                "title": "container title"
+                "title": "Background",
+                "initialTimer": 0,
+                "started": false
             },
             "widget": {
-                "test": "content test"
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "yAxisTitle": "[Hz/cm2/e11]",
+                "yAxis2Enabled": true,
+                "yAxis2Title": "% of abort",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "bkgd1", "seriesName": "BKGD1 (bcm1f beam1 Hz/cm2/E11)"},
+                        {"name": "bkgd2", "seriesName": "BKGD2 (bcm1f beam2 Hz/cm2/E11)"},
+                        {"name": "bkgd3", "seriesName": "BKGD3 (bcml % of abort)", "yAxis": 2}
+                    ],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "bhmprocessorMon",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "totalrate_b1", "seriesName": "BKGD4 (bhm beam1 Hz/cm2/E11)"},
+                        {"name": "totalrate_b2", "seriesName": "BKGD5 (bhm beam2 Hz/cm2/E11)"}
+                    ],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-13-01.cms:9110-121-"
+                    }
+                }]
             }
         }
     }, {
-        "type": "wtf",
-        "config": {}
-    }, {
-        "type": "per-channel",
+        "type": "numeric-field",
         "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
             "wrapper": {
-                "title": "container title",
-                "queriesEnabled": false
+                "title": "BPTX number of bunches",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "yAxisTitle": "Coincidences",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "B1_bunches"},
+                        {"name": "B2_bunches"},
+                        {"name": "B1orB2"},
+                        {"name": "B1andB2"},
+                        {"name": "B1notB2", "hidden": true},
+                        {"name": "B2notB1", "hidden": true}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
             }
         }
     }, {
-        "type": "label",
+        "type": "numeric-field",
         "config": {
-            "widget": {
-                "post": " documents",
-                "aggregation": "count",
-                "path": "shelflist/brilsummary"
+            "container": {
+                "width": 50,
+                "height": 320
             },
             "wrapper": {
-                "title": "brilsummary count",
-                "started": false,
-                "queriesEnabled": true,
-                "optionsEnabled": true,
-                "initialTimer": 1
+                "title": "BPTX deltaT",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "bptx_deltaT"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BPTX phase",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "bptx_phase"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "LHC published intensities",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "beam1_intensity"},
+                        {"name": "beam2_intensity"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "P5 vacuum",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "refreshSize": 900,
+                "yAxisTitle": "Pressure",
+                "yAxisScale": "log",
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "vgpb_183_1l5"},
+                        {"name": "vgpb_147_1r5"},
+                        {"name": "vgi_183_1r5"},
+                        {"name": "vgpb_220_1l5"},
+                        {"name": "vgpb_7_4r5"},
+                        {"name": "vgi_183_1l5"},
+                        {"name": "vgi_220_1l5"},
+                        {"name": "vgi_220_1r5"},
+                        {"name": "vgpb_147_1l5"},
+                        {"name": "vgpb_148_1l5"},
+                        {"name": "vgpb_148_1r5"},
+                        {"name": "vgpb_7_4l5"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "VacHisto",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "yAxisTitle": "picobar",
+                "yAxisScale": "log",
+                "xOffset": -6,
+                "index": "shelflist",
+                "documentType": "vachisto",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "vachisto", "seriesName": "VacHisto"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                }
+            }
+        }
+    }, {
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BCM Peak Fast Loss, Upper Limit",
+                "initialTimer": 0,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "refreshSize": 900,
+                "yAxisTitle": "RS1 counts",
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "bcml2_rs1_plus"},
+                        {"name": "bcml1_rs1_minus"},
+                        {"name": "bcml1_rs1_plus"},
+                        {"name": "bcml2_rs1_minus"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
+                }]
             }
         }
     }]
