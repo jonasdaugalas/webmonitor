@@ -11,6 +11,10 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/summary',
     config_url: 'assets/presets/summary.json'
 }, {
+    title: 'Luminosity',
+    path: '/lumi',
+    config_url: 'assets/presets/lumi.json'
+}, {
     title: 'BPTX',
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'

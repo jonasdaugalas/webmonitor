@@ -1,0 +1,192 @@
+{
+    "timers": [9, 22],
+    "widgets": [{
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "Instantaneous luminosity (NB4)",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 3600000,
+                "yAxisTitle": "[Hz/ub]",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "fastbestlumi",
+                    "fields": [{"name": "avg", "seriesName": "Bestlumi", "color": "#ff9000"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "pltzero", "color": "#1859a9"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "hfet", "color": "#e700ff"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "hfoc", "color": "#ed2d2e"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "bcm1f", "color": "#008c47"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "bcm1fsi", "color": "#ffcc00"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1fsilumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "dt", "color": "#00ffff"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-dtlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "bcm1futca", "color": "#310064"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1futcalumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "fields": [{"name": "avg", "seriesName": "pltslink", "color": "#52FE00"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "PLTZERO per bunch luminosity",
+                "initialTimer": 1,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "yAxisTitle": "[Hz/ub]",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "pltlumizero"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BCM1F per bunch luminosity",
+                "initialTimer": 1,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "yAxisTitle": "[Hz/ub]",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "bcm1flumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "HFET per bunch luminosity",
+                "initialTimer": 1,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "yAxisTitle": "[Hz/ub]",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "hfetlumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-snapshot",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "HFOC per bunch luminosity",
+                "initialTimer": 1,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "yAxisTitle": "[Hz/ub]",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "hfoclumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                }
+            }
+        }
+    }]
+}
