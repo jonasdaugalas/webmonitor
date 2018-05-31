@@ -9,6 +9,7 @@
             <label>Timer</label>
             <div class="select" >
                 <select [(ngModel)]="selectedTimer" [disabled]="!config.startEnabled">
+                    <option [ngValue]="undefined"></option>
                     <option *ngFor="let timer of timers; let i = index" [ngValue]="timer">
                         {{i}}: {{timer.interval}} seconds
                     </option>

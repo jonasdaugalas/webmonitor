@@ -55,7 +55,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     ngOnInit() {
         const initiallyStarted = this.config.started;
         this.timersSubscription = this.timers.timers$.subscribe(newTimers => {
-            if (newTimers.indexOf(this.timer) < 0) {
+            if (this.timer && newTimers.indexOf(this.timer) < 0) {
                 this.timer = undefined;
             }
         });
