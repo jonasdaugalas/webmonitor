@@ -1,0 +1,108 @@
+{
+    "timers": [30],
+    "widgets": [{
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 420
+            },
+            "wrapper": {
+                "title": "PLTZERO per bunch luminosity",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "liveWindow": 3600000,
+                "zAxisTitle": "[Hz/ub]",
+                "yAxisTitle": "Bunch index",
+                "timestampField": "timestamp",
+                "field": "bx",
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 420
+            },
+            "wrapper": {
+                "title": "BCM1F per bunch luminosity",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "liveWindow": 3600000,
+                "zAxisTitle": "[Hz/ub]",
+                "yAxisTitle": "Bunch index",
+                "timestampField": "timestamp",
+                "field": "bx",
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 420
+            },
+            "wrapper": {
+                "title": "HFET per bunch luminosity",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "liveWindow": 3600000,
+                "zAxisTitle": "[Hz/ub]",
+                "yAxisTitle": "Bunch index",
+                "timestampField": "timestamp",
+                "field": "bx",
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "array-heatmap",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 420
+            },
+            "wrapper": {
+                "title": "HFOC per bunch luminosity",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "liveWindow": 3600000,
+                "zAxisTitle": "[Hz/ub]",
+                "yAxisTitle": "Bunch index",
+                "timestampField": "timestamp",
+                "field": "bx",
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                }
+            }
+        }
+    }]
+}

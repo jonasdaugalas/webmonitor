@@ -1,0 +1,216 @@
+{
+    "timers": [12],
+    "widgets": [{
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS1 BCML1",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "PercentAbort1",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "Percentage of abort threshold",
+                "series": [0, 1, 2, 3, 4, 5, 6, 7],
+                "legendNames": [
+                    "BCML1 +Z near top AB", "BCML1 +Z near bottom AB", "BCML1 +Z far top AB", "BCML1 +Z far bottom AB",
+                    "BCML1 -Z near top AB", "BCML1 -Z near bottom AB", "BCML1 -Z far top AB", "BCML1 -Z far bottom AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+    }, {
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS1 BCML2",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "PercentAbort1",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "Percentage of abort threshold",
+                "series": [16, 18, 24, 26, 32, 34, 40, 42],
+                "legendNames": [
+                    "BCML2 -Z far 1 AB", "BCML2 -Z far 3 AB", "BCML2 -Z near 1 AB", "BCML2 -Z near 3 AB",
+                    "BCML2 +Z near 1 AB", "BCML2 +Z near 3 AB", "BCML2 +Z far 1 AB", "BCML2 +Z far 3 AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+    }, {
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS12 BCML1",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "PercentAbort12",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "Percentage of abort threshold",
+                "series": [0, 1, 2, 3, 4, 5, 6, 7],
+                "legendNames": [
+                    "BCML1 +Z near top AB", "BCML1 +Z near bottom AB", "BCML1 +Z far top AB", "BCML1 +Z far bottom AB",
+                    "BCML1 -Z near top AB", "BCML1 -Z near bottom AB", "BCML1 -Z far top AB", "BCML1 -Z far bottom AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+    }, {
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS12 BCML2",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "PercentAbort12",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "Percentage of abort threshold",
+                "series": [16, 18, 24, 26, 32, 34, 40, 42],
+                "legendNames": [
+                    "BCML2 -Z far 1 AB", "BCML2 -Z far 3 AB", "BCML2 -Z near 1 AB", "BCML2 -Z near 3 AB",
+                    "BCML2 +Z near 1 AB", "BCML2 +Z near 3 AB", "BCML2 +Z far 1 AB", "BCML2 +Z far 3 AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+    }, {
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS9 BCML1",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "RunningSum9",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "ADC counts",
+                "series": [0, 1, 2, 3, 4, 5, 6, 7],
+                "legendNames": [
+                    "BCML1 +Z near top AB", "BCML1 +Z near bottom AB", "BCML1 +Z far top AB", "BCML1 +Z far bottom AB",
+                    "BCML1 -Z near top AB", "BCML1 -Z near bottom AB", "BCML1 -Z far top AB", "BCML1 -Z far bottom AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+    }, {
+        "type": "array-lines",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 400
+            },
+            "wrapper": {
+                "title": "RS9 BCML2",
+                "started": true,
+                "controlsEnabled": true,
+                "queriesEnabled": true,
+                "startEnabled": true,
+                "initialTimer": 0
+            },
+            "widget": {
+
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "RunningSum9",
+                "legend": "left",
+                "liveWindow": 3600000,
+                "refreshSize": 1000,
+                "yAxisTitle": "ADC counts",
+                "series": [16, 18, 24, 26, 32, 34, 40, 42],
+                "legendNames": [
+                    "BCML2 -Z far 1 AB", "BCML2 -Z far 3 AB", "BCML2 -Z near 1 AB", "BCML2 -Z near 3 AB",
+                    "BCML2 +Z near 1 AB", "BCML2 +Z near 3 AB", "BCML2 +Z far 1 AB", "BCML2 +Z far 3 AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
+            }
+        }
+
+
+    }]
+}

@@ -15,9 +15,17 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/lumi',
     config_url: 'assets/presets/lumi.json'
 }, {
+    title: 'Per bunch luminosity',
+    path: '/bxlumi',
+    config_url: 'assets/presets/bxlumi.json'
+}, {
     title: 'BPTX',
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'
+}, {
+    title: 'BCML',
+    path: '/bcml',
+    config_url: 'assets/presets/bcml.json'
 }, {
     title: 'PLT',
     path: '/plt',
