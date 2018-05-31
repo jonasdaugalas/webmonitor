@@ -57,6 +57,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
             sources: wi['sources']
         };
         wi['sources'].forEach(s => {
+            s['timestampField'] = s['timestampField'] || 'timestamp';
             this.flatFields = this.flatFields.concat(s['fields']);
         });
     }
@@ -184,7 +185,8 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!lastPerSource) {
             lastPerSource = this.getLastXPerSource();
         }
-        const max = Math.max.apply(null, lastPerSource.map(x => (new Date(x)).getTime()));
+        lastPerSource = lastPerSource.map(x => (new Date(x)).getTime()).filter(x => Number.isFinite(x));
+        const max = Math.max.apply(null, lastPerSource);
         if (!Number.isInteger(max)) {
             return;
         }
@@ -214,7 +216,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
                     y: [],
                     name: field.seriesName || field.name,
                     type: 'scatter',
-                    line: { width: 1},
+                    line: { width: 1, color: field['color']},
                     visible: (field['hidden'] ? 'legendonly' : true)
                 };
                 if (field['yAxis'] === 2) {

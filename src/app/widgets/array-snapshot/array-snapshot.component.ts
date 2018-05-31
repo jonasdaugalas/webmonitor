@@ -50,7 +50,6 @@ export class ArraySnapshotComponent implements OnInit {
                 this.needWebGLFallback = true;
             }
         }
-        console.log(wi);
         this.queryParams = {
             database: wi['database'],
             timestampField: wi['timestampField'] || 'timestamp',
