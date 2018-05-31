@@ -82,7 +82,8 @@ export class ArraySnapshotComponent implements OnInit {
                 title: widget['xAxisTitle']
             },
             yaxis: {
-                title: widget['yAxisTitle']
+                title: widget['yAxisTitle'],
+                type: widget['yAxisScale'] || 'lin'
             },
             legend: ChartUtils.getLegendConfig(widget['legend']),
             barmode: 'group',
@@ -126,6 +127,7 @@ export class ArraySnapshotComponent implements OnInit {
                 mode: 'markers',
                 marker: { size: 5 }
             };
+            this.offsetXValues(newSeries);
             this.chartData.push(newSeries);
             this.series.push(newSeries);
         });
@@ -157,10 +159,21 @@ export class ArraySnapshotComponent implements OnInit {
             yref: 'paper',
             xanchor: 'middle',
             yanchor: 'top',
+            bgcolor: 'FFFFFF80',
             text: newData[0]['timestamp'],
             showarrow: false,
             font: { size: 18 }
         }];
+    }
+
+    offsetXValues(newSeries) {
+        if (this.config['widget']['xOffset']) {
+            const x = newSeries['y'].map((v, i) => {
+                return i + this.config['widget']['xOffset'];
+            });
+            newSeries['x'] = x;
+        }
+        return newSeries;
     }
 
     setAutorange() {
