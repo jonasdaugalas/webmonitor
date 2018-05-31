@@ -85,8 +85,17 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
             },
             yaxis: {
                 title: widget['yAxisTitle'],
+                type: widget['yAxisScale'] || 'lin'
             },
             legend: ChartUtils.getLegendConfig(widget['legend'])
+        }
+        if (widget['yAxis2Enabled']) {
+            update['yaxis2'] = {
+                title: widget['yAxis2Title'],
+                type: widget['yAxisScale'] || 'lin',
+                overlaying: 'y',
+                side: 'right'
+            }
         }
         Plotly.relayout(this.plot.nativeElement, update);
     }
@@ -208,6 +217,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
                     line: { width: 1},
                     visible: (field['hidden'] ? 'legendonly' : true)
                 };
+                if (field['yAxis'] === 2) {
+                    newSeries['yaxis'] = 'y2';
+                }
                 seriesOfCurrentSource.push(newSeries);
                 this.chartData.push(newSeries);
             });

@@ -9,6 +9,7 @@ interface FieldParameter {
     name: string;
     seriesName?: string;
     color?: string;
+    yAxis?: number;
 }
 
 interface SourceParameter {
