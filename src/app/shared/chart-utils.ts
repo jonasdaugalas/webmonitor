@@ -31,7 +31,31 @@ export function getDefaultLayout() {
         },
         autosize: true
     };
-};
+}
+
+export function configureDefaultLayout(widget) {
+    const layout = getDefaultLayout();
+    const update = {
+        xaxis: {
+            title: "Date UTC",
+            type: "date"
+        },
+        yaxis: {
+            title: widget['yAxisTitle'],
+            type: widget['yAxisScale'] || 'lin'
+        },
+        legend: getLegendConfig(widget['legend'])
+        }
+        if (widget['yAxis2Enabled']) {
+            update['yaxis2'] = {
+                title: widget['yAxis2Title'],
+                type: widget['yAxisScale'] || 'lin',
+                overlaying: 'y',
+                side: 'right'
+            }
+        }
+    return Object.assign(layout, update);
+}
 
 export function getLegendConfig(preset) {
     const common = {
@@ -40,37 +64,33 @@ export function getLegendConfig(preset) {
         bordercolor: 'whitesmoke',
         borderwidth: 1
     }
+    let update;
     switch(preset) {
     case 'outside-left': {
-        return Object.assign(common, {
-            x: -0.05,
-            xanchor: 'right'
-        });
+        update = {x: -0.05, xanchor: 'right'};
+        break;
     }
     case 'left': {
-        return Object.assign(common, {
-            x: 0,
-            xanchor: 'left'
-        });
+        update = {x: 0, xanchor: 'left'};
+        break;
     }
     case 'outside-right': {
-        return Object.assign(common, {
-            x: 1,
-            xanchor: 'left'
-        });
+        update = {x: 1, xanchor: 'left'};
+        break;
     }
     case 'right': {
-        return Object.assign(common, {
-            x: 1,
-            xanchor: 'right'
-        });
+        update = {x: 1, xanchor: 'right'};
+        break;
+    }
+    case 'horizontal': {
+        update = {orientation: 'h'};
+        break;
     }
     default: {
-        return Object.assign(common, {
-            orientation: 'h'
-        });
+        update = {x: 1, xanchor: 'left'};
     }
     }
+    return Object.assign(common, update);
 }
 
 
