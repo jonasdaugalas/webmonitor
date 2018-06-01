@@ -23,7 +23,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
     resizeEventSubs: Subscription;
     chartData = [];
-    chartLayout = ChartUtils.getDefaultLayout();
+    chartLayout;
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
 
@@ -50,9 +50,7 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
         const wi = this.config['widget'] = this.config['widget'] || {};
         wi['liveWindow'] = wi['liveWindow'] || 600000;
         wi['refreshSize'] = wi['refreshSize'] || 100;
-        if (!this.db.parseDatabase(wi['database'])) {
-            wi['database'] = 'default';
-        }
+        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],
@@ -66,26 +64,12 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
     ngAfterViewInit() {
         Plotly.plot(this.plot.nativeElement,
                     this.chartData, this.chartLayout, this.chartConfig);
-        this.configureLayout(this.config['widget']);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
         if (!this.config['wrapper']['started']) {
             this.refresh();
         }
-    }
-
-    configureLayout(widget) {
-        const update = {
-            xaxis: {
-                title: "Date UTC",
-                type: "date"
-            },
-            yaxis: {
-                title: widget['yAxisTitle'],
-            }
-        }
-        Plotly.relayout(this.plot.nativeElement, update);
     }
 
     onRefreshEvent() {

@@ -101,6 +101,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
                     {"name": "bx", "seriesName": "pltlumizero"}
@@ -127,6 +128,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
                     {"name": "bx", "seriesName": "bcm1flumi"}
@@ -153,6 +155,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
                     {"name": "bx", "seriesName": "hfetlumi"}
@@ -179,6 +182,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
                     {"name": "bx", "seriesName": "hfoclumi"}

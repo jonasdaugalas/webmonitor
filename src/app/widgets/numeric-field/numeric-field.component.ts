@@ -22,7 +22,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     resizeEventSubs: Subscription;
     reflow: () => void;
     chartData = [];
-    chartLayout = ChartUtils.getDefaultLayout();
+    chartLayout;
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     flatFields = [];
@@ -40,18 +40,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngOnInit() {
-        const wr = this.config['wrapper'] = Object.assign({
-            controlsEnabled: true,
-            optionsEnabled: true,
-            queriesEnabled: true,
-            startEnabled: true,
-            refreshEnabled: true
-        }, this.config['wrapper'] || {});
-        const wi = this.config['widget'] = this.config['widget'] || {};
-        wi['refreshSize'] = wi['refreshSize'] || 100;
-        if (!this.db.parseDatabase(wi['database'])) {
-            wi['database'] = 'default';
-        }
+        const wr = this.setupWrapper();
+        const wi = this.setupWidget();
+        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
         this.queryParams = {
             database: wi['database'],
             sources: wi['sources']
@@ -62,11 +53,29 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
+    setupWrapper() {
+        return this.config['wrapper'] = Object.assign({
+            controlsEnabled: true,
+            optionsEnabled: true,
+            queriesEnabled: true,
+            startEnabled: true,
+            refreshEnabled: true
+        }, this.config['wrapper'] || {});
+    }
+
+    setupWidget() {
+        const wi = this.config['widget'] = this.config['widget'] || {};
+        wi['refreshSize'] = wi['refreshSize'] || 100;
+        if (!this.db.parseDatabase(wi['database'])) {
+            wi['database'] = 'default';
+        }
+        return wi;
+    }
+
     ngAfterViewInit() {
         Plotly.plot(this.plot.nativeElement,
                     this.chartData, this.chartLayout, this.chartConfig);
         this.makeSeries();
-        this.configureLayout(this.config['widget']);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
@@ -76,29 +85,6 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!this.config['wrapper']['started']) {
             this.refresh().subscribe();
         }
-    }
-
-    configureLayout(widget) {
-        const update = {
-            xaxis: {
-                title: "Date UTC",
-                type: "date"
-            },
-            yaxis: {
-                title: widget['yAxisTitle'],
-                type: widget['yAxisScale'] || 'lin'
-            },
-            legend: ChartUtils.getLegendConfig(widget['legend'])
-        }
-        if (widget['yAxis2Enabled']) {
-            update['yaxis2'] = {
-                title: widget['yAxis2Title'],
-                type: widget['yAxisScale'] || 'lin',
-                overlaying: 'y',
-                side: 'right'
-            }
-        }
-        Plotly.relayout(this.plot.nativeElement, update);
     }
 
     onRefreshEvent() {

@@ -21,13 +21,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     @ViewChild('plot') protected plot: ElementRef;
     @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
     chartData = [];
-    chartLayout = Object.assign(ChartUtils.getDefaultLayout(), {
-        'xaxis': {
-            title: "Date UTC",
-            ticks: "outside",
-            type: "date"
-        }
-    });
+    chartLayout;
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     parseToDate = ChartUtils.parseStringTimestamp;
@@ -45,7 +39,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
         if (wr['startEnabled']) {
             wi['liveWindow'] = wi['liveWindow'] || 600000;
         }
-        this.chartLayout['legend'] = ChartUtils.getLegendConfig(wi['legend']);
+        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],

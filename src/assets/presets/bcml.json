@@ -23,7 +23,7 @@
                 "field": "PercentAbort1",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
                 "legendNames": [
@@ -58,7 +58,7 @@
                 "field": "PercentAbort1",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
                 "legendNames": [
@@ -93,7 +93,7 @@
                 "field": "PercentAbort12",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
                 "legendNames": [
@@ -128,7 +128,7 @@
                 "field": "PercentAbort12",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
                 "legendNames": [
@@ -163,7 +163,7 @@
                 "field": "RunningSum9",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "ADC counts",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
                 "legendNames": [
@@ -198,7 +198,7 @@
                 "field": "RunningSum9",
                 "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 1000,
+                "refreshSize": 2000,
                 "yAxisTitle": "ADC counts",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
                 "legendNames": [

@@ -20,7 +20,7 @@ export class ArraySnapshotComponent implements OnInit {
     resizeEventSubs: Subscription;
     reflow: () => void;
     chartData = [];
-    chartLayout = ChartUtils.getDefaultLayout();
+    chartLayout;
     chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     series = [];
@@ -45,6 +45,7 @@ export class ArraySnapshotComponent implements OnInit {
             refreshEnabled: true
         }, this.config['wrapper'] || {});
         const wi = this.config['widget'] = this.config['widget'] || {};
+        this.configureLayout(wi);
         if (wi['chartType'] && wi['chartType'].toLowerCase() === 'scattergl') {
             if (!ChartUtils.detectWebGLContext()) {
                 this.needWebGLFallback = true;
@@ -66,7 +67,6 @@ export class ArraySnapshotComponent implements OnInit {
         }
         Plotly.plot(this.plot.nativeElement,
                     this.chartData, this.chartLayout, this.chartConfig);
-        this.configureLayout(this.config['widget']);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
         this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
@@ -76,20 +76,17 @@ export class ArraySnapshotComponent implements OnInit {
     }
 
     configureLayout(widget) {
+        const layout = ChartUtils.configureDefaultLayout(widget);
         const update = {
             xaxis: {
+                type: 'linear',
                 title: widget['xAxisTitle']
             },
-            yaxis: {
-                title: widget['yAxisTitle'],
-                type: widget['yAxisScale'] || 'lin'
-            },
-            legend: ChartUtils.getLegendConfig(widget['legend']),
             barmode: 'group',
             bargap: 0,
             bargroupgap: 0
         }
-        Plotly.relayout(this.plot.nativeElement, update);
+        this.chartLayout = Object.assign(layout, update);
     }
 
     onRefreshEvent() {
