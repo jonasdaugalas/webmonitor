@@ -27,6 +27,10 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/bcml',
     config_url: 'assets/presets/bcml.json'
 }, {
+    title: 'BCM1F RHU',
+    path: '/bcm1frhu',
+    config_url: 'assets/presets/bcm1frhu.json'
+}, {
     title: 'PLT',
     path: '/plt',
     config_url: 'assets/presets/plt.json'
