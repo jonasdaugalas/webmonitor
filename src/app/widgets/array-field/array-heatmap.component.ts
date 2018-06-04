@@ -223,13 +223,19 @@ export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
 
     filterZValues(data) {
         const threshold = this.config['widget']['filterZThreshold'];
-        if (!Number.isFinite(threshold)) {
-            return data as Array<any>;
+        const filterZeros = this.config['widget']['filterZeros'];
+        if (Number.isFinite(threshold)) {
+            data.forEach(hit => {
+                hit[this.queryParams.field] = hit[this.queryParams.field]
+                    .map(val => val < threshold ? null : val);
+            });
         }
-        data.forEach(hit => {
-            hit[this.queryParams.field] = hit[this.queryParams.field]
-                .map(val => val < threshold ? null : val);
-        });
+        if (filterZeros) {
+            data.forEach(hit => {
+                hit[this.queryParams.field] = hit[this.queryParams.field]
+                    .map(val => val === 0 ? null : val);
+            });
+        }
         return data as Array<any>;
     }
 }
