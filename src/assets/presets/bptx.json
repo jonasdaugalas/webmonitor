@@ -214,6 +214,7 @@
                 "field": "phase_b1",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "filterZeros": true,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Phase [ns]",
                 "terms": {
@@ -240,6 +241,7 @@
                 "field": "phase_b2",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "filterZeros": true,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Phase [ns]",
                 "terms": {
