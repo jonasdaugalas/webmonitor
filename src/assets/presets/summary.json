@@ -10,7 +10,7 @@
             "wrapper": {
                 "title": "Background",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -56,7 +56,7 @@
             "wrapper": {
                 "title": "BPTX number of bunches",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -91,7 +91,7 @@
             "wrapper": {
                 "title": "BPTX deltaT",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -120,7 +120,7 @@
             "wrapper": {
                 "title": "BPTX phase",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -149,7 +149,7 @@
             "wrapper": {
                 "title": "LHC published intensities",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -179,7 +179,7 @@
             "wrapper": {
                 "title": "P5 vacuum",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -221,7 +221,7 @@
             "wrapper": {
                 "title": "VacHisto",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",
@@ -250,7 +250,7 @@
             "wrapper": {
                 "title": "BCM Peak Fast Loss, Upper Limit",
                 "initialTimer": 0,
-                "started": false
+                "started": true
             },
             "widget": {
                 "legend": "left",

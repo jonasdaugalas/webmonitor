@@ -101,6 +101,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "xAxisTitle": "Bunch index",
                 "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
@@ -128,6 +129,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "xAxisTitle": "Bunch index",
                 "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
@@ -155,6 +157,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "xAxisTitle": "Bunch index",
                 "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [
@@ -182,6 +185,7 @@
                 "index": "shelflist",
                 "documentType": "detluminosity",
                 "yAxisTitle": "[Hz/ub]",
+                "xAxisTitle": "Bunch index",
                 "legend": "left",
                 "timestampField": "timestamp",
                 "fields": [

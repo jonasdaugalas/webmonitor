@@ -269,6 +269,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "×10^7 protons",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
@@ -295,6 +296,7 @@
                 "liveWindow": 3600000,
                 "refreshSize": 100,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "×10^7 protons",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
