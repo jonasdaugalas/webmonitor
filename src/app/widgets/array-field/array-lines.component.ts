@@ -3,9 +3,11 @@ import {
 } from '@angular/core';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
+import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
 import { map, tap, share } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 // import * as Plotly from 'plotly.js';
 declare var Plotly: any;
@@ -28,18 +30,48 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     parseToChartTimestamp = (ts) => ts;
     parseToMilliseconds = (ts) => this.parseToDate(ts).getTime();
     reflow = () => undefined;
+    resizeEventSubs: Subscription;
+    queryEventSubs: Subscription;
 
-    constructor( protected db: DatabaseService,
-                 protected dataService: DataService) {}
+    constructor(
+        protected db: DatabaseService,
+        protected eventBus: EventBusService,
+        protected dataService: DataService) {
+    }
+
+    ngOnDestroy() {
+        this.resizeEventSubs.unsubscribe();
+        if (this.queryEventSubs) {
+            this.queryEventSubs.unsubscribe();
+        }
+    }
 
     ngOnInit() {
         const wr = this.config['wrapper'] = this.config['wrapper'] || {};
+        const wi = this.setupWidget(wr);
+        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
+        this.makeSeries();
+    }
+
+    setupWidget(wrapper) {
         const wi = this.config['widget'] = this.config['widget'] || {};
         wi['series'] = wi['series'] || [];
-        if (wr['startEnabled']) {
+        if (wi['timestampUNIX']) {
+            this.parseToDate = ChartUtils.parseUNIXTimestamp;
+            this.parseToChartTimestamp = (ts) => this.parseToDate(ts).toISOString();
+        }
+        if (!this.db.parseDatabase(wi['database'])) {
+            wi['database'] = 'default';
+        }
+        if (wi.hasOwnProperty('queryChannel')) {
+            this.queryEventSubs = this.eventBus.getEvents(
+                wi['queryChannel'], 'time_range_query')
+                .pipe(map(event => event.payload))
+                .subscribe(this.queryRange.bind(this));
+        }
+        if (wrapper['startEnabled']) {
             wi['liveWindow'] = wi['liveWindow'] || 600000;
         }
-        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],
@@ -50,11 +82,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             nestedPath: wi['nestedPath'],
             terms: wi['terms']
         }
-        if (wi['timestampUNIX']) {
-            this.parseToDate = ChartUtils.parseUNIXTimestamp;
-            this.parseToChartTimestamp = (ts) => this.parseToDate(ts).toISOString();
-        }
-        this.makeSeries();
+        return wi;
     }
 
     ngAfterViewInit() {
@@ -64,6 +92,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             this.chartLayout,
             this.chartConfig);
         this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
+        this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
         this.reflow();
         if (!this.config['wrapper']['started']) {
             this.refresh();
