@@ -1,6 +1,17 @@
 {
     "timers": [12],
     "widgets": [{
+        "type": "time-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 60
+            },
+            "widget": {
+                "channel": 1
+            }
+        }
+    }, {
         "type": "numeric-field",
         "config": {
             "container": {
@@ -23,6 +34,7 @@
                 "yAxisTitle": "Phase [ps]",
                 "liveWindow": 7200000,
                 "refreshSize": 1000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "timestampField": "timestamp",
@@ -67,6 +79,7 @@
                 "documentType": "pltprocessorMon",
                 "field": "tot_hit_pertelescope",
                 "legend": "left",
+                "queryChannel": 1,
                 "liveWindow": 7200000,
                 "refreshSize": 1000,
                 "series": [0, 1, 3, 4, 6, 7, 9, 10],
@@ -98,6 +111,7 @@
                 "documentType": "pltprocessorMon",
                 "field": "tot_hit_pertelescope",
                 "legend": "left",
+                "queryChannel": 1,
                 "liveWindow": 7200000,
                 "refreshSize": 1000,
                 "series": [12, 13, 15, 16, 18, 19, 21, 22],
