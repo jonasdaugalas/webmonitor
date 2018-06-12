@@ -2,6 +2,7 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -20,6 +21,7 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
     @ViewChild('plot') protected plot: ElementRef;
     @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
     resizeEventSubs: Subscription;
+    queryEventSubs: Subscription;
     reflow: () => void;
     chartData = [];
     chartLayout;
@@ -37,6 +39,9 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
 
     ngOnDestroy() {
         this.resizeEventSubs.unsubscribe();
+        if (this.queryEventSubs) {
+            this.queryEventSubs.unsubscribe();
+        }
     }
 
     ngOnInit() {
@@ -68,6 +73,12 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         wi['refreshSize'] = wi['refreshSize'] || 100;
         if (!this.db.parseDatabase(wi['database'])) {
             wi['database'] = 'default';
+        }
+        if (wi.hasOwnProperty('queryChannel')) {
+            this.queryEventSubs = this.eventBus.getEvents(
+                wi['queryChannel'], 'time_range_query')
+                .pipe(map(event => event.payload))
+                .subscribe(this.queryRange.bind(this));
         }
         return wi;
     }
