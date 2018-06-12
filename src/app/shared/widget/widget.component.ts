@@ -101,6 +101,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
                 this.startEmmiter.emit();
             }
         }
+        this.changeDetector.detectChanges();
     }
 
     stop() {
@@ -109,6 +110,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
             this.config.started = false;
             this.stopEmmiter.emit();
         }
+        this.changeDetector.detectChanges();
     }
 
     protected makeStart() {
