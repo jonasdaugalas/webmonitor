@@ -5,6 +5,7 @@ import { Subscription } from 'rxjs';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
+import { ChartWidget } from 'app/widgets/base/chart-widget';
 
 declare var Plotly: any;
 
@@ -13,15 +14,8 @@ declare var Plotly: any;
     templateUrl: './array-snapshot.component.html',
     styleUrls: ['./array-snapshot.component.css']
 })
-export class ArraySnapshotComponent implements OnInit {
+export class ArraySnapshotComponent extends ChartWidget implements OnInit {
 
-    @Input('config') config;
-    @ViewChild('plot') protected plot: ElementRef;
-    resizeEventSubs: Subscription;
-    reflow: () => void;
-    chartData = [];
-    chartLayout;
-    chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     series = [];
     info = {};
@@ -30,21 +24,13 @@ export class ArraySnapshotComponent implements OnInit {
     constructor(
         protected eventBus: EventBusService,
         protected dataService: DataService) {
-    }
-
-    ngOnDestroy() {
-        this.resizeEventSubs.unsubscribe();
+        super(eventBus);
     }
 
     ngOnInit() {
-        const wr = this.config['wrapper'] = Object.assign({
-            controlsEnabled: true,
-            optionsEnabled: true,
-            queriesEnabled: false,
-            startEnabled: true,
-            refreshEnabled: true
-        }, this.config['wrapper'] || {});
-        const wi = this.config['widget'] = this.config['widget'] || {};
+        super.ngOnInit();
+        this.config['wrapper']['queriesEnabled'] = false;
+        const wi = this.config['widget'];
         this.configureLayout(wi);
         if (wi['chartType'] && wi['chartType'].toLowerCase() === 'scattergl') {
             if (!ChartUtils.detectWebGLContext()) {
@@ -65,18 +51,13 @@ export class ArraySnapshotComponent implements OnInit {
         if (this.needWebGLFallback) {
             return;
         }
-        Plotly.plot(this.plot.nativeElement,
-                    this.chartData, this.chartLayout, this.chartConfig);
-        this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
-        this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
-        this.reflow();
+        super.ngAfterViewInit();
         if (!this.config['wrapper']['started']) {
             this.refresh();
         }
     }
 
     configureLayout(widget) {
-        const layout = ChartUtils.configureDefaultLayout(widget);
         const update = {
             xaxis: {
                 type: 'linear',
@@ -86,7 +67,11 @@ export class ArraySnapshotComponent implements OnInit {
             bargap: 0,
             bargroupgap: 0
         }
-        this.chartLayout = Object.assign(layout, update);
+        this.chartLayout = Object.assign(this.chartLayout, update);
+    }
+
+    queryFromEvent(event) {
+        console.warn('no queries implemented yet');
     }
 
     onRefreshEvent() {
@@ -128,7 +113,7 @@ export class ArraySnapshotComponent implements OnInit {
             this.series.push(newSeries);
         });
         this.updateAnnotation(newData);
-        this.setAutorange();
+        ChartUtils.setAutorange(this.chartLayout)
         Plotly.redraw(this.plot.nativeElement, this.chartData, this.chartLayout);
         this.updateInfo(newData);
     }
@@ -170,13 +155,6 @@ export class ArraySnapshotComponent implements OnInit {
             newSeries['x'] = x;
         }
         return newSeries;
-    }
-
-    setAutorange() {
-        const xaxis = this.plot.nativeElement['layout']['xaxis'];
-        const yaxis = this.plot.nativeElement['layout']['yaxis'];
-        xaxis['autorange'] = true;
-        yaxis['autorange'] = true;
     }
 
     tryWebGLFallback() {

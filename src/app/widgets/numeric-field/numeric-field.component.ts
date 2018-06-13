@@ -8,6 +8,7 @@ import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
+import { ChartWidget } from 'app/widgets/base/chart-widget';
 declare var Plotly: any;
 
 @Component({
@@ -15,17 +16,8 @@ declare var Plotly: any;
     templateUrl: './numeric-field.component.html',
     styleUrls: ['./numeric-field.component.css']
 })
-export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
+export class NumericFieldComponent extends ChartWidget implements OnInit, AfterViewInit {
 
-    @Input('config') config;
-    @ViewChild('plot') protected plot: ElementRef;
-    @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
-    resizeEventSubs: Subscription;
-    queryEventSubs: Subscription;
-    reflow: () => void;
-    chartData = [];
-    chartLayout;
-    chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
     flatFields = [];
     series = [];
@@ -35,19 +27,13 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         protected db: DatabaseService,
         protected eventBus: EventBusService,
         protected dataService: DataService) {
-    }
-
-    ngOnDestroy() {
-        this.resizeEventSubs.unsubscribe();
-        if (this.queryEventSubs) {
-            this.queryEventSubs.unsubscribe();
-        }
+        super(eventBus);
     }
 
     ngOnInit() {
-        const wr = this.setupWrapper();
-        const wi = this.setupWidget();
-        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
+        super.ngOnInit();
+        const wr = this.config['wrapper'];
+        const wi = this.config['widget']
         this.queryParams = {
             database: wi['database'],
             sources: wi['sources']
@@ -58,43 +44,22 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         });
     }
 
-    setupWrapper() {
-        return this.config['wrapper'] = Object.assign({
-            controlsEnabled: true,
-            optionsEnabled: true,
-            queriesEnabled: true,
-            startEnabled: true,
-            refreshEnabled: true
-        }, this.config['wrapper'] || {});
-    }
-
-    setupWidget() {
-        const wi = this.config['widget'] = this.config['widget'] || {};
-        wi['refreshSize'] = wi['refreshSize'] || 100;
-        if (!this.db.parseDatabase(wi['database'])) {
-            wi['database'] = 'default';
-        }
-        if (wi.hasOwnProperty('queryChannel')) {
-            this.queryEventSubs = this.eventBus.getEvents(
-                wi['queryChannel'], 'time_range_query')
-                .pipe(map(event => event.payload))
-                .subscribe(this.queryRange.bind(this));
-        }
-        return wi;
-    }
-
     ngAfterViewInit() {
-        Plotly.plot(this.plot.nativeElement,
-                    this.chartData, this.chartLayout, this.chartConfig);
+        super.ngAfterViewInit();
         this.makeSeries();
-        this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
-        this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
-        this.reflow();
         this.plot.nativeElement.on('plotly_legendclick', event => {
             this.onLegendClick(event);
         });
         if (!this.config['wrapper']['started']) {
             this.refresh().subscribe();
+        }
+    }
+
+    queryFromEvent(event) {
+        if (event['type'] === 'time_range_query') {
+            this.queryRange(event['payload']);
+        } else if (event['type'] === 'fill_run_ls_query') {
+            console.log('fill_run_ls_query not supported yet');
         }
     }
 
@@ -195,11 +160,6 @@ export class NumericFieldComponent implements OnInit, AfterViewInit, OnDestroy {
         xaxis['range'] = newRange;
         xaxis['autorange'] = false;
         Plotly.relayout(this.plot.nativeElement, {xaxis: xaxis});
-    }
-
-    autorange() {
-        const mod = ChartUtils.setAutorange(this.plot.nativeElement['layout']);
-        Plotly.relayout(this.plot.nativeElement, mod);
     }
 
     makeSeries() {
