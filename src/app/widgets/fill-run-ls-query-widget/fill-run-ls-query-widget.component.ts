@@ -16,7 +16,9 @@ export class FillRunLsQueryWidgetComponent implements OnInit {
     }
 
     query(event) {
-        this.eventBus.emit(this.config['widget']['channel'], event);
+        this.eventBus.emit(
+            this.config['widget']['channel'],
+            {type: 'fill_run_ls_query', payload: event});
     }
 
 }
