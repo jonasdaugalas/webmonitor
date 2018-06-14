@@ -8,6 +8,7 @@ import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
+import { ChartWidget } from 'app/widgets/base/chart-widget';
 declare var Plotly: any;
 
 
@@ -16,59 +17,44 @@ declare var Plotly: any;
     templateUrl: './array-heatmap.component.html',
     styleUrls: ['./array-heatmap.component.css']
 })
-export class ArrayHeatmapComponent implements OnInit, AfterViewInit, OnDestroy {
+export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterViewInit, OnDestroy {
 
-    @Input('config') config;
-    @ViewChild('plot') protected plot: ElementRef;
-    @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
-    resizeEventSubs: Subscription;
-    chartData = [];
-    chartLayout;
-    chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
-
-    reflow: () => void;
 
     constructor(
         protected db: DatabaseService,
         protected eventBus: EventBusService,
         protected dataService: DataService) {
-    }
-
-    ngOnDestroy() {
-        this.resizeEventSubs.unsubscribe();
+        super(eventBus);
     }
 
     ngOnInit() {
-        const wr = this.config['wrapper'] = Object.assign({
-            controlsEnabled: true,
-            optionsEnabled: true,
-            queriesEnabled: true,
-            startEnabled: true,
-            refreshEnabled: true
-        }, this.config['wrapper'] || {});
-        const wi = this.config['widget'] = this.config['widget'] || {};
-        wi['liveWindow'] = wi['liveWindow'] || 600000;
-        wi['refreshSize'] = wi['refreshSize'] || 100;
-        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
+        super.ngOnInit({
+            'liveWindow': 600000,
+            'refreshSize': 100,
+            'timestampField': 'timestamp'
+        });
+        const wi = this.config['widget'];
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],
             documentType: wi['documentType'],
-            timestampField: wi['timestampField'] || 'timestamp',
+            timestampField: wi['timestampField'],
             field: wi['field'],
             terms: wi['terms']
         };
     }
 
     ngAfterViewInit() {
-        Plotly.plot(this.plot.nativeElement,
-                    this.chartData, this.chartLayout, this.chartConfig);
-        this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
-        this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
-        this.reflow();
+        super.ngAfterViewInit();
         if (!this.config['wrapper']['started']) {
             this.refresh();
+        }
+    }
+
+    queryFromEvent(event) {
+        if (event['type'] === 'time_range_query') {
+            this.queryRange(event['payload']);
         }
     }
 
