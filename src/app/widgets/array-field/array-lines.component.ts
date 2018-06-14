@@ -1,15 +1,14 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { map, tap, share } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
-import { map, tap, share } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-
-// import * as Plotly from 'plotly.js';
+import { ChartWidget } from 'app/widgets/base/chart-widget';
 declare var Plotly: any;
 
 @Component({
@@ -17,66 +16,30 @@ declare var Plotly: any;
     templateUrl: './array-lines.component.html',
     styleUrls: ['./array-lines.component.css']
 })
-export class ArrayLinesComponent implements OnInit, AfterViewInit {
+export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterViewInit {
 
-    @Input('config') config;
-    @ViewChild('plot') protected plot: ElementRef;
-    @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
-    chartData = [];
-    chartLayout;
-    chartConfig = ChartUtils.getDefaultConfig();
     queryParams;
-    parseToDate = ChartUtils.parseStringTimestamp;
-    parseToChartTimestamp = (ts) => ts;
-    parseToMilliseconds = (ts) => this.parseToDate(ts).getTime();
     reflow = () => undefined;
-    resizeEventSubs: Subscription;
-    queryEventSubs: Subscription;
 
     constructor(
         protected db: DatabaseService,
         protected eventBus: EventBusService,
         protected dataService: DataService) {
+        super(eventBus);
     }
 
-    ngOnDestroy() {
-        this.resizeEventSubs.unsubscribe();
-        if (this.queryEventSubs) {
-            this.queryEventSubs.unsubscribe();
-        }
-    }
-
-    ngOnInit() {
-        const wr = this.config['wrapper'] = this.config['wrapper'] || {};
-        const wi = this.setupWidget(wr);
-        this.chartLayout = ChartUtils.configureDefaultLayout(wi);
-        this.makeSeries();
-    }
-
-    setupWidget(wrapper) {
-        const wi = this.config['widget'] = this.config['widget'] || {};
-        wi['series'] = wi['series'] || [];
-        if (wi['timestampUNIX']) {
-            this.parseToDate = ChartUtils.parseUNIXTimestamp;
-            this.parseToChartTimestamp = (ts) => this.parseToDate(ts).toISOString();
-        }
-        if (!this.db.parseDatabase(wi['database'])) {
-            wi['database'] = 'default';
-        }
-        if (wi.hasOwnProperty('queryChannel')) {
-            this.queryEventSubs = this.eventBus.getEvents(
-                wi['queryChannel'], 'time_range_query')
-                .pipe(map(event => event.payload))
-                .subscribe(this.queryRange.bind(this));
-        }
-        if (wrapper['startEnabled']) {
-            wi['liveWindow'] = wi['liveWindow'] || 600000;
-        }
+    setupWidget() {
+        const wi = super.setupWidget({
+            'liveWindow': 600000,
+            'refreshSize': 100,
+            'series': [],
+            'timestampField': 'timestamp'
+        });
         this.queryParams = {
             database: wi['database'],
             index: wi['index'],
             documentType: wi['documentType'],
-            timestampField: wi['timestampField'] || 'timestamp',
+            timestampField: wi['timestampField'],
             field: wi['field'],
             tooltipFields: wi['tooltipFields'],
             nestedPath: wi['nestedPath'],
@@ -86,16 +49,16 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        Plotly.plot(
-            this.plot.nativeElement,
-            this.chartData,
-            this.chartLayout,
-            this.chartConfig);
-        this.reflow = ChartUtils.makeDefaultReflowFunction(this.plot.nativeElement);
-        this.resizeEventSubs = ChartUtils.subscribeReflow(this.eventBus, this.reflow);
-        this.reflow();
+        this.makeSeries();
+        super.ngAfterViewInit();
         if (!this.config['wrapper']['started']) {
             this.refresh();
+        }
+    }
+
+    queryFromEvent(event) {
+        if (event['type'] === 'time_range_query') {
+            this.queryRange(event['payload']);
         }
     }
 
@@ -106,7 +69,6 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
     onStartEvent() {
         this.updateLive();
     }
-
 
     refresh(size?) {
         size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
@@ -125,7 +87,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
         const wi = this.config['widget'];
         wi['series'].forEach((s, i) => {
             this.chartData[i].y = hits.map(hit => hit[wi['field']][s]);
-            this.chartData[i].x = hits.map(hit => this.parseToChartTimestamp(hit[this.queryParams.timestampField]));
+            this.chartData[i].x = hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField]));
             this.chartData[i].text = hits.map(this.makeTooltipText.bind(this));
         });
         ChartUtils.setAutorange(this.chartLayout);
@@ -158,7 +120,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
                     trace.y = trace.y.concat(
                         hits.map(hit => hit[wi['field']][s]));
                     trace.x = trace.x.concat(
-                        hits.map(hit => this.parseToChartTimestamp(hit[this.queryParams.timestampField])));
+                        hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField])));
                     trace.text = trace.text.concat(
                         hits.map(this.makeTooltipText.bind(this)));
                     this.dropPointsOutsideLiveWindow(trace);
@@ -179,11 +141,10 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
         return lines.join('\n');
     }
 
-
     dropPointsOutsideLiveWindow(trace) {
-        const lastX = this.parseToMilliseconds(trace.x[trace.x.length -1]);
+        const lastX = this.tsToMilliseconds(trace.x[trace.x.length -1]);
         const liveWindow = this.config['widget']['liveWindow'];
-        while(lastX - this.parseToMilliseconds(trace.x[0]) > liveWindow) {
+        while(lastX - this.tsToMilliseconds(trace.x[0]) > liveWindow) {
             trace.x.shift();
             trace.y.shift();
             trace.text.shift();
@@ -195,7 +156,7 @@ export class ArrayLinesComponent implements OnInit, AfterViewInit {
             return;
         }
         const trace = this.chartData[0];
-        const max = this.parseToMilliseconds(trace.x[trace.x.length -1]);
+        const max = this.tsToMilliseconds(trace.x[trace.x.length -1]);
         const min = max - this.config['widget']['liveWindow'];
         const mod = ChartUtils.setXRange(
             this.plot.nativeElement['layout'],
