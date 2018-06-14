@@ -18,19 +18,14 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
     chartData = [];
     chartLayout;
     chartConfig = ChartUtils.getDefaultConfig();
-    requiredWidgetParameters = [];
+    tsToDate = ChartUtils.parseStringTimestamp;
+    tsToChartTimestamp = (ts) => ts;
+    tsToMilliseconds = (ts) => this.tsToDate(ts).getTime();
 
-    constructor(protected eventBus: EventBusService,
-                requiredWidgetParams?: Array<string>) {
-
-        if (requiredWidgetParams) {
-            this.requiredWidgetParameters = requiredWidgetParams;
-        }
-        console.log('in Base constructor', this.requiredWidgetParameters);
-    }
+    constructor(protected eventBus: EventBusService) {}
 
     ngOnDestroy() {
-        console.log('in Base ngOnDestroy');
+        console.log('in Base ngOnDestroy', this.config);
         if (this.resizeEventSubs) {
             this.resizeEventSubs.unsubscribe();
         }
@@ -39,10 +34,9 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
         }
     }
 
-    ngOnInit() {
-        console.log('in Base ngOnInit', this.eventBus);
+    ngOnInit(defaults?: Object) {
         const wr = this.setupWrapper();
-        const wi = this.setupWidget();
+        const wi = this.setupWidget(defaults);
         this.chartLayout = ChartUtils.configureDefaultLayout(wi);
     }
 
@@ -56,10 +50,18 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
         }, this.config['wrapper'] || {});
     }
 
-    setupWidget() {
+    setupWidget(defaults?: Object) {
         const wi = this.config['widget'] = this.config['widget'] || {};
-        if (this.parameterRequired('refreshSize')) {
-            wi['refreshSize'] = wi['refreshSize'] || 100;
+        if (defaults) {
+            Object.keys(defaults).forEach(key => {
+                if (!wi.hasOwnProperty(key)) {
+                    wi[key] = defaults[key];
+                }
+            });
+        }
+        if (wi['timestampUNIX']) {
+            this.tsToDate = ChartUtils.parseUNIXTimestamp;
+            this.tsToChartTimestamp = (ts) => this.tsToDate(ts).toISOString();
         }
         if (wi.hasOwnProperty('queryChannel')) {
             const ch = wi['queryChannel'];
@@ -74,7 +76,6 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
     abstract queryFromEvent(event);
 
     ngAfterViewInit() {
-        console.log('in Base ngAfterViewInit');
         Plotly.plot(
             this.plot.nativeElement, this.chartData,
             this.chartLayout, this.chartConfig);
@@ -86,10 +87,6 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
     autorange() {
         const mod = ChartUtils.setAutorange(this.plot.nativeElement['layout']);
         Plotly.relayout(this.plot.nativeElement, mod);
-    }
-
-    private parameterRequired(param: string) {
-        return this.requiredWidgetParameters.indexOf(param) > -1;
     }
 
 }
