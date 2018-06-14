@@ -28,7 +28,9 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
     }
 
     ngOnInit() {
-        super.ngOnInit();
+        super.ngOnInit({
+            'timestampField': 'timestamp'
+        });
         this.config['wrapper']['queriesEnabled'] = false;
         const wi = this.config['widget'];
         this.configureLayout(wi);
@@ -39,7 +41,7 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
         }
         this.queryParams = {
             database: wi['database'],
-            timestampField: wi['timestampField'] || 'timestamp',
+            timestampField: wi['timestampField'],
             index: wi['index'],
             documentType: wi['documentType'],
             terms: wi['terms'],

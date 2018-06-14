@@ -31,8 +31,12 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     }
 
     ngOnInit() {
-        super.ngOnInit();
-        const wr = this.config['wrapper'];
+        super.ngOnInit({
+            'refreshSize': 100,
+            'liveWindow': 600000,
+            'database': 'default',
+            'sources': []
+        });
         const wi = this.config['widget']
         this.queryParams = {
             database: wi['database'],
@@ -42,11 +46,11 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             s['timestampField'] = s['timestampField'] || 'timestamp';
             this.flatFields = this.flatFields.concat(s['fields']);
         });
+        this.makeSeries();
     }
 
     ngAfterViewInit() {
         super.ngAfterViewInit();
-        this.makeSeries();
         this.plot.nativeElement.on('plotly_legendclick', event => {
             this.onLegendClick(event);
         });
