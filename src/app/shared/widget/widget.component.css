@@ -35,6 +35,11 @@
     z-index: 2;
 }
 
+.controls .btn {
+    /* fix for old browsers when calc(1rem -1px) is not supported */
+    line-height: 1rem;
+}
+
 .info {
     text-align: center;
     font-size: 12px;
