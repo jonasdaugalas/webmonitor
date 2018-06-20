@@ -25,66 +25,41 @@
                 "title": "Dashboard fill-run-ls query"
             },
             "widget": {
-                "channel": 2,
+                "channel": 1,
                 "fillEnabled": true,
                 "runEnabled": true,
                 "lsEnabled": true
             }
         }
     }, {
-        "type": "array-heatmap",
+        "type": "numeric-field",
         "config": {
             "container": {
                 "width": 50,
                 "height": 320
             },
             "wrapper": {
-                "title": "BPTX phase B1",
+                "title": "LHC published intensities",
                 "initialTimer": 0,
                 "started": true
             },
             "widget": {
-                "database": "daq_ES6",
-                "index": "bril-bptxprocessormon",
-                "timestampField": "timestamp",
-                "field": "intensity_b1",
+                "legend": "left",
+                "database": "daq_ES2",
                 "liveWindow": 3600000,
-                "refreshSize": 100,
-                "yAxisTitle": "Bunch index",
-                "filterZThreshold": 100,
-                "terms": {
-                    "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
-                }
-            }
-        }
-    }, {
-        "type": "array-snapshot",
-        "config": {
-            "container": {
-                "width": 33.33,
-                "height": 320
-            },
-            "wrapper": {
-                "title": "BPTX phases",
-                "initialTimer": 0,
-                "started": false
-            },
-            "widget": {
-                "chartType": "scattergl",
-                "database": "daq_ES6",
-                "index": "bril-bptxprocessormon",
-                "timestampField": "timestamp",
-                "legend": "right",
-                "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase [ns]",
-                "fields": [{
-                    "name": "phase_b1",
-                    "mask": "intensity_b1",
-                    "seriesName": "Phase B1"
-                }, {
-                    "name": "phase_b2",
-                    "mask": "intensity_b2",
-                    "seriesName": "Phase B2"
+                "refreshSize": 900,
+                "queryChannel": 1,
+                "aggregationThreshold": 3600000,
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "brilsummary",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "beam1_intensity"},
+                        {"name": "beam2_intensity"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                    }
                 }]
             }
         }

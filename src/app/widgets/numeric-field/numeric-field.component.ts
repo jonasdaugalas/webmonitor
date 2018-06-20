@@ -98,10 +98,15 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     queryRange(range) {
         this.widgetWrapper.stop();
-        const obs = this.dataService.queryRange(
-            this.queryParams, range['strFrom'], range['strTo'])
-            .map(this.setData.bind(this))
-            .share();
+        let obs;
+        if (range['to'] - range['from'] > this.config['widget']['aggregationThreshold']) {
+            obs = this.dataService.queryRangeAggregated(
+                this.queryParams, range['strFrom'], range['strTo']);
+        } else {
+            obs = this.dataService.queryRange(
+                this.queryParams, range['strFrom'], range['strTo']);
+        }
+        obs = obs.map(this.setData.bind(this)).share();
         obs.subscribe();
         return obs;
     }

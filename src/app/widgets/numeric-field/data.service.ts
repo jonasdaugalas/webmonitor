@@ -32,6 +32,18 @@ export class DataService {
 
     }
 
+    queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
+        let queries = [];
+        params.sources.forEach(source => {
+            queries = queries.concat(
+                this.makeSingleSourceAggregationQuery(
+                    source, min, max, aggregation, buckets)
+            );
+        });
+        return this.db.multiSearch(this.toNDJSON(queries), params.database)
+            .map(response => this.extractAggregatedResponseFields(response, params));
+    }
+
     queryNewest(params: Parameters, size) {
         let queries = [];
         params.sources.forEach(source => {
@@ -84,6 +96,54 @@ export class DataService {
         return result;
     }
 
+    protected makeSingleSourceAggregationQuery(
+        source: SourceParameter, min, max, aggregation='avg', buckets=1800) {
+        const header = {
+            index: source.index,
+            type: source.documentType
+        };
+        const interval = Math.ceil(
+            ((new Date(max)).getTime() - (new Date(min)).getTime()) / buckets
+        );
+        const body = {
+            'size':0,
+            'query':{
+                'bool':{'filter':[]}
+            },
+            'aggs':{
+                'points':{
+                    'date_histogram':{
+                        'field': source.timestampField,
+                        'interval': String(interval) + 'ms',
+                        'extended_bounds':{
+                            'min': min,
+                            'max':max
+                        }
+                    },
+                    'aggs':{}
+                }
+            }
+        };
+        body['query']['bool']['filter'].push({
+            'range':{'timestamp':{'gte': min, 'lte': max}}
+        });
+        source.fields.forEach(f => {
+            const agg = {};
+            agg[aggregation] = {'field': f.name};
+            body['aggs']['points']['aggs'][f.name] = agg;
+        });
+        if (source.terms) {
+            Object.keys(source.terms).forEach(k => {
+                const term = {};
+                term[k] = source.terms[k];
+
+
+                body['query']['bool']['filter'].push({'term': term});
+            });
+        }
+        return [header, body];
+    }
+
     protected makeSingleSourceQuery(source: SourceParameter) {
         const header = {
             index: source.index,
@@ -121,6 +181,24 @@ export class DataService {
         return response['responses']
             .map(r => r['hits']['hits'].reverse())
             .map(hits => hits.map(hit => hit['_source']));
+    }
+
+    protected extractAggregatedResponseFields(response, params: Parameters) {
+        const result = [];
+        params.sources.forEach((source, i) => {
+            const buckets = response['responses'][i]['aggregations']['points']['buckets'];
+            const sourceResult = [];
+            buckets.forEach(bucket => {
+                const point = {};
+                point[source.timestampField] = bucket['key_as_string'];
+                source.fields.forEach(field => {
+                    point[field.name] = bucket[field.name]['value'];
+                });
+                sourceResult.push(point);
+            });
+            result.push(sourceResult);
+        });
+        return result;
     }
 
 }
