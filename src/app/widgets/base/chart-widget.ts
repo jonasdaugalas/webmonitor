@@ -89,4 +89,13 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
         Plotly.relayout(this.plot.nativeElement, mod);
     }
 
+    disableInteraction() {
+        this.chartConfig['staticPlot'] = true;
+        Plotly.react(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
+    }
+
+    enableInteraction() {
+        this.chartConfig['staticPlot'] = false;
+        Plotly.react(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
+    }
 }
