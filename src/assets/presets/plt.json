@@ -20,10 +20,8 @@
             },
             "wrapper": {
                 "title": "PLT Analog Current",
+                "infoEnabled": true,
                 "started": true,
-                "controlsEnabled": true,
-                "queriesEnabled": true,
-                "startEnabled": true,
                 "initialTimer": 0
             },
 

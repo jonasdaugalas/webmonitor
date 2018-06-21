@@ -10,12 +10,14 @@
             "wrapper": {
                 "title": "Background",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "yAxisTitle": "[Hz/cm2/e11]",
                 "yAxis2Enabled": true,
                 "yAxis2Title": "% of abort",
@@ -56,12 +58,14 @@
             "wrapper": {
                 "title": "BPTX number of bunches",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "yAxisTitle": "Coincidences",
                 "refreshSize": 900,
                 "sources": [{
@@ -91,12 +95,14 @@
             "wrapper": {
                 "title": "BPTX deltaT",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "sources": [{
                     "index": "shelflist",
@@ -120,12 +126,14 @@
             "wrapper": {
                 "title": "BPTX phase",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "sources": [{
                     "index": "shelflist",
@@ -149,12 +157,14 @@
             "wrapper": {
                 "title": "LHC published intensities",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "sources": [{
                     "index": "shelflist",
@@ -179,12 +189,14 @@
             "wrapper": {
                 "title": "P5 vacuum",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "yAxisTitle": "Pressure",
                 "yAxisScale": "log",
@@ -250,12 +262,14 @@
             "wrapper": {
                 "title": "BCM Peak Fast Loss, Upper Limit",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "yAxisTitle": "RS1 counts",
                 "sources": [{

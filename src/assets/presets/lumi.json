@@ -10,12 +10,14 @@
             "wrapper": {
                 "title": "Instantaneous luminosity (NB4)",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 10800000,
                 "yAxisTitle": "[Hz/ub]",
                 "refreshSize": 900,
                 "sources": [{

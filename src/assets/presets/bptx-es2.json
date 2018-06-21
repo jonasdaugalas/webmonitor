@@ -10,12 +10,14 @@
             "wrapper": {
                 "title": "BPTX average phase",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "yAxisTitle": "Phase [ps]",
+                "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
                 "sources": [{
                     "index": "shelflist",
@@ -45,12 +47,14 @@
                 "title": "BPTX average per-bunch length",
                 "yAxisTitle": "Length [ns]",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "yAxisTitle": "Length [ns]",
+                "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
                 "sources": [{
                     "index": "shelflist",
@@ -80,12 +84,14 @@
                 "title": "BPTX average per-bunch intensity",
                 "yAxisTitle": "×10^11 protons",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "yAxisTitle": "Intensity [10^11 protons]",
+                "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
                 "sources": [{
                     "index": "shelflist",
@@ -115,12 +121,14 @@
             "wrapper": {
                 "title": "BPTX number of bunches",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
 
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
+                "aggregationThreshold": 7200000,
                 "liveWindow": 3600000,
                 "yAxisTitle": "Bunches per orbit",
                 "refreshSize": 900,
@@ -151,6 +159,7 @@
             "wrapper": {
                 "title": "BPTX deltaT (from summary)",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
 
@@ -158,6 +167,7 @@
                 "legend": "left",
                 "database": "daq_ES2",
                 "yAxisTitle": "t(b1) - t(b2) [ns]",
+                "aggregationThreshold": 7200000,
                 "liveWindow": 3600000,
                 "refreshSize": 900,
                 "sources": [{
