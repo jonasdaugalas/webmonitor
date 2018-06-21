@@ -30,6 +30,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
         });
     }
 
+
     @Output('start') startEmmiter = new EventEmitter(true);
     @Output('stop') stopEmmiter = new EventEmitter(true);
     @Output('timer') timerEmmiter = new EventEmitter(true);
@@ -46,6 +47,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     timerSubscription: Subscription;
     timersSubscription: Subscription;
     eventsSubscription: Subscription;
+    labels: Array<{id: number, text: string}> = [];
 
 
     constructor(protected timers: TimersService,
@@ -111,6 +113,19 @@ export class WidgetComponent implements OnInit, OnDestroy {
             this.stopEmmiter.emit();
         }
         this.changeDetector.detectChanges();
+    }
+
+    addLabel(text: string) {
+        const newLabel = {id: (new Date()).getTime(), text: text};
+        this.labels.push(newLabel);
+        return newLabel;
+    }
+
+    removeLabel(label: any) {
+        const index = this.labels.indexOf(label);
+        if (index >= 0) {
+            this.labels.splice(index, 1);
+        }
     }
 
     protected makeStart() {

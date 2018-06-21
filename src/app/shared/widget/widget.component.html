@@ -1,6 +1,9 @@
 <div class="widget">
 
-    <div class="title" [hidden]="!config.title">{{config.title}}</div>
+    <div class="title" [hidden]="!config.title">
+        {{config.title}}
+        <span *ngFor="let label of labels" class="label title-label">{{label.text}}</span>
+    </div>
 
     <div class="controls" *ngIf="config.controlsEnabled">
         <div class="btn-group btn-sm">
