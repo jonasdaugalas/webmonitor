@@ -33,6 +33,7 @@
                 "database": "daq_ES2",
                 "yAxisTitle": "Phase [ps]",
                 "liveWindow": 7200000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 1000,
                 "queryChannel": 1,
                 "sources": [{

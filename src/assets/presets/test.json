@@ -40,6 +40,7 @@
             },
             "wrapper": {
                 "title": "LHC published intensities",
+                "infoEnabled": true,
                 "initialTimer": 0,
                 "started": true
             },

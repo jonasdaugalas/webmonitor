@@ -118,7 +118,9 @@ export function setAutorange(layout) {
     const xaxis = layout['xaxis'] = (layout['xaxis'] || {});
     const yaxis = layout['yaxis'] = (layout['yaxis'] || {});
     xaxis['autorange'] = true;
+    xaxis['range'] = undefined;
     yaxis['autorange'] = true;
+    yaxis['range'] = undefined;
     return {xaxis: xaxis, yaxis: yaxis};
 }
 

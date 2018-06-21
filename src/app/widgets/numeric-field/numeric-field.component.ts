@@ -2,7 +2,7 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { tap, map, share} from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -22,6 +22,15 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     flatFields = [];
     series = [];
     initialShowHideSeriesDone = false;
+    _aggregated = false;
+    get aggregated() {
+        return this._aggregated;
+    }
+    set aggregated(newVal) {
+        this._aggregated = newVal;
+        this.info = Object.assign({}, this.info, {aggregated: newVal});
+    }
+    info = {};
 
     constructor(
         protected db: DatabaseService,
@@ -37,7 +46,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             'database': 'default',
             'sources': []
         });
-        const wi = this.config['widget']
+        const wi = this.config['widget'];
         this.queryParams = {
             database: wi['database'],
             sources: wi['sources']
@@ -51,9 +60,8 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     ngAfterViewInit() {
         super.ngAfterViewInit();
-        this.plot.nativeElement.on('plotly_legendclick', event => {
-            this.onLegendClick(event);
-        });
+        this.plot.nativeElement.on('plotly_legendclick', this.onLegendClick.bind(this));
+        this.plot.nativeElement.on('plotly_relayout', this.onRelayout.bind(this));
         if (!this.config['wrapper']['started']) {
             this.refresh().subscribe();
         }
@@ -77,9 +85,11 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     refresh(size?) {
         size = size || this.config['widget']['refreshSize'];
-        const obs = this.dataService.queryNewest(this.queryParams, size)
-            .map(this.setData.bind(this))
-            .share();
+        const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
+            map(this.setData.bind(this)),
+            tap(() => this.aggregated = false),
+            share(),
+        )
         obs.subscribe();
         return obs;
     }
@@ -99,20 +109,24 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     queryRange(range) {
         this.widgetWrapper.stop();
         let obs;
-        if (range['to'] - range['from'] > this.config['widget']['aggregationThreshold']) {
+        if (range['tsTo'] - range['tsFrom'] > this.config['widget']['aggregationThreshold']) {
             obs = this.dataService.queryRangeAggregated(
-                this.queryParams, range['strFrom'], range['strTo']);
+                this.queryParams, range['strFrom'], range['strTo']).pipe(
+                    tap(() => this.aggregated = true),
+                );
         } else {
             obs = this.dataService.queryRange(
-                this.queryParams, range['strFrom'], range['strTo']);
+                this.queryParams, range['strFrom'], range['strTo']).pipe(
+                    tap(() => this.aggregated = false),
+                );
         }
-        obs = obs.map(this.setData.bind(this)).share();
+        obs = obs.pipe(map(this.setData.bind(this)), share());
         obs.subscribe();
         return obs;
     }
 
     updateLive() {
-        if (this.series.length < 1) {
+        if (this.series.length < 1 || this.aggregated) {
             this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
             return;
         }
@@ -197,5 +211,27 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     onLegendClick(event) {
         this.flatFields[event.expandedIndex]['hidden'] = !this.flatFields[event.expandedIndex]['hidden'];
+    }
+
+    onRelayout(event) {
+        if (!this.aggregated) {
+            return 1;
+        }
+        if (!event['xaxis.range[0]'] || !event['xaxis.range[1]']) {
+            return 1;
+        }
+        this.disableInteraction();
+        const min = event['xaxis.range[0]'] + 'Z';
+        const max = event['xaxis.range[1]'] + 'Z';
+        this.queryRange({
+            'from': new Date(min),
+            'to': new Date(max),
+            'tsFrom': (new Date(min)).getTime(),
+            'tsTo': (new Date(max)).getTime(),
+            'strFrom': (new Date(min)).toISOString().split('.')[0] + 'Z',
+            'strTo': (new Date(max)).toISOString().split('.')[0] + 'Z'
+        })
+            .pipe(tap(this.enableInteraction.bind(this)))
+            .subscribe();
     }
 }
