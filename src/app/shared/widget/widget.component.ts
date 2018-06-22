@@ -40,6 +40,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     set timer(newTimer: Timer) {
         this.stop();
         this._timer = newTimer;
+        this.changeDetector.detectChanges();
     }
     get timer() {
         return this._timer;
@@ -60,6 +61,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
             if (this.timer && newTimers.indexOf(this.timer) < 0) {
                 this.timer = undefined;
             }
+            this.changeDetector.detectChanges();
         });
         if (Number.isInteger(this.config.initialTimer)) {
             try {
