@@ -20,6 +20,13 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     queryParams;
     reflow = () => undefined;
+    _aggregated = false;
+    set aggregated(newVal) {
+        this._aggregated = newVal;
+        this.info = Object.assign({}, this.info, {aggregated: newVal})
+    }
+    get aggregated() { return this._aggregated};
+    info = {};
 
     constructor(
         protected db: DatabaseService,
@@ -41,6 +48,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             documentType: wi['documentType'],
             timestampField: wi['timestampField'],
             field: wi['field'],
+            fieldLength: wi['fieldLength'],
             tooltipFields: wi['tooltipFields'],
             nestedPath: wi['nestedPath'],
             terms: wi['terms']
@@ -73,6 +81,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     refresh(size?) {
         size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
+            tap(() => this.aggregated = false),
             tap(this.setChartData.bind(this)),
             share()
         );
@@ -96,17 +105,27 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     queryRange(range) {
         this.widgetWrapper.stop();
-        const obs = this.dataService.queryRange(
-            this.queryParams, range['strFrom'], range['strTo']).pipe(
-                map(this.setChartData.bind(this)),
-                share()
-            );
+        let obs;
+        if (range['tsTo'] - range['tsFrom'] > this.config['widget']['aggregationThreshold']) {
+            obs = this.dataService.queryRangeAggregated(
+                this.queryParams, range['strFrom'], range['strTo']).pipe(
+                    tap(() => this.aggregated = true),
+                );
+        } else {
+            obs = this.dataService.queryRange(
+                this.queryParams, range['strFrom'], range['strTo']).pipe(
+                    tap(() => this.aggregated = false),
+                );
+        }
+        obs = obs.pipe(map(this.setChartData.bind(this)), share());
         obs.subscribe();
         return obs;
+
+
     }
 
     updateLive() {
-        if (this.chartData.length < 1 || this.chartData[0].x.length < 1) {
+        if (this.aggregated || this.chartData.length < 1 || this.chartData[0].x.length < 1) {
             this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
             return;
         }
