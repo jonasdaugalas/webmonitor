@@ -13,6 +13,7 @@ interface Parameters {
     documentType?: string;
     timestampField?: string;
     field: string;
+    fieldLength?: number;
     nestedPath?: string;
     terms?: { string: any };
 }
@@ -25,13 +26,73 @@ export class DataService {
 
     constructor(protected db: DatabaseService) {}
 
-    protected _query(queryStr, params) {
+    protected _query(queryStr, params, aggregated=false) {
+        let extractResponse;
+        if (aggregated) {
+            extractResponse = (response) => this.extractAggregatedResponseFields(response, params);
+        } else {
+            extractResponse = (response) => this.extractResponseFields(response, params);
+        }
         const queryObs = this.db.multiSearch(queryStr, params.db)
             .pipe(
-                map(resp => [resp, params.nestedPath]),
-                map(this.extractResponseFields.bind(this))
+                map(extractResponse)
             );
-        return this.queryCache.ask(params.database + queryStr, queryObs) as Observable<Array<any>>;
+        return this.queryCache.ask(
+            aggregated + params.database + queryStr, queryObs
+        ) as Observable<Array<any>>;
+    }
+
+    queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
+        let query = this.makeAggregationQuery(params, min, max, aggregation, buckets);
+        if (params.nestedPath) {
+            throw Error('Cannot do aggregation queries with nestedPath');
+        }
+        return this._query(this.db.stringifyToNDJSON(query), params, true);
+    }
+
+    makeAggregationQuery(params, min, max, aggregation='avg', buckets=1800) {
+        const header = {
+            index: params.index,
+            type: params.documentType
+        };
+        const interval = Math.ceil(
+            ((new Date(max)).getTime() - (new Date(min)).getTime()) / buckets
+        );
+        const body = {
+            'size':0,
+            'query':{
+                'bool':{'filter':[]}
+            },
+            'aggs':{
+                'points':{
+                    'date_histogram':{
+                        'field': params.timestampField,
+                        'interval': String(interval) + 'ms',
+                        'extended_bounds':{
+                            'min': min,
+                            'max':max
+                        }
+                    },
+                    'aggs':{}
+                }
+            }
+        };
+        body['query']['bool']['filter'].push({
+            'range':{'timestamp':{'gte': min, 'lte': max}}
+        });
+        for (let i = 0; i < params.fieldLength; ++i) {
+            const agg = {};
+            agg[aggregation] = {'script': "_source." + params.field + '[' + i + ']'};
+            body['aggs']['points']['aggs'][params.field + ':' + i] = agg;
+        }
+        if (params.terms) {
+            Object.keys(params.terms).forEach(k => {
+                const term = {};
+                term[k] = params.terms[k];
+                body['query']['bool']['filter'].push({'term': term});
+            });
+        }
+        return [header, body];
     }
 
     queryNewest(params: Parameters, size) {
@@ -97,15 +158,29 @@ export class DataService {
         return [params.timestampField || 'timestamp', params.field];
     }
 
-    protected extractResponseFields(responseWithNestedPath): Array<any> {
-        let response = responseWithNestedPath[0];
-        const nestedPath = responseWithNestedPath[1];
+    protected extractResponseFields(response, params): Array<any> {
         response = response['responses'][0]['hits']['hits'].reverse()
             .map(hit => hit['_source']);
-        if (nestedPath) {
-            response = response.map(hit => hit[nestedPath]);
+        if (params.nestedPath) {
+            response = response.map(hit => hit[params.nestedPath]);
         }
         return response;
+    }
+
+    protected extractAggregatedResponseFields(response, params): Array<any> {
+        const buckets = response['responses'][0]['aggregations']['points']['buckets'];
+        const result = [];
+        buckets.forEach(bucket => {
+            const point = {};
+            const fieldVal = [];
+            point[params.timestampField] = bucket['key_as_string'];
+            for (let i = 0; i < params.fieldLength; ++i) {
+                fieldVal.push(bucket[params.field + ':' + i]['value']);
+            }
+            point[params.field] = fieldVal;
+            result.push(point);
+        });
+        return result;
     }
 
 }
