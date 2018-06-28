@@ -150,3 +150,20 @@ export function parseUNIXTimestamp(ts) {
 export function parseStringTimestamp(ts) {
     return new Date(ts);
 }
+
+export function makeQueryRangeFromZoomEvent(event) {
+    if (!event['xaxis.range[0]'] || !event['xaxis.range[1]']) {
+        return undefined;
+    }
+    const min = event['xaxis.range[0]'] + 'Z';
+    const max = event['xaxis.range[1]'] + 'Z';
+    return {
+        'from': new Date(min),
+        'to': new Date(max),
+        'tsFrom': (new Date(min)).getTime(),
+        'tsTo': (new Date(max)).getTime(),
+        'strFrom': (new Date(min)).toISOString().split('.')[0] + 'Z',
+        'strTo': (new Date(max)).toISOString().split('.')[0] + 'Z',
+        'utc': true
+    };
+}
