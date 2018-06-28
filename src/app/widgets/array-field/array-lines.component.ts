@@ -2,7 +2,7 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { map, tap, share } from 'rxjs/operators';
+import { map, tap, share, catchError } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -59,6 +59,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     ngAfterViewInit() {
         this.makeSeries();
         super.ngAfterViewInit();
+        this.plot.nativeElement.on('plotly_relayout', this.onRelayout.bind(this));
         if (!this.config['wrapper']['started']) {
             this.refresh();
         }
@@ -78,17 +79,19 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         this.updateLive();
     }
 
+    onQueryError(error) {
+        this.setChartData([]);
+        throw(error);
+    }
+
     refresh(size?) {
         size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
             tap(() => this.aggregated = false),
             tap(this.setChartData.bind(this)),
-            share()
-        );
-        obs.subscribe(
-            () => undefined,
-            err => {this.setChartData(null);}
-        );
+            catchError(this.onQueryError.bind(this)),
+            share());
+        obs.subscribe();
         return obs;
     }
 
@@ -117,11 +120,12 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
                     tap(() => this.aggregated = false),
                 );
         }
-        obs = obs.pipe(map(this.setChartData.bind(this)), share());
+        obs = obs.pipe(
+            map(this.setChartData.bind(this)),
+            catchError(this.onQueryError.bind(this)),
+            share());
         obs.subscribe();
         return obs;
-
-
     }
 
     updateLive() {
@@ -199,6 +203,19 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             };
             this.chartData.push(newSeries);
         });
+    }
+
+    onRelayout(event) {
+        if (!this.aggregated) {
+            return 1;
+        }
+        const range = ChartUtils.makeQueryRangeFromZoomEvent(event);
+        if (range) {
+            this.disableInteraction();
+            this.queryRange(range)
+                .pipe(tap(this.enableInteraction.bind(this)))
+                .subscribe();
+        }
     }
 
 }

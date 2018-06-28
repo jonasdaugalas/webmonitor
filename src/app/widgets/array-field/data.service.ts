@@ -43,10 +43,13 @@ export class DataService {
     }
 
     queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
-        let query = this.makeAggregationQuery(params, min, max, aggregation, buckets);
         if (params.nestedPath) {
-            throw Error('Cannot do aggregation queries with nestedPath');
+            return Observable.throwError('Cannot do aggregation queries with nestedPath');
         }
+        if (!params.fieldLength) {
+            return Observable.throwError('Cannot do aggregation queries without fieldLength');
+        }
+        let query = this.makeAggregationQuery(params, min, max, aggregation, buckets);
         return this._query(this.db.stringifyToNDJSON(query), params, true);
     }
 
@@ -83,7 +86,7 @@ export class DataService {
         for (let i = 0; i < params.fieldLength; ++i) {
             const agg = {};
             agg[aggregation] = {'script': "_source." + params.field + '[' + i + ']'};
-            body['aggs']['points']['aggs'][params.field + ':' + i] = agg;
+            body['aggs']['points']['aggs'][':' + i] = agg;
         }
         if (params.terms) {
             Object.keys(params.terms).forEach(k => {
@@ -175,7 +178,7 @@ export class DataService {
             const fieldVal = [];
             point[params.timestampField] = bucket['key_as_string'];
             for (let i = 0; i < params.fieldLength; ++i) {
-                fieldVal.push(bucket[params.field + ':' + i]['value']);
+                fieldVal.push(bucket[':' + i]['value']);
             }
             point[params.field] = fieldVal;
             result.push(point);
