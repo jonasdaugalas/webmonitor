@@ -10,19 +10,21 @@
             "wrapper": {
                 "title": "RS1 BCML1",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "PercentAbort1",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -45,19 +47,21 @@
             "wrapper": {
                 "title": "RS1 BCML2",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "PercentAbort1",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
@@ -80,19 +84,21 @@
             "wrapper": {
                 "title": "RS12 BCML1",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "PercentAbort12",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -115,19 +121,21 @@
             "wrapper": {
                 "title": "RS12 BCML2",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "PercentAbort12",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "Percentage of abort threshold",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
@@ -150,19 +158,21 @@
             "wrapper": {
                 "title": "RS9 BCML1",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "RunningSum9",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "ADC counts",
                 "series": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -185,19 +195,21 @@
             "wrapper": {
                 "title": "RS9 BCML2",
                 "started": true,
+                "infoEnabled": true,
                 "controlsEnabled": true,
                 "queriesEnabled": true,
                 "startEnabled": true,
                 "initialTimer": 0
             },
             "widget": {
-
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "RunningSum9",
+                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 3600000,
                 "refreshSize": 2000,
                 "yAxisTitle": "ADC counts",
                 "series": [16, 18, 24, 26, 32, 34, 40, 42],
@@ -210,7 +222,5 @@
                 }
             }
         }
-
-
     }]
 }

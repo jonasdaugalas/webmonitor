@@ -32,36 +32,39 @@
             }
         }
     }, {
-        "type": "numeric-field",
+        "type": "array-lines",
         "config": {
             "container": {
                 "width": 50,
-                "height": 320
+                "height": 400
             },
             "wrapper": {
-                "title": "LHC published intensities",
+                "title": "RS1 BCML1",
+                "started": false,
                 "infoEnabled": true,
-                "initialTimer": 0,
-                "started": true
+                "initialTimer": 0
             },
             "widget": {
-                "legend": "left",
+
                 "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "dipanalyzerMon",
+                "field": "PercentAbort1",
+                "fieldLength": 48,
+                "legend": "left",
                 "liveWindow": 3600000,
-                "refreshSize": 900,
                 "queryChannel": 1,
                 "aggregationThreshold": 3600000,
-                "sources": [{
-                    "index": "shelflist",
-                    "documentType": "brilsummary",
-                    "timestampField": "timestamp",
-                    "fields": [
-                        {"name": "beam1_intensity"},
-                        {"name": "beam2_intensity"}],
-                    "terms": {
-                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
-                    }
-                }]
+                "refreshSize": 200,
+                "yAxisTitle": "Percentage of abort threshold",
+                "series": [0, 1, 2, 3, 4, 5, 6, 7],
+                "legendNames": [
+                    "BCML1 +Z near top AB", "BCML1 +Z near bottom AB", "BCML1 +Z far top AB", "BCML1 +Z far bottom AB",
+                    "BCML1 -Z near top AB", "BCML1 -Z near bottom AB", "BCML1 -Z far top AB", "BCML1 -Z far bottom AB"
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-31-01.cms:50073-102-"
+                }
             }
         }
     }, {

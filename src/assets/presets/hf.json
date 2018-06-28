@@ -20,8 +20,10 @@
                 "index": "shelflist",
                 "documentType": "hfProcessorMon",
                 "field": "lumiPerBoard",
+                "fieldLength": 36,
                 "legend": "outside-right",
                 "liveWindow": 3600000,
+                "aggregationThreshold": 7200000,
                 "refreshSize": 100,
                 "yAxisTitle": "rates",
                 "series": [
