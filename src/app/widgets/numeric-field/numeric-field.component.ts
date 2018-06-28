@@ -2,7 +2,7 @@ import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { tap, map, share} from 'rxjs/operators';
+import { tap, map, share, catchError} from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -22,6 +22,9 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     flatFields = [];
     series = [];
     initialShowHideSeriesDone = false;
+
+    info = {};
+    labelAggregated = undefined;
     _aggregated = false;
     get aggregated() {
         return this._aggregated;
@@ -29,8 +32,14 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     set aggregated(newVal) {
         this._aggregated = newVal;
         this.info = Object.assign({}, this.info, {aggregated: newVal});
+        // if (newVal) {
+        //     if (!this.labelAggregated) {
+        //         this.labelAggregated = this.widgetWrapper.addLabel('aggregated');
+        //     }
+        // } else {
+        //     this.widgetWrapper.removeLabel(this.labelAggregated);
+        // }
     }
-    info = {};
 
     constructor(
         protected db: DatabaseService,
@@ -83,13 +92,20 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         this.refresh().subscribe(this.setXZoomToLiveWindow.bind(this));
     }
 
+    onQueryError(error) {
+        this.setData([]);
+        throw(error);
+    }
+
     refresh(size?) {
         size = size || this.config['widget']['refreshSize'];
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
             map(this.setData.bind(this)),
             tap(() => this.aggregated = false),
-            share(),
+            catchError(this.onQueryError.bind(this)),
+            share()
         )
+        obs.subscribe();
         obs.subscribe();
         return obs;
     }
@@ -120,7 +136,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                     tap(() => this.aggregated = false),
                 );
         }
-        obs = obs.pipe(map(this.setData.bind(this)), share());
+        obs = obs.pipe(
+            map(this.setData.bind(this)),
+            catchError(this.onQueryError.bind(this)),
+            share());
         obs.subscribe();
         return obs;
     }
@@ -217,21 +236,12 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         if (!this.aggregated) {
             return 1;
         }
-        if (!event['xaxis.range[0]'] || !event['xaxis.range[1]']) {
-            return 1;
+        const range = ChartUtils.makeQueryRangeFromZoomEvent(event);
+        if (range) {
+            this.disableInteraction();
+            this.queryRange(range)
+                .pipe(tap(this.enableInteraction.bind(this)))
+                .subscribe();
         }
-        this.disableInteraction();
-        const min = event['xaxis.range[0]'] + 'Z';
-        const max = event['xaxis.range[1]'] + 'Z';
-        this.queryRange({
-            'from': new Date(min),
-            'to': new Date(max),
-            'tsFrom': (new Date(min)).getTime(),
-            'tsTo': (new Date(max)).getTime(),
-            'strFrom': (new Date(min)).toISOString().split('.')[0] + 'Z',
-            'strTo': (new Date(max)).toISOString().split('.')[0] + 'Z'
-        })
-            .pipe(tap(this.enableInteraction.bind(this)))
-            .subscribe();
     }
 }
