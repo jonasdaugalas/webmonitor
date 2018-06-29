@@ -48,7 +48,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             documentType: wi['documentType'],
             timestampField: wi['timestampField'],
             field: wi['field'],
-            fieldLength: wi['fieldLength'],
+            series: wi['series'],
             tooltipFields: wi['tooltipFields'],
             nestedPath: wi['nestedPath'],
             terms: wi['terms']

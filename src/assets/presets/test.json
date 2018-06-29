@@ -50,7 +50,6 @@
                 "index": "shelflist",
                 "documentType": "dipanalyzerMon",
                 "field": "PercentAbort1",
-                "fieldLength": 48,
                 "legend": "left",
                 "liveWindow": 3600000,
                 "queryChannel": 1,

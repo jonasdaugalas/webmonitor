@@ -13,7 +13,7 @@ interface Parameters {
     documentType?: string;
     timestampField?: string;
     field: string;
-    fieldLength?: number;
+    series: Array<number>;
     nestedPath?: string;
     terms?: { string: any };
 }
@@ -45,9 +45,6 @@ export class DataService {
     queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
         if (params.nestedPath) {
             return Observable.throwError('Cannot do aggregation queries with nestedPath');
-        }
-        if (!params.fieldLength) {
-            return Observable.throwError('Cannot do aggregation queries without fieldLength');
         }
         let query = this.makeAggregationQuery(params, min, max, aggregation, buckets);
         return this._query(this.db.stringifyToNDJSON(query), params, true);
@@ -83,11 +80,11 @@ export class DataService {
         body['query']['bool']['filter'].push({
             'range':{'timestamp':{'gte': min, 'lte': max}}
         });
-        for (let i = 0; i < params.fieldLength; ++i) {
+        params.series.forEach(s => {
             const agg = {};
-            agg[aggregation] = {'script': "_source." + params.field + '[' + i + ']'};
-            body['aggs']['points']['aggs'][':' + i] = agg;
-        }
+            agg[aggregation] = {'script': "_source." + params.field + '[' + s + ']'};
+            body['aggs']['points']['aggs'][':' + s] = agg;
+        });
         if (params.terms) {
             Object.keys(params.terms).forEach(k => {
                 const term = {};
@@ -177,9 +174,9 @@ export class DataService {
             const point = {};
             const fieldVal = [];
             point[params.timestampField] = bucket['key_as_string'];
-            for (let i = 0; i < params.fieldLength; ++i) {
-                fieldVal.push(bucket[':' + i]['value']);
-            }
+            params.series.forEach(s => {
+                fieldVal[s] = bucket[':' + s]['value'];
+            });
             point[params.field] = fieldVal;
             result.push(point);
         });
