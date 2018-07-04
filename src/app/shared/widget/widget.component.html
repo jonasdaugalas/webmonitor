@@ -54,6 +54,15 @@
         </ng-content>
     </div>
 
+    <div class="logs" *ngIf="logs.length">
+        <clr-alert
+            *ngFor="let l of logs"
+            [clrAlertType]="l.level"
+            [clrAlertClosable]="false">
+            {{l.text}}
+        </clr-alert>
+    </div>
+
     <clr-modal
         [(clrModalOpen)]="config.optionsOpen"
         *ngIf="config.optionsEnabled"

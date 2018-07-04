@@ -78,10 +78,12 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     queryFromEvent(event) {
         if (event['type'] === 'time_range_query') {
+            this.widgetWrapper.log('Received time range query', 'info');
             this.queryRange(event['payload']);
         } else if (event['type'] === 'fill_run_ls_query') {
             const wi = this.config['widget'];
             if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.widgetWrapper.log('Received fill/run query', 'info');
                 this.queryFillRun(event['payload']);
             }
         }
@@ -97,6 +99,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     onQueryError(error) {
         this.setData([]);
+        this.widgetWrapper.log(String(error), 'danger', 5000);
         throw(error);
     }
 
@@ -163,6 +166,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                 terms.push(term);
             })
         } else {
+            this.widgetWrapper.log('One of [FILL, RUN] must be specified', 'warning', 3500)
             return EmptyObservable();
         }
         const obs = this.dataService.queryTerms(this.queryParams, terms)

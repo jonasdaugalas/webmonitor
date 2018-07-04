@@ -49,6 +49,7 @@ export class WidgetComponent implements OnInit, OnDestroy {
     timersSubscription: Subscription;
     eventsSubscription: Subscription;
     labels: Array<{id: number, text: string}> = [];
+    logs: Array<{level: string, text: string}> = [];
 
 
     constructor(protected timers: TimersService,
@@ -128,6 +129,26 @@ export class WidgetComponent implements OnInit, OnDestroy {
         if (index >= 0) {
             this.labels.splice(index, 1);
         }
+    }
+
+    log(text, level='info', timeout=2000) {
+        const logEvent = {
+            text: text,
+            level: level
+        }
+        this.logs.push(logEvent);
+        setTimeout(() => {
+            const index = this.logs.indexOf(logEvent);
+            if (index > -1) {
+                this.logs.splice(index, 1);
+            }
+            this.changeDetector.detectChanges();
+        }, timeout);
+        this.changeDetector.detectChanges();
+    }
+
+    clearLogs() {
+        this.logs.length = 0;
     }
 
     protected makeStart() {
