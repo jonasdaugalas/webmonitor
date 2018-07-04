@@ -16,6 +16,8 @@ interface Parameters {
     series: Array<number>;
     nestedPath?: string;
     terms?: { string: any };
+    fillField?: string;
+    runField?: string;
 }
 
 
@@ -95,6 +97,13 @@ export class DataService {
         return [header, body];
     }
 
+    queryTerm(params, term) {
+        let query = this.makeQueryTemplate(params);
+        query[1]['query']['bool']['filter'].push({"term": term});
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
+        return this._query(this.db.stringifyToNDJSON(query), params);
+    }
+
     queryNewest(params: Parameters, size) {
         let query = this.makeQueryTemplate(params);
         query[1]['size'] = size
@@ -104,7 +113,6 @@ export class DataService {
 
     queryRange(params: Parameters, min, max) {
         let query = this.makeQueryTemplate(params);
-        query[1]['size'] = MAX_QUERY_SIZE;
         const range = {};
         range[params.timestampField] = {
             "gte": min,
@@ -137,6 +145,7 @@ export class DataService {
         const body = {
             "_source": this.parseQueryFields(params),
             "sort": {},
+            "size": MAX_QUERY_SIZE,
             "query": {
                 "bool": {
                     "filter": []

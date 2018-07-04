@@ -1,8 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { map, share, tap } from 'rxjs/operators';
+import { Subscription, empty as emptyObservable } from 'rxjs';
+import { map, share, tap, catchError } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -41,7 +41,9 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
             documentType: wi['documentType'],
             timestampField: wi['timestampField'],
             field: wi['field'],
-            terms: wi['terms']
+            terms: wi['terms'],
+            fillField: wi['fillField'],
+            runField: wi['runField']
         };
     }
 
@@ -55,6 +57,11 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
     queryFromEvent(event) {
         if (event['type'] === 'time_range_query') {
             this.queryRange(event['payload']);
+        } else if (event['type'] === 'fill_run_ls_query') {
+            const wi = this.config['widget'];
+            if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.queryFillRun(event['payload']);
+            }
         }
     }
 
@@ -64,6 +71,11 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
 
     onStartEvent() {
         this.updateLive();
+    }
+
+    onQueryError(error) {
+        this.setData([]);
+        throw(error);
     }
 
     refresh(size?) {
@@ -87,7 +99,7 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
         const newSeries = this.getChartSeriesTemplate();
         newSeries.x = newData.map(hit => hit[this.queryParams.timestampField]);
         newSeries.z = [];
-        const nRows = newData[0][this.queryParams.field].length;
+        const nRows = Math.max.apply(Math, newData.map(point => point[this.queryParams.field].length));
         for (let r = 0; r < nRows; ++r) {
             newSeries.z.push(newData.map(hit => hit[this.queryParams.field][r]));
         }
@@ -108,6 +120,25 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
         obs.subscribe(() => {
             this.setXZoom(range['strFrom'], range['strTo']);
         });
+        return obs;
+    }
+
+    queryFillRun(event) {
+        this.widgetWrapper.stop();
+        const term = {};
+        if (event['run']) {
+            term[this.queryParams['runField']] = event['run'];
+        } else if (event['fill']) {
+            term[this.queryParams['fillField']] = event['fill'];
+        } else {
+            return emptyObservable();
+        }
+        const obs = this.dataService.queryTerm(this.queryParams, term)
+            .pipe(
+                map(this.setData.bind(this)),
+                catchError(this.onQueryError.bind(this)),
+                share());
+        obs.subscribe();
         return obs;
     }
 

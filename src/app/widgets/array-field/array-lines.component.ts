@@ -1,7 +1,7 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, empty as emptyObservable } from 'rxjs';
 import { map, tap, share, catchError } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
@@ -51,7 +51,9 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             series: wi['series'],
             tooltipFields: wi['tooltipFields'],
             nestedPath: wi['nestedPath'],
-            terms: wi['terms']
+            terms: wi['terms'],
+            fillField: wi['fillField'],
+            runField: wi['runField']
         }
         return wi;
     }
@@ -68,6 +70,11 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     queryFromEvent(event) {
         if (event['type'] === 'time_range_query') {
             this.queryRange(event['payload']);
+        } else if (event['type'] === 'fill_run_ls_query') {
+            const wi = this.config['widget'];
+            if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.queryFillRun(event['payload']);
+            }
         }
     }
 
@@ -124,6 +131,26 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             map(this.setChartData.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share());
+        obs.subscribe();
+        return obs;
+    }
+
+    queryFillRun(event) {
+        this.widgetWrapper.stop();
+        const term = {};
+        if (event['run']) {
+            term[this.queryParams['runField']] = event['run'];
+        } else if (event['fill']) {
+            term[this.queryParams['fillField']] = event['fill'];
+        } else {
+            return emptyObservable();
+        }
+        const obs = this.dataService.queryTerm(this.queryParams, term)
+            .pipe(
+                tap(() => this.aggregated = false),
+                map(this.setChartData.bind(this)),
+                catchError(this.onQueryError.bind(this)),
+                share());
         obs.subscribe();
         return obs;
     }

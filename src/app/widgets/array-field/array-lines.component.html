@@ -9,6 +9,16 @@
     </div>
     <div class="widget-queries">
         <wm-date-range-form (query)="queryRange($event)"></wm-date-range-form>
+        <wm-fill-run-ls-form
+            *ngIf="config.widget.fillQueriesEnabled"
+            [fillEnabled]="true" [runEnabled]="false" [lsEnabled]="false"
+            (query)="queryFillRun($event)">
+        </wm-fill-run-ls-form>
+        <wm-fill-run-ls-form
+            *ngIf="config.widget.runQueriesEnabled"
+            [fillEnabled]="false" [runEnabled]="true" [lsEnabled]="false"
+            (query)="queryFillRun($event)">
+        </wm-fill-run-ls-form>
     </div>
     <div class="widget-content">
         <div #plot style="height: 100%; width: 100%"></div>
