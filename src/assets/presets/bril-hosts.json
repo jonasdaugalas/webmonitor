@@ -1,0 +1,38 @@
+{
+    "timers": [21],
+    "widgets": [{
+        "type": "numeric-field",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "CPU usage",
+                "initialTimer": 0,
+                "queriesEnabled": false,
+                "infoEnabled": false,
+                "started": true
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 7200000,
+                "aggregationThreshold": 7200000,
+                "yAxisTitle": "CPU usage %",
+                "refreshSize": 900,
+                "sources": [{
+                    "index": "flashlist",
+                    "documentType": "hostInfo",
+                    "timestampField": "timestamp",
+                    "fields": [
+                        {"name": "cpuUsage", "seriesName": "srv-s2d16-21-01"}
+                    ],
+                    "terms": {
+                        "context": "http://srv-s2d16-21-01.cms:9999"
+                    }
+                }]
+            }
+        }
+    }]
+}

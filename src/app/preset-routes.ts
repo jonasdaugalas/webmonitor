@@ -43,6 +43,9 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/plt_offline',
     config_url: 'assets/presets/plt_offline.json'
 }, {
+    path: '/bril-hosts',
+    config_url: 'assets/presets/bril-hosts.json'
+}, {
     path: '/test',
     config_url: 'assets/presets/test.json'
 }];
