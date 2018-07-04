@@ -32,6 +32,18 @@ export class DataService {
 
     }
 
+    queryTerms(params, terms) {
+        let queries = [];
+        params.sources.forEach((source, i) => {
+            const query = this.makeSingleSourceQuery(source);
+            const term = terms[i];
+            query[1]['query']['bool']['filter'].push({"term": term});
+            queries = queries.concat(query);
+        });
+        return this.db.multiSearch(this.toNDJSON(queries), params.database)
+            .map(this.extractResponseFields.bind(this));
+    }
+
     queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
         let queries = [];
         params.sources.forEach(source => {
@@ -59,7 +71,6 @@ export class DataService {
         let queries = [];
         params.sources.forEach(source => {
             const query = this.makeSingleSourceQuery(source);
-            query[1]['size'] = MAX_QUERY_SIZE;
             const range = {};
             range[source.timestampField] = {
                 "gte": min,
@@ -136,8 +147,6 @@ export class DataService {
             Object.keys(source.terms).forEach(k => {
                 const term = {};
                 term[k] = source.terms[k];
-
-
                 body['query']['bool']['filter'].push({'term': term});
             });
         }
@@ -152,6 +161,7 @@ export class DataService {
         const body = {
             "_source": this.parseQueryFields(source),
             "sort": {},
+            "size": MAX_QUERY_SIZE,
             "query": {
                 "bool": {
                     "filter": []

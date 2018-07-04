@@ -1,8 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { tap, map, share, catchError} from 'rxjs/operators';
+import { Subscription, empty as EmptyObservable} from 'rxjs';
+import { tap, map, share, catchError, } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -80,7 +80,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         if (event['type'] === 'time_range_query') {
             this.queryRange(event['payload']);
         } else if (event['type'] === 'fill_run_ls_query') {
-            console.log('fill_run_ls_query not supported yet');
+            const wi = this.config['widget'];
+            if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.queryFillRun(event['payload']);
+            }
         }
     }
 
@@ -140,6 +143,34 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             map(this.setData.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share());
+        obs.subscribe();
+        return obs;
+    }
+
+    queryFillRun(event) {
+        this.widgetWrapper.stop();
+        const terms = [];
+        if (event['run']) {
+            this.queryParams.sources.forEach(s => {
+                const term = {};
+                term[s['runField']] = event['run'];
+                terms.push(term);
+            })
+        } else if (event['fill']) {
+            this.queryParams.sources.forEach(s => {
+                const term = {};
+                term[s['fillField']] = event['fill'];
+                terms.push(term);
+            })
+        } else {
+            return EmptyObservable();
+        }
+        const obs = this.dataService.queryTerms(this.queryParams, terms)
+            .pipe(
+                tap(() => this.aggregated = false),
+                map(this.setData.bind(this)),
+                catchError(this.onQueryError.bind(this)),
+                share());
         obs.subscribe();
         return obs;
     }
