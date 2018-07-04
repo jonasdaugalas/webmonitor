@@ -7,7 +7,13 @@
 
     <div class="widget-options"></div>
 
-    <div class="widget-queries"></div>
+    <div class="widget-queries">
+        <wm-fill-run-ls-form
+            *ngIf="config.widget.runLsQueriesEnabled"
+            [fillEnabled]="false" [runEnabled]="true" [lsEnabled]="true"
+            (query)="queryRunLs($event)">
+        </wm-fill-run-ls-form>
+    </div>
 
     <div class="widget-content">
         <clr-alert

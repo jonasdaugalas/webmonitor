@@ -1,7 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef
 } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subscription, empty as emptyObservable } from 'rxjs';
+import { map, tap, catchError, share } from 'rxjs/operators';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
@@ -31,7 +32,6 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
         super.ngOnInit({
             'timestampField': 'timestamp'
         });
-        this.config['wrapper']['queriesEnabled'] = false;
         const wi = this.config['widget'];
         this.configureLayout(wi);
         if (wi['chartType'] && wi['chartType'].toLowerCase() === 'scattergl') {
@@ -45,7 +45,9 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
             index: wi['index'],
             documentType: wi['documentType'],
             terms: wi['terms'],
-            fields: wi['fields']
+            fields: wi['fields'],
+            runField: wi['runField'],
+            lsField: wi['lsField']
         };
     }
 
@@ -73,7 +75,12 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
     }
 
     queryFromEvent(event) {
-        console.warn('no queries implemented yet');
+        if (event['type'] === 'fill_run_ls_query') {
+            if (this.config['widget']['runLsQueriesEnabled']) {
+                this.widgetWrapper.log('Received RUN,LS query', 'info');
+                this.queryRunLs(event['payload']);
+            }
+        }
     }
 
     onRefreshEvent() {
@@ -84,18 +91,48 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
         this.refresh();
     }
 
+    onQueryError(error) {
+        this.setData([]);
+        this.widgetWrapper.log(String(error), 'danger', 5000);
+        throw(error);
+    }
+
     refresh() {
         if (this.needWebGLFallback) {
             return;
         }
-        const obs = this.dataService.queryNewest(this.queryParams)
-            .map(this.setData.bind(this))
-            .share();
+        const obs = this.dataService.queryNewest(this.queryParams).pipe(
+            map(this.setData.bind(this)),
+            catchError(this.onQueryError.bind(this)),
+            share()
+        );
+        obs.subscribe();
+        return obs;
+    }
+
+    queryRunLs(event) {
+        if (!event['run'] || !event['ls']) {
+            this.widgetWrapper.log('RUN and LS must be specified', 'warning', 3500);
+            return emptyObservable();
+        }
+        const runTerm = {};
+        const lsTerm = {};
+        runTerm[this.queryParams.runField] = event['run'];
+        lsTerm[this.queryParams.lsField] = event['ls'];
+        const obs = this.dataService.queryTerms(this.queryParams, [runTerm, lsTerm]).pipe(
+            map(this.setData.bind(this)),
+            catchError(this.onQueryError.bind(this)),
+            share()
+        );
         obs.subscribe();
         return obs;
     }
 
     setData(newData) {
+        if (!newData[0]) {
+            this.widgetWrapper.log('Cannot draw chart: no data.', 'danger', 3500);
+            return;
+        }
         this.chartData.length = 0;
         this.series.length = 0;
         this.queryParams.fields.forEach((f, i) => {

@@ -17,6 +17,8 @@ interface Parameters {
     timestampField?: string;
     fields: Array<FieldParameter>;
     terms?: { string: any };
+    runField?: string;
+    lsField?: string;
 }
 
 
@@ -27,13 +29,23 @@ export class DataService {
 
     }
 
-    queryNewest(params: Parameters) {
-        let queries = this.makeQuery(params);
-        return this.db.multiSearch(this.toNDJSON(queries), params.database)
+    queryTerms(params: Parameters, terms) {
+        let query = this.makeQuery(params);
+        terms.forEach(t => {
+            query[1]['query']['bool']['filter'].push({"term": t});
+        });
+        return this.db.multiSearch(this.toNDJSON(query), params.database)
             .pipe(
                 map(this.extractResponseFields.bind(this))
             );
+    }
 
+    queryNewest(params: Parameters) {
+        let query = this.makeQuery(params);
+        return this.db.multiSearch(this.toNDJSON(query), params.database)
+            .pipe(
+                map(this.extractResponseFields.bind(this))
+            );
     }
 
     protected toNDJSON(values) {
