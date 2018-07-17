@@ -167,3 +167,15 @@ export function makeQueryRangeFromZoomEvent(event) {
         'utc': true
     };
 }
+
+export function makeQueryRangeFromStrings(min, max) {
+    return {
+        'from': new Date(min),
+        'to': new Date(max),
+        'tsFrom': (new Date(min)).getTime(),
+        'tsTo': (new Date(max)).getTime(),
+        'strFrom': min,
+        'strTo': max,
+        'utc': true
+    };
+}

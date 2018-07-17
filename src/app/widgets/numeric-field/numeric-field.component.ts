@@ -1,8 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
-import { Subscription, empty as EmptyObservable} from 'rxjs';
-import { tap, map, share, catchError, } from 'rxjs/operators';
+import { Subscription, empty as EmptyObservable, throwError, of } from 'rxjs';
+import { tap, map, share, catchError, mergeMap} from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -98,8 +98,8 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     }
 
     onQueryError(error) {
-        this.setData([]);
         this.widgetWrapper.log(String(error), 'danger', 5000);
+        this.clearChart();
         throw(error);
     }
 
@@ -126,6 +126,17 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         });
         Plotly.redraw(this.plot.nativeElement, this.chartData);
         this.autorange();
+    }
+
+    clearChart() {
+        this.queryParams.sources.forEach((source, i) => {
+            source.fields.forEach((field, j) => {
+                const series = this.series[i][j];
+                series.x = []
+                series.y = []
+            });
+        });
+        Plotly.redraw(this.plot.nativeElement, this.chartData);
     }
 
     queryRange(range) {
@@ -169,14 +180,23 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             this.widgetWrapper.log('One of [FILL, RUN] must be specified', 'warning', 3500)
             return EmptyObservable();
         }
-        const obs = this.dataService.queryTerms(this.queryParams, terms)
+        this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info', 2000)
+        this.dataService.queryExtremesByTerms(this.queryParams, terms)
             .pipe(
-                tap(() => this.aggregated = false),
-                map(this.setData.bind(this)),
-                catchError(this.onQueryError.bind(this)),
-                share());
-        obs.subscribe();
-        return obs;
+                mergeMap(extremes => {
+                    if (!extremes['min']['value'] || !extremes['max']['value']) {
+                        return throwError('Failed to get timestamp extremes for FILL/RUN query. ' + JSON.stringify(event));
+                    }
+                    const min = extremes['min']['value_as_string'];
+                    const max = extremes['max']['value_as_string'];
+                    this.widgetWrapper.log('Got timestamp extremes. ' + min + ', ' + max, 'info', 2000)
+                    const range =  ChartUtils.makeQueryRangeFromStrings(min, max);
+                    return of(range);
+                }),
+                map(this.queryRange.bind(this)),
+                catchError(this.onQueryError.bind(this))
+            )
+            .subscribe();
     }
 
     updateLive() {

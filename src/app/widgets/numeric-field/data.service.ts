@@ -32,6 +32,18 @@ export class DataService {
 
     }
 
+    queryExtremesByTerms(params, terms) {
+        let queries = [];
+        params.sources.forEach((source, i) => {
+            const query = this.makeExtremesQuery(source);
+            const term = terms[i];
+            query[1]['query']['bool']['filter'].push({"term": term});
+            queries = queries.concat(query);
+        });
+        return this.db.multiSearch(this.toNDJSON(queries), params.database)
+            .map(this.extractExtremes.bind(this));
+    }
+
     queryTerms(params, terms) {
         let queries = [];
         params.sources.forEach((source, i) => {
@@ -153,6 +165,42 @@ export class DataService {
         return [header, body];
     }
 
+    protected makeExtremesQuery(source) {
+        const header = {
+            index: source.index,
+            type: source.documentType
+        };
+        const body = {
+            "sort": {},
+            "size": 0,
+            "query": {
+                "bool": {
+                    "filter": []
+                }
+            },
+            'aggs':{
+                'min_ts':{
+                    'min':{
+                        'field': source.timestampField
+                    }
+                },
+                'max_ts':{
+                    'max':{
+                        'field': source.timestampField
+                    }
+                }
+            }
+        };
+        if (source.terms) {
+            Object.keys(source.terms).forEach(k => {
+                const term = {};
+                term[k] = source.terms[k];
+                body['query']['bool']['filter'].push({'term': term});
+            });
+        }
+        return [header, body];
+    }
+
     protected makeSingleSourceQuery(source: SourceParameter) {
         const header = {
             index: source.index,
@@ -209,6 +257,21 @@ export class DataService {
             result.push(sourceResult);
         });
         return result;
+    }
+
+    protected extractExtremes(response) {
+        const perSource = response['responses']
+            .map(r => r['aggregations']);
+        const min = perSource.map(e => e['min_ts']);
+        const max = perSource.map(e => e['max_ts']);
+        const gMin = min.reduce((result, el) => el['value'] < result ? el['value'] : result);
+        const gMax = max.reduce((result, el) => el['value'] < result ? el['value'] : result);
+        return {
+            min: gMin,
+            max: gMax,
+            perSourceMin: min,
+            perSourceMax: max
+        }
     }
 
 }
