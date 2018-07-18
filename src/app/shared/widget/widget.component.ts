@@ -131,10 +131,19 @@ export class WidgetComponent implements OnInit, OnDestroy {
         }
     }
 
-    log(text, level='info', timeout=2000) {
+    log(text, level='info', timeout?) {
         const logEvent = {
             text: text,
             level: level
+        }
+        if (!timeout) {
+            if (level === 'info') {
+                timeout = 2000;
+            } else if (level === 'warning') {
+                timeout = 3500;
+            } else {
+                timeout = 5000;
+            }
         }
         this.logs.push(logEvent);
         setTimeout(() => {

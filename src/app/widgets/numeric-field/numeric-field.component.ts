@@ -98,7 +98,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     }
 
     onQueryError(error) {
-        this.widgetWrapper.log(String(error), 'danger', 5000);
+        this.widgetWrapper.log(String(error), 'danger');
         this.clearChart();
         throw(error);
     }
@@ -177,10 +177,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                 terms.push(term);
             })
         } else {
-            this.widgetWrapper.log('One of [FILL, RUN] must be specified', 'warning', 3500)
+            this.widgetWrapper.log('One of [FILL, RUN] must be specified', 'warning')
             return EmptyObservable();
         }
-        this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info', 2000)
+        this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info')
         this.dataService.queryExtremesByTerms(this.queryParams, terms)
             .pipe(
                 mergeMap(extremes => {
@@ -189,7 +189,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                     }
                     const min = extremes['min']['value_as_string'];
                     const max = extremes['max']['value_as_string'];
-                    this.widgetWrapper.log('Got timestamp extremes. ' + min + ', ' + max, 'info', 2000)
+                    this.widgetWrapper.log('Got timestamp extremes. ' + min + ', ' + max, 'info')
                     const range =  ChartUtils.makeQueryRangeFromStrings(min, max);
                     return of(range);
                 }),
