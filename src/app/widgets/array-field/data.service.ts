@@ -28,6 +28,14 @@ export class DataService {
 
     constructor(protected db: DatabaseService) {}
 
+    queryExtremesByTerm(params, term) {
+        let query = this.makeExtremesQuery(params);
+        query[1]['query']['bool']['filter'].push({"term": term});
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
+        return this.db.multiSearch(this.db.stringifyToNDJSON(query), params.db)
+            .pipe(map(this.extractExtremes));
+    }
+
     protected _query(queryStr, params, aggregated=false) {
         let extractResponse;
         if (aggregated) {
@@ -137,6 +145,41 @@ export class DataService {
         return this._query(this.db.stringifyToNDJSON(query), params);
     }
 
+    protected makeExtremesQuery(params: Parameters) {
+        const header = {
+            index: params.index,
+            type: params.documentType
+        };
+        const body = {
+            "size": 0,
+            "query": {
+                "bool": {
+                    "filter": []
+                }
+            },
+            'aggs':{
+                'min_ts':{
+                    'min':{
+                        'field': params.timestampField
+                    }
+                },
+                'max_ts':{
+                    'max':{
+                        'field': params.timestampField
+                    }
+                }
+            }
+        };
+        if (params.terms) {
+            Object.keys(params.terms).forEach(k => {
+                const term = {};
+                term[k] = params.terms[k];
+                body['query']['bool']['filter'].push({'term': term});
+            });
+        }
+        return [header, body];
+    }
+
     protected makeQueryTemplate(params: Parameters) {
         const header = {
             index: params.index,
@@ -192,4 +235,13 @@ export class DataService {
         return result;
     }
 
+    protected extractExtremes(response) {
+        const aggs = response['responses'][0]['aggregations'];
+        const min = aggs['min_ts'];
+        const max = aggs['max_ts'];
+        return {
+            min: min,
+            max: max
+        }
+    }
 }

@@ -1,8 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild, ElementRef, AfterViewInit
 } from '@angular/core';
-import { Subscription, empty as emptyObservable } from 'rxjs';
-import { map, tap, share, catchError } from 'rxjs/operators';
+import { Subscription, empty as emptyObservable, of, throwError } from 'rxjs';
+import { map, tap, share, catchError, mergeMap } from 'rxjs/operators';
 import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
@@ -87,6 +87,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     onQueryError(error) {
+        this.widgetWrapper.log(String(error), 'danger');
         this.setChartData([]);
         throw(error);
     }
@@ -143,16 +144,37 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         } else if (event['fill']) {
             term[this.queryParams['fillField']] = event['fill'];
         } else {
+            this.widgetWrapper.log('One of [FILL, RUN] must be specified', 'warning');
             return emptyObservable();
         }
-        const obs = this.dataService.queryTerm(this.queryParams, term)
+
+        this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info')
+        this.dataService.queryExtremesByTerm(this.queryParams, term)
             .pipe(
-                tap(() => this.aggregated = false),
-                map(this.setChartData.bind(this)),
-                catchError(this.onQueryError.bind(this)),
-                share());
-        obs.subscribe();
-        return obs;
+                mergeMap(extremes => {
+                    console.log(extremes);
+                    if (!extremes['min']['value'] || !extremes['max']['value']) {
+                        return throwError('Failed to get timestamp extremes for FILL/RUN query. ' + JSON.stringify(event));
+                    }
+                    const min = extremes['min']['value_as_string'];
+                    const max = extremes['max']['value_as_string'];
+                    this.widgetWrapper.log('Got timestamp extremes. ' + min + ', ' + max, 'info')
+                    const range =  ChartUtils.makeQueryRangeFromStrings(min, max);
+                    return of(range);
+                }),
+                map(this.queryRange.bind(this)),
+                catchError(this.onQueryError.bind(this))
+            )
+            .subscribe();
+
+        // const obs = this.dataService.queryTerm(this.queryParams, term)
+        //     .pipe(
+        //         tap(() => this.aggregated = false),
+        //         map(this.setChartData.bind(this)),
+        //         catchError(this.onQueryError.bind(this)),
+        //         share());
+        // obs.subscribe();
+        // return obs;
     }
 
     updateLive() {
