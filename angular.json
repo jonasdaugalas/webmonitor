@@ -1,146 +1,146 @@
 {
-    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
-    "version": 1,
-    "newProjectRoot": "projects",
-    "projects": {
-        "webmonitor2": {
-            "root": "",
-            "sourceRoot": "src",
-            "projectType": "application",
-            "architect": {
-                "build": {
-                    "builder": "@angular-devkit/build-angular:browser",
-                    "options": {
-                        "outputPath": "dist",
-                        "index": "src/index.html",
-                        "main": "src/main.ts",
-                        "tsConfig": "src/tsconfig.app.json",
-                        "polyfills": "src/polyfills.ts",
-                        "assets": [
-                            "src/assets",
-                            "src/favicon.ico"
-                        ],
-                        "styles": [
-                            "src/styles.css",
-                            "node_modules/@clr/ui/clr-ui.min.css",
-                            "node_modules/@clr/icons/clr-icons.min.css",
-                            "node_modules/dragula/dist/dragula.css",
-                            "node_modules/jsoneditor/dist/jsoneditor.min.css",
-                            "node_modules/ng-pick-datetime/assets/style/picker.min.css"
-                        ],
-                        "scripts": [
-                            "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
-                            "node_modules/@clr/icons/clr-icons.min.js",
-                            "node_modules/plotly.js/dist/plotly.min.js"
-                        ]
-                    },
-                    "configurations": {
-                        "production": {
-                            "optimization": true,
-                            "outputHashing": "all",
-                            "sourceMap": false,
-                            "extractCss": true,
-                            "namedChunks": false,
-                            "aot": true,
-                            "extractLicenses": true,
-                            "vendorChunk": false,
-                            "buildOptimizer": true,
-                            "fileReplacements": [
-                                {
-                                    "replace": "src/environments/environment.ts",
-                                    "with": "src/environments/environment.prod.ts"
-                                }
-                            ]
-                        }
-                    }
-                },
-                "serve": {
-                    "builder": "@angular-devkit/build-angular:dev-server",
-                    "options": {
-                        "browserTarget": "webmonitor2:build"
-                    },
-                    "configurations": {
-                        "production": {
-                            "browserTarget": "webmonitor2:build:production"
-                        }
-                    }
-                },
-                "extract-i18n": {
-                    "builder": "@angular-devkit/build-angular:extract-i18n",
-                    "options": {
-                        "browserTarget": "webmonitor2:build"
-                    }
-                },
-                "test": {
-                    "builder": "@angular-devkit/build-angular:karma",
-                    "options": {
-                        "main": "src/test.ts",
-                        "karmaConfig": "./karma.conf.js",
-                        "polyfills": "src/polyfills.ts",
-                        "tsConfig": "src/tsconfig.spec.json",
-                        "scripts": [
-                            "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
-                            "node_modules/@clr/icons/clr-icons.min.js",
-                            "node_modules/plotly.js/dist/plotly.min.js"
-                        ],
-                        "styles": [
-                            "src/styles.css",
-                            "node_modules/@clr/ui/clr-ui.min.css",
-                            "node_modules/@clr/icons/clr-icons.min.css",
-                            "node_modules/dragula/dist/dragula.css",
-                            "node_modules/jsoneditor/dist/jsoneditor.min.css",
-                            "node_modules/ng-pick-datetime/assets/style/picker.min.css"
-                        ],
-                        "assets": [
-                            "src/assets",
-                            "src/favicon.ico"
-                        ]
-                    }
-                },
-                "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
-                    "options": {
-                        "tsConfig": [
-                            "src/tsconfig.app.json",
-                            "src/tsconfig.spec.json"
-                        ],
-                        "exclude": []
-                    }
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "webmonitor2": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:browser",
+          "options": {
+            "outputPath": "dist",
+            "index": "src/index.html",
+            "main": "src/main.ts",
+            "tsConfig": "src/tsconfig.app.json",
+            "polyfills": "src/polyfills.ts",
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/@clr/ui/clr-ui.min.css",
+              "node_modules/@clr/icons/clr-icons.min.css",
+              "node_modules/dragula/dist/dragula.css",
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css"
+            ],
+            "scripts": [
+              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+              "node_modules/@clr/icons/clr-icons.min.js",
+              "node_modules/plotly.js/dist/plotly.min.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
                 }
+              ]
             }
+          }
         },
-        "webmonitor2-e2e": {
-            "root": "",
-            "sourceRoot": "",
-            "projectType": "application",
-            "architect": {
-                "e2e": {
-                    "builder": "@angular-devkit/build-angular:protractor",
-                    "options": {
-                        "protractorConfig": "./protractor.conf.js",
-                        "devServerTarget": "webmonitor2:serve"
-                    }
-                },
-                "lint": {
-                    "builder": "@angular-devkit/build-angular:tslint",
-                    "options": {
-                        "tsConfig": [
-                            "e2e/tsconfig.e2e.json"
-                        ],
-                        "exclude": []
-                    }
-                }
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "webmonitor2:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "webmonitor2:build:production"
             }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "webmonitor2:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "src/test.ts",
+            "karmaConfig": "./karma.conf.js",
+            "polyfills": "src/polyfills.ts",
+            "tsConfig": "src/tsconfig.spec.json",
+            "scripts": [
+              "node_modules/@webcomponents/custom-elements/custom-elements.min.js",
+              "node_modules/@clr/icons/clr-icons.min.js",
+              "node_modules/plotly.js/dist/plotly.min.js"
+            ],
+            "styles": [
+              "src/styles.css",
+              "node_modules/@clr/ui/clr-ui.min.css",
+              "node_modules/@clr/icons/clr-icons.min.css",
+              "node_modules/dragula/dist/dragula.css",
+              "node_modules/jsoneditor/dist/jsoneditor.min.css",
+              "node_modules/ng-pick-datetime/assets/style/picker.min.css"
+            ],
+            "assets": [
+              "src/assets",
+              "src/favicon.ico"
+            ]
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "src/tsconfig.app.json",
+              "src/tsconfig.spec.json"
+            ],
+            "exclude": []
+          }
         }
+      }
     },
-    "defaultProject": "webmonitor2",
-    "schematics": {
-        "@schematics/angular:component": {
-            "prefix": "app",
-            "styleext": "css"
+    "webmonitor2-e2e": {
+      "root": "",
+      "sourceRoot": "",
+      "projectType": "application",
+      "architect": {
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "./protractor.conf.js",
+            "devServerTarget": "webmonitor2:serve"
+          }
         },
-        "@schematics/angular:directive": {
-            "prefix": "app"
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "e2e/tsconfig.e2e.json"
+            ],
+            "exclude": []
+          }
         }
+      }
     }
+  },
+  "defaultProject": "webmonitor2",
+  "schematics": {
+    "@schematics/angular:component": {
+      "prefix": "app",
+      "styleext": "css"
+    },
+    "@schematics/angular:directive": {
+      "prefix": "app"
+    }
+  }
 }

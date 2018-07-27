@@ -12,6 +12,7 @@ import { PresetResolveService } from './preset-resolve.service';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
+import { ClarityModule } from '@clr/angular';
 
 @NgModule({
     imports: [
@@ -21,7 +22,8 @@ import { HomeComponent } from './home/home.component';
         SharedModule,
         SettingsModule,
         WidgetsModule,
-        AppLocationModule
+        AppLocationModule,
+        ClarityModule
     ],
     declarations: [
         AppComponent,
