@@ -91,11 +91,13 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
 
     disableInteraction() {
         this.chartConfig['staticPlot'] = true;
+        this.chartLayout['plot_bgcolor'] = 'whitesmoke';
         Plotly.react(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
     }
 
     enableInteraction() {
         this.chartConfig['staticPlot'] = false;
+        this.chartLayout['plot_bgcolor'] = undefined;
         Plotly.react(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
     }
 }
