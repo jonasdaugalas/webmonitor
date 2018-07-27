@@ -62,6 +62,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         };
         wi['sources'].forEach(s => {
             s['timestampField'] = s['timestampField'] || 'timestamp';
+            s['extraFields'] = s['extraFields'] || [];
             this.flatFields = this.flatFields.concat(s['fields']);
         });
         this.makeSeries();
@@ -100,30 +101,42 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     onQueryError(error) {
         this.widgetWrapper.log(String(error), 'danger');
         this.clearChart();
+        this.enableInteraction();
         throw(error);
     }
 
     refresh(size?) {
         size = size || this.config['widget']['refreshSize'];
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
-            map(this.setData.bind(this)),
             tap(() => this.aggregated = false),
+            map(this.setData.bind(this)),
+            tap(this.enableInteraction.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share()
         )
-        obs.subscribe();
+        this.disableInteraction();
         obs.subscribe();
         return obs;
     }
 
     setData(newData) {
         this.queryParams.sources.forEach((source, i) => {
+            const extra = {};
+            source.extraFields.forEach((field, j) => {
+                if (field['renameTo']) {
+                    extra[field['renameTo']] = newData[i].map(hit => hit[field['renameTo']]);
+                } else {
+                    extra[field['name']] = newData[i].map(hit => hit[field['name']]);
+                }
+            });
             source.fields.forEach((field, j) => {
                 const series = this.series[i][j];
                 series.x = newData[i].map(hit => hit[source.timestampField]);
                 series.y = newData[i].map(hit => hit[field.name]);
+                series._extra = extra;
             });
         });
+        this.updateFieldSeparators();
         Plotly.redraw(this.plot.nativeElement, this.chartData);
         this.autorange();
     }
@@ -155,8 +168,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         }
         obs = obs.pipe(
             map(this.setData.bind(this)),
+            tap(this.enableInteraction.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share());
+        this.disableInteraction();
         obs.subscribe();
         return obs;
     }
@@ -181,6 +196,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             return EmptyObservable();
         }
         this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info')
+        this.disableInteraction();
         this.dataService.queryExtremesByTerms(this.queryParams, terms)
             .pipe(
                 mergeMap(extremes => {
@@ -194,6 +210,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                     return of(range);
                 }),
                 map(this.queryRange.bind(this)),
+                tap(this.enableInteraction.bind(this)),
                 catchError(this.onQueryError.bind(this))
             )
             .subscribe();
@@ -219,6 +236,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                         this.dropPointsOutsideLiveWindow(series);
                     });
                 });
+                this.updateFieldSeparators();
                 this.setXZoomToLiveWindow();
                 Plotly.redraw(this.plot.nativeElement, this.chartData);
             });
@@ -234,9 +252,14 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     dropPointsOutsideLiveWindow(series) {
         const lastX = new Date(series.x[series.x.length -1]);
         const liveWindow = this.config['widget']['liveWindow'];
+        let count = 0;
         while(lastX.getTime() - (new Date(series.x[0])).getTime() > liveWindow) {
             series.x.shift();
             series.y.shift();
+            Object.keys(series['_extra']).forEach(key => {
+                series['_extra'][key].shift();
+            });
+            count += 1;
         }
     }
 
@@ -297,6 +320,27 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             this.queryRange(range)
                 .pipe(tap(this.enableInteraction.bind(this)))
                 .subscribe();
+        }
+    }
+
+    updateFieldSeparators(relayout=false) {
+        const wi = this.config['widget'];
+        if (!wi['fieldChangeSeparators']) {
+            return;
+        }
+        if (wi['fieldChangeSeparators']['enabled']) {
+            const s = ChartUtils.makeSeparatorLines(
+                this.chartData,
+                wi['fieldChangeSeparators']['fields'],
+                this.aggregated);
+            this.plot.nativeElement['layout']['shapes'] = s['shapes'];
+            this.plot.nativeElement['layout']['annotations'] = s['annotations'];
+        } else {
+            this.plot.nativeElement['layout']['shapes'] = [];
+            this.plot.nativeElement['layout']['annotations'] = [];
+        }
+        if (relayout) {
+            Plotly.relayout(this.plot.nativeElement, this.chartLayout)
         }
     }
 }

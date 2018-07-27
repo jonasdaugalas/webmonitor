@@ -12,9 +12,15 @@ interface FieldParameter {
     yAxis?: number;
 }
 
+interface ExtraFieldParameter {
+    name: string;
+    renameTo?: string;
+}
+
 interface SourceParameter {
     index: string;
     fields: Array<FieldParameter>;
+    extraFields: Array<ExtraFieldParameter>;
     documentType?: string;
     timestampField?: string;
     terms?: { string: any };
@@ -53,7 +59,9 @@ export class DataService {
             queries = queries.concat(query);
         });
         return this.db.multiSearch(this.toNDJSON(queries), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(map(resp => {
+                return this.extractResponseFields(params, resp);
+            }));
     }
 
     queryRangeAggregated(params: Parameters, min, max, aggregation='avg', buckets=1800) {
@@ -76,7 +84,9 @@ export class DataService {
             queries = queries.concat(query);
         });
         return this.db.multiSearch(this.toNDJSON(queries), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(map(resp => {
+                return this.extractResponseFields(params, resp);
+            }));
     }
 
     queryRange(params: Parameters, min, max) {
@@ -92,7 +102,9 @@ export class DataService {
             queries = queries.concat(query);
         });
         return this.db.multiSearch(this.toNDJSON(queries), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(map(resp => {
+                return this.extractResponseFields(params, resp);
+            }));
     }
 
     queryNewestSince(params: Parameters, perSourceMin) {
@@ -108,7 +120,9 @@ export class DataService {
             queries = queries.concat(query);
         });
         return this.db.multiSearch(this.toNDJSON(queries), params.database)
-            .map(this.extractResponseFields.bind(this));
+            .pipe(map(resp => {
+                return this.extractResponseFields(params, resp);
+            }));
     }
 
     protected toNDJSON(values) {
@@ -130,26 +144,27 @@ export class DataService {
         );
         const body = {
             'size':0,
-            'query':{
-                'bool':{'filter':[]}
-            },
-            'aggs':{
-                'points':{
-                    'date_histogram':{
+            'query': {'bool': {'filter': []}},
+            'aggs': {
+                'points': {
+                    'date_histogram': {
                         'field': source.timestampField,
                         'interval': String(interval) + 'ms',
-                        'extended_bounds':{
-                            'min': min,
-                            'max':max
-                        }
+                        'extended_bounds': {'min': min, 'max': max}
                     },
-                    'aggs':{}
+                    'aggs': {'_extra': {'top_hits': {'size': 1}}}
                 }
             }
         };
         body['query']['bool']['filter'].push({
             'range':{'timestamp':{'gte': min, 'lte': max}}
         });
+        body['aggs']['points']['aggs']['_extra']['top_hits']['_source'] = {
+            'include': source.extraFields.map(f => f.name)
+        };
+        const topHitsSort = {};
+        topHitsSort[source.timestampField] = {'order': 'desc'};
+        body['aggs']['points']['aggs']['_extra']['top_hits']['sort'] = [topHitsSort];
         source.fields.forEach(f => {
             const agg = {};
             agg[aggregation] = {'field': f.name};
@@ -232,13 +247,27 @@ export class DataService {
         source.fields.forEach(f => {
             fields.push(f.name);
         });
+        source.extraFields.forEach(f => {
+            fields.push(f.name);
+        });
         return fields;
     }
 
-    protected extractResponseFields(response) {
-        return response['responses']
+    protected extractResponseFields(params: Parameters, response) {
+        const responseFields = response['responses']
             .map(r => r['hits']['hits'].reverse())
             .map(hits => hits.map(hit => hit['_source']));
+        params.sources.forEach((s, i) => {
+            s.extraFields.forEach(f => {
+                if (!f.renameTo) {
+                    return;
+                }
+                responseFields[i].forEach(hit => {
+                    hit[f.renameTo] = hit[f.name];
+                })
+            });
+        });
+        return responseFields;
     }
 
     protected extractAggregatedResponseFields(response, params: Parameters) {
@@ -251,6 +280,11 @@ export class DataService {
                 point[source.timestampField] = bucket['key_as_string'];
                 source.fields.forEach(field => {
                     point[field.name] = bucket[field.name]['value'];
+                });
+                source.extraFields.forEach(field => {
+                    const name = field.renameTo || field.name;
+                    const hit = bucket['_extra']['hits']['hits'][0];
+                    point[name] = hit ? hit['_source'][field.name] : undefined;
                 });
                 sourceResult.push(point);
             });
