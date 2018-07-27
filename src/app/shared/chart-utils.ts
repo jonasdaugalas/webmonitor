@@ -1,5 +1,14 @@
 declare var Plotly: any;
 
+export type FieldSeparatorConfig = {
+    fieldname: string;
+    lineColor: string;
+    lineWidth: number;
+    lineDash?: string;
+    text: string;
+    excludeWhenAggregated?: boolean;
+}
+
 export const buttonDownloadImage = {
     name: 'toImage',
     title: 'Download plot as a png',
@@ -178,4 +187,114 @@ export function makeQueryRangeFromStrings(min, max) {
         'strTo': max,
         'utc': true
     };
+}
+
+function getFieldChanges(chartData, fields: Array<FieldSeparatorConfig>) {
+    const changes = [];
+    chartData.forEach(series => {
+        if (!series['_extra']) {
+            return;
+        }
+        const perSeries = {};
+        fields.forEach(field => {
+            if (!series['_extra'][field.fieldname]) {
+                return;
+            }
+            const values = series['_extra'][field.fieldname];
+            const perField = [];
+            values.forEach((v, i) => {
+                if (i === 0) {
+                    return;
+                }
+                if (values[i-1] !== v && typeof v != 'undefined') {
+                    perField.push({
+                        changedFrom: values[i-1],
+                        changedTo: v,
+                        index: i,
+                        x: series.x[i],
+                        x_ts: (new Date(series.x[i])).getTime()
+                    });
+                }
+            });
+            perSeries[field.fieldname] = perField;
+        });
+        changes.push(perSeries);
+    });
+    return changes;
+}
+
+function filterGlobalFieldChanges(changes, fields: Array<FieldSeparatorConfig>) {
+    function tsSort(a, b) {
+        if (a.x_ts < b.x_ts) {
+            return -1;
+        }
+        if (a.x_ts > b.x_ts) {
+            return 1;
+        }
+        return 0;
+    };
+    const globalChanges = {};
+    fields.forEach(field => {
+        let fromAllSeries = [];
+        changes.forEach(perSeries => {
+            if (!perSeries[field.fieldname]) {
+                return;
+            }
+            fromAllSeries = fromAllSeries.concat(perSeries[field.fieldname]);
+        });
+        fromAllSeries.sort(tsSort);
+        const filtered = [];
+        fromAllSeries.forEach(v => {
+            if (!filtered.length) {
+                filtered.push(v);
+                return;
+            }
+            if (v['changedTo'] !== filtered[filtered.length -1]['changedTo']) {
+                filtered.push(v);
+            }
+        });
+        globalChanges[field.fieldname] = filtered;
+    });
+    return globalChanges;
+}
+
+export function makeSeparatorLines(
+    chartData, fields: Array<FieldSeparatorConfig>, aggregated=false) {
+    if (aggregated) {
+        fields = fields.filter(f => !f.excludeWhenAggregated);
+    }
+    const changes = getFieldChanges(chartData, fields);
+    const globalChanges = filterGlobalFieldChanges(changes, fields);
+    const shapes = [];
+    const annotations = [];
+    fields.forEach(field => {
+        globalChanges[field.fieldname].forEach(change => {
+            shapes.push({
+                type: 'line',
+                xref: 'x',
+                yref: 'paper',
+                x0: change['x'],
+                x1: change['x'],
+                y0: 0,
+                y1: 1,
+                line: {
+                    color: field.lineColor,
+                    width: field.lineWidth,
+                    dash: field.lineDash
+                }
+            });
+            annotations.push({
+                xref: 'x',
+                yref: 'paper',
+                x: change['x'],
+                xanchor: 'left',
+                y: 1,
+                yanchor: 'top',
+                text: field.text + change['changedTo'],
+                textangle: -90,
+                showarrow: false
+            });
+        });
+    });
+    return {shapes: shapes, annotations: annotations};
 }
