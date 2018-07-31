@@ -43,7 +43,8 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
             field: wi['field'],
             terms: wi['terms'],
             fillField: wi['fillField'],
-            runField: wi['runField']
+            runField: wi['runField'],
+            extraFields: wi['extraFields'] || []
         };
     }
 

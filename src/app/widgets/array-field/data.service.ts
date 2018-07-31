@@ -14,6 +14,7 @@ interface Parameters {
     timestampField?: string;
     field: string;
     series: Array<number>;
+    extraFields: Array<string>;
     nestedPath?: string;
     terms?: { string: any };
     fillField?: string;
@@ -83,13 +84,19 @@ export class DataService {
                             'max':max
                         }
                     },
-                    'aggs':{}
+                    'aggs': {}
                 }
             }
         };
         body['query']['bool']['filter'].push({
             'range':{'timestamp':{'gte': min, 'lte': max}}
         });
+        if (params.extraFields.length > 0) {
+            body['aggs']['points']['aggs']['_extra'] = {'top_hits': {'size': 1}};
+            body['aggs']['points']['aggs']['_extra']['top_hits']['_source'] = {
+                'include': params.extraFields
+            };
+        }
         params.series.forEach(s => {
             const agg = {};
             agg[aggregation] = {'script': "_source." + params.field + '[' + s + ']'};
@@ -207,7 +214,11 @@ export class DataService {
     }
 
     protected parseQueryFields(params: Parameters) {
-        return [params.timestampField || 'timestamp', params.field];
+        const fields = [params.timestampField || 'timestamp', params.field];
+        if (params.extraFields.length > 0) {
+            return fields.concat(params.extraFields);
+        }
+        return fields;
     }
 
     protected extractResponseFields(response, params): Array<any> {
@@ -230,6 +241,12 @@ export class DataService {
                 fieldVal[s] = bucket[':' + s]['value'];
             });
             point[params.field] = fieldVal;
+            if (params.extraFields.length > 0 ) {
+                const hit = bucket['_extra']['hits']['hits'][0];
+                params.extraFields.forEach(f => {
+                    point[f] = hit ? hit['_source'][f] : undefined;
+                });
+            }
             result.push(point);
         });
         return result;

@@ -53,7 +53,8 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             nestedPath: wi['nestedPath'],
             terms: wi['terms'],
             fillField: wi['fillField'],
-            runField: wi['runField']
+            runField: wi['runField'],
+            extraFields: wi['extraFields'] || []
         }
         return wi;
     }
@@ -79,6 +80,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     onRefreshEvent() {
+        this.widgetWrapper.stop();
         this.refresh();
     }
 
@@ -105,11 +107,17 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     setChartData(hits) {
         const wi = this.config['widget'];
+        const extra = {};
+        this.queryParams['extraFields'].forEach(f => {
+            extra[f] = hits.map(hit => hit[f]);
+        });
         wi['series'].forEach((s, i) => {
             this.chartData[i].y = hits.map(hit => hit[wi['field']][s]);
             this.chartData[i].x = hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField]));
             this.chartData[i].text = hits.map(this.makeTooltipText.bind(this));
+            this.chartData[i]._extra = extra;
         });
+        this.updateFieldSeparators();
         ChartUtils.setAutorange(this.chartLayout);
         Plotly.redraw(this.plot.nativeElement);
     }
@@ -187,6 +195,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         this.dataService.queryNewestSince(this.queryParams, lastX)
             .subscribe(hits => {
                 const wi = this.config['widget'];
+                const extra = this.chartData[0]['_extra'];
+                this.queryParams['extraFields'].forEach(f => {
+                    extra[f] = extra[f].concat(hits.map(hit => hit[f]));
+                });
                 wi['series'].forEach((s, i) => {
                     const trace = this.chartData[i];
                     trace.y = trace.y.concat(
@@ -195,8 +207,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
                         hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField])));
                     trace.text = trace.text.concat(
                         hits.map(this.makeTooltipText.bind(this)));
+                    trace._extra = extra;
                     this.dropPointsOutsideLiveWindow(trace);
                 });
+                this.updateFieldSeparators();
                 this.setXZoomToLiveWindow();
                 Plotly.redraw(this.plot.nativeElement, this.chartData);
             });
@@ -220,6 +234,9 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             trace.x.shift();
             trace.y.shift();
             trace.text.shift();
+            this.queryParams['extraFields'].forEach(f => {
+                trace._extra[f].shift();
+            })
         }
     }
 
@@ -265,6 +282,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
                 .pipe(tap(this.enableInteraction.bind(this)))
                 .subscribe();
         }
+    }
+
+    updateFieldSeparators(relayout=false) {
+        return super.updateFieldSeparators(relayout, this.aggregated);
     }
 
 }
