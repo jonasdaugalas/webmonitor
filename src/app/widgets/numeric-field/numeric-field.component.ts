@@ -91,6 +91,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     }
 
     onRefreshEvent() {
+        this.widgetWrapper.stop();
         this.refresh();
     }
 
@@ -317,6 +318,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         const range = ChartUtils.makeQueryRangeFromZoomEvent(event);
         if (range) {
             this.disableInteraction();
+            this.widgetWrapper.log('X axis zoom changed with aggregated data. Requerying', 'info');
             this.queryRange(range)
                 .pipe(tap(this.enableInteraction.bind(this)))
                 .subscribe();
@@ -324,23 +326,6 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     }
 
     updateFieldSeparators(relayout=false) {
-        const wi = this.config['widget'];
-        if (!wi['fieldChangeSeparators']) {
-            return;
-        }
-        if (wi['fieldChangeSeparators']['enabled']) {
-            const s = ChartUtils.makeSeparatorLines(
-                this.chartData,
-                wi['fieldChangeSeparators']['fields'],
-                this.aggregated);
-            this.plot.nativeElement['layout']['shapes'] = s['shapes'];
-            this.plot.nativeElement['layout']['annotations'] = s['annotations'];
-        } else {
-            this.plot.nativeElement['layout']['shapes'] = [];
-            this.plot.nativeElement['layout']['annotations'] = [];
-        }
-        if (relayout) {
-            Plotly.relayout(this.plot.nativeElement, this.chartLayout)
-        }
+        return super.updateFieldSeparators(relayout, this.aggregated);
     }
 }
