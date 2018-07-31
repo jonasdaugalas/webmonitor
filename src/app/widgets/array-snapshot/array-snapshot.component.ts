@@ -84,6 +84,7 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
     }
 
     onRefreshEvent() {
+        this.widgetWrapper.stop();
         this.refresh();
     }
 
@@ -111,6 +112,7 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
     }
 
     queryRunLs(event) {
+        this.widgetWrapper.stop();
         if (!event['run'] || !event['ls']) {
             this.widgetWrapper.log('RUN and LS must be specified', 'warning', 3500);
             return emptyObservable();
