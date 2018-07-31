@@ -152,19 +152,22 @@ export class DataService {
                         'interval': String(interval) + 'ms',
                         'extended_bounds': {'min': min, 'max': max}
                     },
-                    'aggs': {'_extra': {'top_hits': {'size': 1}}}
+                    'aggs': {}
                 }
             }
         };
         body['query']['bool']['filter'].push({
             'range':{'timestamp':{'gte': min, 'lte': max}}
         });
-        body['aggs']['points']['aggs']['_extra']['top_hits']['_source'] = {
-            'include': source.extraFields.map(f => f.name)
-        };
-        const topHitsSort = {};
-        topHitsSort[source.timestampField] = {'order': 'desc'};
-        body['aggs']['points']['aggs']['_extra']['top_hits']['sort'] = [topHitsSort];
+        if (source.extraFields.length > 0) {
+            body['aggs']['points']['aggs']['_extra'] = {'top_hits': {'size': 1}};
+            body['aggs']['points']['aggs']['_extra']['top_hits']['_source'] = {
+                'include': source.extraFields.map(f => f.name)
+            };
+            const topHitsSort = {};
+            topHitsSort[source.timestampField] = {'order': 'desc'};
+            body['aggs']['points']['aggs']['_extra']['top_hits']['sort'] = [topHitsSort];
+        }
         source.fields.forEach(f => {
             const agg = {};
             agg[aggregation] = {'field': f.name};
