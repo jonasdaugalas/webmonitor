@@ -17,13 +17,30 @@
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
-                "aggregationThreshold": 10800000,
+                "aggregationThreshold": 3600000,
                 "yAxisTitle": "[Hz/ub]",
                 "refreshSize": 900,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "fastbestlumi",
                     "fields": [{"name": "avg", "seriesName": "Bestlumi", "color": "#ff9000"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
                     }
@@ -87,6 +104,23 @@
             }
         }
     }, {
+        "type": "fill-run-ls-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 70
+            },
+            "wrapper": {
+                "title": "RUN:LS query per bunch"
+            },
+            "widget": {
+                "channel": 2,
+                "fillEnabled": false,
+                "runEnabled": true,
+                "lsEnabled": true
+            }
+        }
+    }, {
         "type": "array-snapshot",
         "config": {
             "container": {
@@ -102,6 +136,10 @@
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 2,
                 "yAxisTitle": "[Hz/ub]",
                 "xAxisTitle": "Bunch index",
                 "legend": "left",
@@ -130,6 +168,10 @@
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 2,
                 "yAxisTitle": "[Hz/ub]",
                 "xAxisTitle": "Bunch index",
                 "legend": "left",
@@ -158,6 +200,10 @@
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 2,
                 "yAxisTitle": "[Hz/ub]",
                 "xAxisTitle": "Bunch index",
                 "legend": "left",
@@ -186,6 +232,10 @@
                 "database": "daq_ES2",
                 "index": "shelflist",
                 "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 2,
                 "yAxisTitle": "[Hz/ub]",
                 "xAxisTitle": "Bunch index",
                 "legend": "left",

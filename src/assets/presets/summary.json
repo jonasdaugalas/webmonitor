@@ -1,6 +1,20 @@
 {
-    "timers": [7],
+    "timers": [9],
     "widgets": [{
+        "type": "time-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 64
+            },
+            "wrapper": {
+                "title": "Time range query"
+            },
+            "widget": {
+                "channel": 1
+            }
+        }
+    }, {
         "type": "numeric-field",
         "config": {
             "container": {
@@ -22,15 +36,39 @@
                 "yAxis2Enabled": true,
                 "yAxis2Title": "% of abort",
                 "refreshSize": 900,
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "run",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fill",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
                     "timestampField": "timestamp",
+                    "fillField": "fillnum",
+                    "runField": "runnum",
                     "fields": [
                         {"name": "bkgd1", "seriesName": "BKGD1 (bcm1f beam1 Hz/cm2/E11)"},
                         {"name": "bkgd2", "seriesName": "BKGD2 (bcm1f beam2 Hz/cm2/E11)"},
                         {"name": "bkgd3", "seriesName": "BKGD3 (bcml % of abort)", "yAxis": 2}
                     ],
+                    "extraFields": [
+                        {"name": "runnum", "renameTo": "run"},
+                        {"name": "fillnum", "renameTo": "fill"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -38,6 +76,8 @@
                     "index": "shelflist",
                     "documentType": "bhmprocessorMon",
                     "timestampField": "timestamp",
+                    "fillField": "fill",
+                    "runField": "run",
                     "fields": [
                         {"name": "totalrate_b1", "seriesName": "BKGD4 (bhm beam1 Hz/cm2/E11)"},
                         {"name": "totalrate_b2", "seriesName": "BKGD5 (bhm beam2 Hz/cm2/E11)"}
@@ -68,6 +108,25 @@
                 "aggregationThreshold": 7200000,
                 "yAxisTitle": "Coincidences",
                 "refreshSize": 900,
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -79,6 +138,9 @@
                         {"name": "B1andB2"},
                         {"name": "B1notB2", "hidden": true},
                         {"name": "B2notB1", "hidden": true}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -104,12 +166,34 @@
                 "liveWindow": 3600000,
                 "aggregationThreshold": 7200000,
                 "refreshSize": 900,
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
                     "timestampField": "timestamp",
                     "fields": [
                         {"name": "bptx_deltaT"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -135,12 +219,34 @@
                 "liveWindow": 3600000,
                 "aggregationThreshold": 7200000,
                 "refreshSize": 900,
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
                     "timestampField": "timestamp",
                     "fields": [
                         {"name": "bptx_phase"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -166,6 +272,25 @@
                 "liveWindow": 3600000,
                 "aggregationThreshold": 7200000,
                 "refreshSize": 900,
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -173,6 +298,9 @@
                     "fields": [
                         {"name": "beam1_intensity"},
                         {"name": "beam2_intensity"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -200,6 +328,25 @@
                 "refreshSize": 900,
                 "yAxisTitle": "Pressure",
                 "yAxisScale": "log",
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -217,6 +364,9 @@
                         {"name": "vgpb_148_1l5"},
                         {"name": "vgpb_148_1r5"},
                         {"name": "vgpb_7_4l5"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
@@ -272,6 +422,25 @@
                 "aggregationThreshold": 7200000,
                 "refreshSize": 900,
                 "yAxisTitle": "RS1 counts",
+                "queryChannel": 1,
+                "fillQueriesEnabled": true,
+                "runQueriesEnabled": true,
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -281,6 +450,9 @@
                         {"name": "bcml1_rs1_minus"},
                         {"name": "bcml1_rs1_plus"},
                         {"name": "bcml2_rs1_minus"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}],
+                    "runField": "runnum",
+                    "fillField": "fillnum",
                     "terms": {
                         "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
                     }
