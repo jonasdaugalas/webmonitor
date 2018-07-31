@@ -100,4 +100,28 @@ export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
         this.chartLayout['plot_bgcolor'] = undefined;
         Plotly.react(this.plot.nativeElement, this.chartData, this.chartLayout, this.chartConfig);
     }
+
+    updateFieldSeparators(relayout=false, aggregated=false) {
+        const wi = this.config['widget'];
+        if (!wi['fieldChangeSeparators']) {
+            return;
+        }
+        if (wi['fieldChangeSeparators']['enabled']) {
+            const s = ChartUtils.makeSeparatorLines(
+                this.chartData,
+                wi['fieldChangeSeparators']['fields'],
+                aggregated);
+            this.plot.nativeElement['layout']['shapes'] = s['shapes'];
+            this.plot.nativeElement['layout']['annotations'] = s['annotations'];
+        } else {
+            this.plot.nativeElement['layout']['shapes'] = [];
+            this.plot.nativeElement['layout']['annotations'] = [];
+        }
+        if (relayout) {
+            Plotly.relayout(this.plot.nativeElement, this.chartLayout)
+        }
+    }
+
+
+
 }
