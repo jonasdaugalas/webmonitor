@@ -204,6 +204,13 @@ function getFieldChanges(chartData, fields: Array<FieldSeparatorConfig>) {
             const perField = [];
             values.forEach((v, i) => {
                 if (i === 0) {
+                    perField.push({
+                        changedFrom: undefined,
+                        changedTo: v,
+                        index: i,
+                        x: series.x[i],
+                        x_ts: (new Date(series.x[i])).getTime()
+                    });
                     return;
                 }
                 if (values[i-1] !== v && typeof v != 'undefined') {
@@ -253,6 +260,9 @@ function filterGlobalFieldChanges(changes, fields: Array<FieldSeparatorConfig>) 
                 filtered.push(v);
             }
         });
+        if (filtered.length > 0 && filtered[0]['index'] === 0) {
+            filtered.shift();
+        }
         globalChanges[field.fieldname] = filtered;
     });
     return globalChanges;
@@ -265,6 +275,7 @@ export function makeSeparatorLines(
     }
     const changes = getFieldChanges(chartData, fields);
     const globalChanges = filterGlobalFieldChanges(changes, fields);
+    console.log(changes, globalChanges);
     const shapes = [];
     const annotations = [];
     fields.forEach(field => {
@@ -290,7 +301,7 @@ export function makeSeparatorLines(
                 xanchor: 'left',
                 y: 1,
                 yanchor: 'top',
-                text: field.text + change['changedTo'],
+                text: (field.text || '') + change['changedTo'],
                 textangle: -90,
                 showarrow: false
             });
