@@ -57,10 +57,12 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
 
     queryFromEvent(event) {
         if (event['type'] === 'time_range_query') {
+            this.widgetWrapper.log('Received time range query', 'info');
             this.queryRange(event['payload']);
         } else if (event['type'] === 'fill_run_ls_query') {
             const wi = this.config['widget'];
             if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.widgetWrapper.log('Received FILL/RUN query', 'info');
                 this.queryFillRun(event['payload']);
             }
         }
@@ -81,10 +83,13 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
 
     refresh(size?) {
         size = size || this.config['widget']['refreshSize'];
+        this.disableInteraction();
         const obs = this.dataService.queryNewest(this.queryParams, size)
             .pipe(
                 map(this.filterZValues.bind(this)),
                 tap(this.setData.bind(this)),
+                tap(this.enableInteraction.bind(this)),
+                catchError(this.onQueryError.bind(this)),
                 share()
             );
         obs.subscribe();
@@ -116,8 +121,11 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
             .pipe(
                 map(this.filterZValues.bind(this)),
                 tap(this.setData.bind(this)),
+                tap(this.enableInteraction.bind(this)),
+                catchError(this.onQueryError.bind(this)),
                 share()
             );
+        this.disableInteraction();
         obs.subscribe(() => {
             this.setXZoom(range['strFrom'], range['strTo']);
         });
@@ -132,13 +140,16 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
         } else if (event['fill']) {
             term[this.queryParams['fillField']] = event['fill'];
         } else {
+            this.widgetWrapper.log('One of [FILL,RUN] must be specified', 'warning');
             return emptyObservable();
         }
         const obs = this.dataService.queryTerm(this.queryParams, term)
             .pipe(
                 map(this.setData.bind(this)),
+                tap(this.enableInteraction.bind(this)),
                 catchError(this.onQueryError.bind(this)),
                 share());
+        this.disableInteraction();
         obs.subscribe();
         return obs;
     }
@@ -153,6 +164,7 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
         }
         const x = this.chartData[0].x;
         const lastX = x[x.length -1];
+        this.disableInteraction();
         this.dataService.queryNewestSince(this.queryParams, lastX, false)
             .pipe(
                 map(resp => this.filterZValues(resp)),
@@ -173,6 +185,7 @@ export class ArrayHeatmapComponent extends ChartWidget implements OnInit, AfterV
                 if (this.dropPointsOutsideLiveWindow()) {
                     Plotly.redraw(this.plot.nativeElement, this.chartData);
                 }
+                this.enableInteraction();
             });
     }
 

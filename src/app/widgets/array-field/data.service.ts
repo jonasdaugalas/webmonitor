@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueryCache } from 'app/shared/query-cache/query-cache';
 
-export const MAX_QUERY_SIZE = 2000;
-export const MAX_QUERY_SIZE_FOR_NEWEST = 200;
+export const MAX_QUERY_SIZE = 1000;
+export const MAX_QUERY_SIZE_FOR_NEWEST = 100;
 
 interface Parameters {
     database: string;

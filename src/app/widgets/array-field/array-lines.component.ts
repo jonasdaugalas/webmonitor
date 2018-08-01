@@ -70,10 +70,12 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     queryFromEvent(event) {
         if (event['type'] === 'time_range_query') {
+            this.widgetWrapper.log('Received time range query', 'info');
             this.queryRange(event['payload']);
         } else if (event['type'] === 'fill_run_ls_query') {
             const wi = this.config['widget'];
             if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+                this.widgetWrapper.log('Received FILL/RUN query', 'info');
                 this.queryFillRun(event['payload']);
             }
         }
@@ -96,9 +98,11 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     refresh(size?) {
         size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
+        this.disableInteraction();
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
             tap(() => this.aggregated = false),
             tap(this.setChartData.bind(this)),
+            tap(this.enableInteraction.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share());
         obs.subscribe();
@@ -138,8 +142,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         }
         obs = obs.pipe(
             map(this.setChartData.bind(this)),
+            tap(this.enableInteraction.bind(this)),
             catchError(this.onQueryError.bind(this)),
             share());
+        this.disableInteraction();
         obs.subscribe();
         return obs;
     }
@@ -157,6 +163,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         }
 
         this.widgetWrapper.log('Querying timestamp extremes for FILL/RUN', 'info')
+        this.disableInteraction();
         this.dataService.queryExtremesByTerm(this.queryParams, term)
             .pipe(
                 mergeMap(extremes => {
@@ -171,18 +178,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
                     return of(range);
                 }),
                 map(this.queryRange.bind(this)),
+                tap(this.enableInteraction.bind(this)),
                 catchError(this.onQueryError.bind(this))
             )
             .subscribe();
-
-        // const obs = this.dataService.queryTerm(this.queryParams, term)
-        //     .pipe(
-        //         tap(() => this.aggregated = false),
-        //         map(this.setChartData.bind(this)),
-        //         catchError(this.onQueryError.bind(this)),
-        //         share());
-        // obs.subscribe();
-        // return obs;
     }
 
     updateLive() {
