@@ -32,7 +32,7 @@
             }
         }
     }, {
-        "type": "numeric-field-with-ratios",
+        "type": "numeric-field",
         "config": {
             "container": {
                 "width": 50,
