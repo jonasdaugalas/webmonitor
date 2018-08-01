@@ -1,6 +1,20 @@
 {
-    "timers": [29],
+    "timers": [29, 39],
     "widgets": [{
+        "type": "time-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 64
+            },
+            "wrapper": {
+                "title": "Time range query"
+            },
+            "widget": {
+                "channel": 1
+            }
+        }
+    }, {
         "type": "numeric-field",
         "config": {
             "container": {
@@ -19,6 +33,7 @@
                 "yAxisTitle": "Phase [ps]",
                 "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "bptxprocessorMon",
@@ -56,6 +71,7 @@
                 "yAxisTitle": "Length [ns]",
                 "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "bptxprocessorMon",
@@ -93,6 +109,7 @@
                 "yAxisTitle": "Intensity [10^11 protons]",
                 "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "bptxprocessorMon",
@@ -132,6 +149,7 @@
                 "liveWindow": 3600000,
                 "yAxisTitle": "Bunches per orbit",
                 "refreshSize": 900,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -170,6 +188,7 @@
                 "aggregationThreshold": 7200000,
                 "liveWindow": 3600000,
                 "refreshSize": 900,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "shelflist",
                     "documentType": "brilsummary",
@@ -218,6 +237,20 @@
             }
         }
     }, {
+        "type": "time-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 64
+            },
+            "wrapper": {
+                "title": "Time range query (BX plots)"
+            },
+            "widget": {
+                "channel": 2
+            }
+        }
+    }, {
         "type": "array-heatmap",
         "config": {
             "container": {
@@ -226,7 +259,7 @@
             },
             "wrapper": {
                 "title": "BPTX phase B1",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -237,7 +270,8 @@
                 "field": "phase_b1",
                 "liveWindow": 3600000,
                 "filterZeros": true,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Phase [ps]",
                 "terms": {
@@ -254,7 +288,7 @@
             },
             "wrapper": {
                 "title": "BPTX phase B2",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -265,7 +299,8 @@
                 "field": "phase_b2",
                 "liveWindow": 3600000,
                 "filterZeros": true,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Phase [ps]",
                 "terms": {
@@ -282,7 +317,7 @@
             },
             "wrapper": {
                 "title": "BPTX intensity B1",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -292,7 +327,8 @@
                 "timestampField": "timestamp",
                 "field": "intensity_b1",
                 "liveWindow": 3600000,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Intensity [10^7 protons]",
                 "filterZThreshold": 100,
@@ -310,7 +346,7 @@
             },
             "wrapper": {
                 "title": "BPTX intensity B2",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -320,7 +356,8 @@
                 "timestampField": "timestamp",
                 "field": "intensity_b2",
                 "liveWindow": 3600000,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Intensity [10^7 protons]",
                 "filterZThreshold": 100,
@@ -338,7 +375,7 @@
             },
             "wrapper": {
                 "title": "BPTX length B1",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -348,7 +385,8 @@
                 "timestampField": "timestamp",
                 "field": "length_b1",
                 "liveWindow": 3600000,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Length [ps]",
                 "filterZThreshold": 100,
@@ -366,7 +404,7 @@
             },
             "wrapper": {
                 "title": "BPTX length B2",
-                "initialTimer": 0,
+                "initialTimer": 1,
                 "started": true
             },
             "widget": {
@@ -376,7 +414,8 @@
                 "timestampField": "timestamp",
                 "field": "length_b2",
                 "liveWindow": 3600000,
-                "refreshSize": 100,
+                "refreshSize": 60,
+                "queryChannel": 2,
                 "yAxisTitle": "Bunch index",
                 "zAxisTitle": "Length [ps]",
                 "filterZThreshold": 100,

@@ -1,6 +1,20 @@
 {
     "timers": [29],
     "widgets": [{
+        "type": "time-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 64
+            },
+            "wrapper": {
+                "title": "Time range query"
+            },
+            "widget": {
+                "channel": 1
+            }
+        }
+    }, {
         "type": "numeric-field",
         "config": {
             "container": {
@@ -10,13 +24,16 @@
             "wrapper": {
                 "title": "BPTX average phase",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES6",
                 "yAxisTitle": "Phase [ps]",
+                "aggregationThreshold": 10800000,
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "bril-bptxprocessormon",
                     "timestampField": "timestamp",
@@ -44,12 +61,14 @@
                 "title": "BPTX average per-bunch length",
                 "yAxisTitle": "Length [ns]",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES6",
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "bril-bptxprocessormon",
                     "timestampField": "timestamp",
@@ -77,12 +96,14 @@
                 "title": "BPTX average per-bunch intensity",
                 "yAxisTitle": "×10^11 protons",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES6",
                 "liveWindow": 3600000,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "bril-bptxprocessormon",
                     "timestampField": "timestamp",
@@ -110,6 +131,7 @@
             "wrapper": {
                 "title": "BPTX number of bunches",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
 
@@ -117,8 +139,9 @@
                 "legend": "left",
                 "database": "daq_ES6",
                 "liveWindow": 3600000,
-                "yAxisTitle": "Coincidences",
+                "yAxisTitle": "Bunches per orbit",
                 "refreshSize": 900,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "bril-brilsummary",
                     "timestampField": "timestamp",
@@ -145,6 +168,7 @@
             "wrapper": {
                 "title": "BPTX deltaT (from summary)",
                 "initialTimer": 0,
+                "infoEnabled": true,
                 "started": true
             },
 
@@ -153,6 +177,7 @@
                 "database": "daq_ES6",
                 "liveWindow": 3600000,
                 "refreshSize": 900,
+                "queryChannel": 1,
                 "sources": [{
                     "index": "bril-brilsummary",
                     "timestampField": "timestamp",
@@ -186,7 +211,7 @@
                 "lsField": "lsnum",
                 "legend": "right",
                 "xAxisTitle": "Bunch index",
-                "yAxisTitle": "Phase [ns]",
+                "yAxisTitle": "Phase [ps]",
                 "fields": [{
                     "name": "phase_b1",
                     "mask": "intensity_b1",
@@ -217,9 +242,10 @@
                 "field": "phase_b1",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "filterZeros": true,
                 "yAxisTitle": "Bunch index",
-                "zAxisTitle": "Phase [ns]",
+                "zAxisTitle": "Phase [ps]",
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -244,9 +270,10 @@
                 "field": "phase_b2",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "filterZeros": true,
                 "yAxisTitle": "Bunch index",
-                "zAxisTitle": "Phase [ns]",
+                "zAxisTitle": "Phase [ps]",
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
                 }
@@ -271,8 +298,9 @@
                 "field": "intensity_b1",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "yAxisTitle": "Bunch index",
-                "zAxisTitle": "×10^7 protons",
+                "zAxisTitle": "Intensity [10^7 protons]",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
@@ -298,8 +326,9 @@
                 "field": "intensity_b2",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "yAxisTitle": "Bunch index",
-                "zAxisTitle": "×10^7 protons",
+                "zAxisTitle": "Intensity [10^7 protons]",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
@@ -325,7 +354,9 @@
                 "field": "length_b1",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "Length [ps]",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
@@ -351,7 +382,9 @@
                 "field": "length_b2",
                 "liveWindow": 3600000,
                 "refreshSize": 100,
+                "queryChannel": 1,
                 "yAxisTitle": "Bunch index",
+                "zAxisTitle": "Length [ps]",
                 "filterZThreshold": 100,
                 "terms": {
                     "flash_key" : "@http://vmepc-s2d16-08-01.cms:58008-121-"
