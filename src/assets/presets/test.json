@@ -36,48 +36,58 @@
         "config": {
             "container": {
                 "width": 50,
-                "height": 320
+                "height": 620
             },
             "wrapper": {
                 "title": "BPTX number of bunches",
                 "initialTimer": 0,
                 "infoEnabled": true,
-                "started": true
+                "started": false
             },
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
                 "liveWindow": 3600000,
                 "aggregationThreshold": 7200000,
-                "yAxisTitle": "Coincidences",
-                "refreshSize": 900,
-                "fieldChangeSeparators": {
-                    "enabled": true,
-                    "fields": [{
-                        "fieldname": "runnum",
-                        "text": "RUN ",
-                        "excludeWhenAggregated": true
-                    }, {
-                        "fieldname": "fillnum",
-                        "text": "FILL ",
-                        "lineColor": "magenta"
-                    }]
-                },
+                "refreshSize": 60,
+                "ratios": [{
+                    "numerator": {"source": 0, "field": 0},
+                    "denominator": {"source": 2, "field": 0}
+                }, {
+                    "numerator": {"source": 0, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
+                    "name": "bcm1f/best",
+                    "numerator": {"source": 1, "field": 0},
+                    "denominator": {"source": 2, "field": 0}
+                }],
+                "ratioYRangeZoom": [0, 3],
                 "sources": [{
                     "index": "shelflist",
-                    "documentType": "brilsummary",
+                    "documentType": "fastdetluminosity",
                     "timestampField": "timestamp",
-                    "fields": [
-                        {"name": "B1_bunches"},
-                        {"name": "B2_bunches"},
-                        {"name": "B1orB2"},
-                        {"name": "B1andB2"},
-                        {"name": "B1notB2", "hidden": true},
-                        {"name": "B2notB1", "hidden": true}],
+                    "fields": [{"name": "avg", "seriesName": "PLTZERO"}],
                     "extraFields": [
-                        {"name": "runnum"}, {"name": "fillnum"}],
+                        {"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
-                        "flash_key": "@http://srv-s2d16-21-01.cms:50023-102-"
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1F"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastbestlumi",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BESTLUMI"}],
+                    "extraFields": [{"name": "detectorname"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
                     }
                 }]
             }

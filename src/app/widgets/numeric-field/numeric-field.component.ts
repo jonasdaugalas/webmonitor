@@ -3,7 +3,6 @@ import {
 } from '@angular/core';
 import { Subscription, empty as EmptyObservable, throwError, of } from 'rxjs';
 import { tap, map, share, catchError, mergeMap} from 'rxjs/operators';
-import { DatabaseService } from 'app/core/database.service';
 import * as ChartUtils from 'app/shared/chart-utils';
 import { EventBusService } from 'app/core/event-bus.service';
 import { DataService } from './data.service';
@@ -32,17 +31,9 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
     set aggregated(newVal) {
         this._aggregated = newVal;
         this.info = Object.assign({}, this.info, {aggregated: newVal});
-        // if (newVal) {
-        //     if (!this.labelAggregated) {
-        //         this.labelAggregated = this.widgetWrapper.addLabel('aggregated');
-        //     }
-        // } else {
-        //     this.widgetWrapper.removeLabel(this.labelAggregated);
-        // }
     }
 
     constructor(
-        protected db: DatabaseService,
         protected eventBus: EventBusService,
         protected dataService: DataService) {
         super(eventBus);
@@ -311,9 +302,9 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         this.flatFields[event.expandedIndex]['hidden'] = !this.flatFields[event.expandedIndex]['hidden'];
     }
 
-    onRelayout(event) {
+    onRelayout(event): boolean {
         if (!this.aggregated) {
-            return 1;
+            return true;
         }
         const range = ChartUtils.makeQueryRangeFromZoomEvent(event);
         if (range) {
@@ -323,6 +314,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                 .pipe(tap(this.enableInteraction.bind(this)))
                 .subscribe();
         }
+        return false;
     }
 
     updateFieldSeparators(relayout=false) {
