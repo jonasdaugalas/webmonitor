@@ -111,6 +111,15 @@ export function getDefaultConfig() {
     }
 }
 
+export function disableNavigation2d(layout, config) {
+    const xaxis = layout['xaxis'] = layout['xaxis'] || {};
+    xaxis['fixedrange'] = true;
+    xaxis['autorange'] = false;
+    config['modeBarButtonsToRemove'] = [
+        'zoom2d', 'pan2d', 'zoomIn2d', 'zoomOut2d', 'resetScale2d', 'select2d'
+    ].concat(config['modeBarButtonsToRemove']);
+}
+
 export function makeDefaultReflowFunction(element) {
     return () => {
         setTimeout(() => {
