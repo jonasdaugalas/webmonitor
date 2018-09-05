@@ -15,7 +15,8 @@ import { provideRoutes } from '@angular/router';
             { path: '^', loadChildren: 'app/widgets/array-snapshot/array-snapshot.module#ArraySnapshotModule'},
             { path: '^', loadChildren: 'app/widgets/array-field/array-lines.module#ArrayLinesModule'},
             { path: '^', loadChildren: 'app/widgets/array-field/array-heatmap.module#ArrayHeatmapModule'},
-            { path: '^', loadChildren: 'app/widgets/numeric-field-with-ratios/numeric-field-with-ratios.module#NumericFieldWithRatiosModule'}
+            { path: '^', loadChildren: 'app/widgets/numeric-field-with-ratios/numeric-field-with-ratios.module#NumericFieldWithRatiosModule'},
+            { path: '^', loadChildren: 'app/widgets/lumi/lumi.module#LumiModule'}
         ])
     ]
 })
