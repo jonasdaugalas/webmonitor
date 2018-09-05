@@ -5,8 +5,6 @@ import { Subscription, empty as EmptyObservable, throwError, of } from 'rxjs';
 import { tap, map, share, catchError, mergeMap} from 'rxjs/operators';
 
 import * as ChartUtils from 'app/shared/chart-utils';
-import { EventBusService } from 'app/core/event-bus.service';
-import { DataService } from '../numeric-field/data.service';
 import { WidgetComponent } from 'app/shared/widget/widget.component';
 import { NumericFieldComponent } from 'app/widgets/numeric-field/numeric-field.component';
 
@@ -51,12 +49,6 @@ implements OnInit, AfterViewInit, OnDestroy {
             --iD;
         }
         return ratio;
-    }
-
-    constructor(
-        protected eventBus: EventBusService,
-        protected dataService: DataService) {
-        super(eventBus, dataService);
     }
 
     ngOnInit() {
