@@ -32,14 +32,14 @@
             }
         }
     }, {
-        "type": "numeric-field-with-ratios",
+        "type": "lumi",
         "config": {
             "container": {
                 "width": 50,
                 "height": 620
             },
             "wrapper": {
-                "title": "BPTX number of bunches",
+                "title": "Instantaneous luminosity (LS)",
                 "initialTimer": 0,
                 "infoEnabled": true,
                 "started": false
@@ -47,28 +47,42 @@
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
-                "liveWindow": 3600000,
-                "aggregationThreshold": 7200000,
-                "refreshSize": 60,
+                "liveWindow": 7200000,
+                "aggregationThreshold": 10800000,
+                "refreshSize": 300,
                 "ratios": [{
-                    "numerator": {"source": 0, "field": 0},
-                    "denominator": {"source": 2, "field": 0}
-                }, {
-                    "numerator": {"source": 0, "field": 0},
+                    "numerator": {"source": 3, "field": 0},
                     "denominator": {"source": 1, "field": 0}
                 }, {
-                    "name": "bcm1f/best",
+                    "numerator": {"source": 0, "field": 0},
+                    "denominator": {"source": 3, "field": 0}
+                }, {
+                    "numerator": {"source": 2, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
                     "numerator": {"source": 1, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 3, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 4, "field": 0},
                     "denominator": {"source": 2, "field": 0}
                 }],
                 "ratioYRangeZoom": [0, 3],
                 "sources": [{
                     "index": "shelflist",
-                    "documentType": "fastdetluminosity",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "HFOC"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
                     "timestampField": "timestamp",
                     "fields": [{"name": "avg", "seriesName": "PLTZERO"}],
-                    "extraFields": [
-                        {"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
                     }
@@ -82,12 +96,149 @@
                     }
                 }, {
                     "index": "shelflist",
-                    "documentType": "fastbestlumi",
+                    "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "BESTLUMI"}],
-                    "extraFields": [{"name": "detectorname"}],
+                    "fields": [{"name": "avg", "seriesName": "HFET"}],
                     "terms": {
-                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-101-"
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FSI"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1fsilumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "DT"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-dtlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FUTCA"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1futcalumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "PLTSLINK"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
+                    }
+                }]
+            }
+        }
+    }, {
+        "type": "numeric-field-with-ratios_disabled",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 620
+            },
+            "wrapper": {
+                "title": "Instantaneous luminosity (NB4)",
+                "initialTimer": 0,
+                "infoEnabled": true,
+                "started": false
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 7200000,
+                "aggregationThreshold": 3600000,
+                "refreshSize": 1200,
+                "ratios": [{
+                    "numerator": {"source": 3, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
+                    "numerator": {"source": 0, "field": 0},
+                    "denominator": {"source": 3, "field": 0}
+                }, {
+                    "numerator": {"source": 2, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
+                    "numerator": {"source": 1, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 3, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 4, "field": 0},
+                    "denominator": {"source": 2, "field": 0}
+                }],
+                "ratioYRangeZoom": [0, 3],
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "HFOC"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "PLTZERO"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1F"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "HFET"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FSI"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1fsilumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "DT"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-dtlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FUTCA"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1futcalumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "fastdetluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "PLTSLINK"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
                     }
                 }]
             }

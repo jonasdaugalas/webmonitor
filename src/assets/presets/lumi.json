@@ -1,6 +1,112 @@
 {
     "timers": [9, 22],
     "widgets": [{
+        "type": "numeric-field-with-ratios",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 500
+            },
+            "wrapper": {
+                "title": "Instantaneous luminosity (LS)",
+                "initialTimer": 1,
+                "infoEnabled": true,
+                "started": true
+            },
+            "widget": {
+                "legend": "left",
+                "database": "daq_ES2",
+                "liveWindow": 7200000,
+                "aggregationThreshold": 10800000,
+                "refreshSize": 200,
+                "ratios": [{
+                    "numerator": {"source": 3, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
+                    "numerator": {"source": 0, "field": 0},
+                    "denominator": {"source": 3, "field": 0}
+                }, {
+                    "numerator": {"source": 2, "field": 0},
+                    "denominator": {"source": 1, "field": 0}
+                }, {
+                    "numerator": {"source": 1, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 3, "field": 0},
+                    "denominator": {"source": 5, "field": 0}
+                }, {
+                    "numerator": {"source": 4, "field": 0},
+                    "denominator": {"source": 2, "field": 0}
+                }],
+                "ratioYRangeZoom": [0, 3],
+                "sources": [{
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "HFOC"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "PLTZERO"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1F"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "HFET"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FSI"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1fsilumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "DT"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-dtlumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "BCM1FUTCA"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1futcalumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "detluminosity",
+                    "timestampField": "timestamp",
+                    "fields": [{"name": "avg", "seriesName": "PLTSLINK"}],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
+                    }
+                }]
+            }
+        }
+    }, {
         "type": "numeric-field",
         "config": {
             "container": {
@@ -16,7 +122,7 @@
             "widget": {
                 "legend": "left",
                 "database": "daq_ES2",
-                "liveWindow": 3600000,
+                "liveWindow": 7200000,
                 "aggregationThreshold": 3600000,
                 "yAxisTitle": "[Hz/ub]",
                 "refreshSize": 900,
