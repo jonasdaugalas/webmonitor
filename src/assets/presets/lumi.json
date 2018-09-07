@@ -19,6 +19,29 @@
                 "liveWindow": 7200000,
                 "aggregationThreshold": 10800000,
                 "refreshSize": 200,
+                "tooltipInfo": [{
+                    "fieldname": "runnum",
+                    "text": "RUN"
+                }, {
+                    "fieldname": "lsnum",
+                    "text": "LS"
+                }],
+                "fieldChangeSeparators": {
+                    "enabled": true,
+                    "fields": [{
+                        "fieldname": "runnum",
+                        "text": "RUN ",
+                        "lineDash": "dot",
+                        "lineWidth": 1,
+                        "excludeWhenAggregated": true
+                    }, {
+                        "fieldname": "fillnum",
+                        "text": "FILL ",
+                        "lineWidth": 2,
+                        "lineDash": "dash",
+                        "lineColor": "purple"
+                    }]
+                },
                 "ratios": [{
                     "numerator": {"source": 3, "field": 0},
                     "denominator": {"source": 1, "field": 0}
@@ -43,7 +66,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "HFOC"}],
+                    "fields": [{"name": "avg", "seriesName": "hfoc", "color": "#ed2d2e"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
                     }
@@ -51,7 +75,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "PLTZERO"}],
+                    "fields": [{"name": "avg", "seriesName": "pltzero", "color": "#1859a9"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
                     }
@@ -59,7 +84,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "BCM1F"}],
+                    "fields": [{"name": "avg", "seriesName": "bcm1f", "color": "#008c47"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
                     }
@@ -67,7 +93,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "HFET"}],
+                    "fields": [{"name": "avg", "seriesName": "hfet", "color": "#e700ff"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
                     }
@@ -75,7 +102,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "BCM1FSI"}],
+                    "fields": [{"name": "avg", "seriesName": "bcm1fsi", "color": "#ffcc00"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1fsilumi-101-"
                     }
@@ -83,7 +111,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "DT"}],
+                    "fields": [{"name": "avg", "seriesName": "dt", "color": "#00ffff"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-dtlumi-101-"
                     }
@@ -91,7 +120,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "BCM1FUTCA"}],
+                    "fields": [{"name": "avg", "seriesName": "bcm1futca", "color": "#310064"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1futcalumi-101-"
                     }
@@ -99,7 +129,8 @@
                     "index": "shelflist",
                     "documentType": "detluminosity",
                     "timestampField": "timestamp",
-                    "fields": [{"name": "avg", "seriesName": "PLTSLINK"}],
+                    "fields": [{"name": "avg", "seriesName": "pltslink", "color": "#52FE00"}],
+                    "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
                     }
