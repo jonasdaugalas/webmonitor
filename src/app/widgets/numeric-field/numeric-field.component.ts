@@ -113,18 +113,13 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     setData(newData) {
         this.queryParams.sources.forEach((source, i) => {
-            const extra = {};
-            source.extraFields.forEach((field, j) => {
-                if (field['renameTo']) {
-                    extra[field['renameTo']] = newData[i].map(hit => hit[field['renameTo']]);
-                } else {
-                    extra[field['name']] = newData[i].map(hit => hit[field['name']]);
-                }
-            });
+            const extra = this.extractSourceExtraFields(source, newData[i]);
+            const text = this.makeSourceText(newData[i]);
             source.fields.forEach((field, j) => {
                 const series = this.series[i][j];
                 series.x = newData[i].map(hit => hit[source.timestampField]);
                 series.y = newData[i].map(hit => hit[field.name]);
+                series.text = text;
                 series._extra = extra;
             });
         });
@@ -137,8 +132,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
         this.queryParams.sources.forEach((source, i) => {
             source.fields.forEach((field, j) => {
                 const series = this.series[i][j];
-                series.x = []
-                series.y = []
+                series.x = [];
+                series.y = [];
+                series._extra = [];
+                series.text = [];
             });
         });
         Plotly.redraw(this.plot.nativeElement, this.chartData);
@@ -218,6 +215,8 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             .subscribe(resp => {
                 this.queryParams.sources.forEach((source, i) => {
                     const hits = resp[i].filter(hit => hit[source.timestampField] !== lastXPerSource[i]);
+                    const extra = this.extractSourceExtraFields(source, hits);
+                    const text = this.makeSourceText(hits);
                     if (hits.length < 1) {
                         return;
                     }
@@ -225,6 +224,10 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                         const series = this.series[i][j];
                         series.x = series.x.concat(hits.map(hit => hit[source.timestampField]));
                         series.y = series.y.concat(hits.map(hit => hit[field.name]));
+                        Object.keys(series['_extra']).forEach(key => {
+                            series['_extra'][key] = series['_extra'][key].concat(extra[key]);
+                        });
+                        series.text = series.text.concat(text);
                         this.dropPointsOutsideLiveWindow(series);
                     });
                 });
@@ -251,6 +254,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
             Object.keys(series['_extra']).forEach(key => {
                 series['_extra'][key].shift();
             });
+            series.text.shift();
             count += 1;
         }
     }
@@ -283,6 +287,8 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                 const newSeries = {
                     x: [],
                     y: [],
+                    _extra: [],
+                    text: [],
                     name: field.seriesName || field.name,
                     type: 'scatter',
                     line: { width: 1, color: field['color']},
@@ -319,5 +325,25 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
 
     updateFieldSeparators(relayout=false) {
         return super.updateFieldSeparators(relayout, this.aggregated);
+    }
+
+    extractSourceExtraFields(source, sourceData) {
+        const extra = {};
+        source.extraFields.forEach(field => {
+            if (field['renameTo']) {
+                extra[field['renameTo']] = sourceData.map(hit => hit[field['renameTo']]);
+            } else {
+                extra[field['name']] = sourceData.map(hit => hit[field['name']]);
+            }
+        });
+        return extra;
+    }
+
+    makeSourceText(sourceData) {
+        const tooltipTextConfig = this.config['widget']['tooltipInfo'];
+        if (!tooltipTextConfig) {
+            return [];
+        }
+        return sourceData.map(point => ChartUtils.makeTooltipText(point, tooltipTextConfig));
     }
 }
