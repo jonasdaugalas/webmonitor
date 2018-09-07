@@ -9,6 +9,11 @@ export type FieldSeparatorConfig = {
     excludeWhenAggregated?: boolean;
 }
 
+export type TooltipInfoField = {
+    fieldname: string;
+    text;
+}
+
 export const buttonDownloadImage = {
     name: 'toImage',
     title: 'Download plot as a png',
@@ -284,7 +289,6 @@ export function makeSeparatorLines(
     }
     const changes = getFieldChanges(chartData, fields);
     const globalChanges = filterGlobalFieldChanges(changes, fields);
-    console.log(changes, globalChanges);
     const shapes = [];
     const annotations = [];
     fields.forEach(field => {
@@ -317,4 +321,13 @@ export function makeSeparatorLines(
         });
     });
     return {shapes: shapes, annotations: annotations};
+}
+
+export function makeTooltipText(chartDataPoint, fields: Array<TooltipInfoField>) {
+    if (!fields || fields.length < 1) {
+        return '';
+    }
+    return fields.map(f => {
+        return f.text + ': ' + chartDataPoint[f.fieldname];
+    }).join('<br>');
 }
