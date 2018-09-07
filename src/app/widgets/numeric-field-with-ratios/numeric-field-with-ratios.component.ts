@@ -60,7 +60,6 @@ implements OnInit, AfterViewInit, OnDestroy {
             this.ratioChartLayout['yaxis']['fixedrange'] = true;
             this.ratioChartLayout['yaxis']['range'] = wi['ratioYRangeZoom'];
         }
-        console.log(wi['ratios']);
     }
 
     ngAfterViewInit() {
@@ -74,10 +73,16 @@ implements OnInit, AfterViewInit, OnDestroy {
     }
 
     setData(newData) {
-        console.log('before setData');
         super.setData(newData);
-        console.log('after setData');
+        this.updateRatioPlot();
+    }
 
+    updateLive() {
+        super.updateLive();
+        this.updateRatioPlot();
+    }
+
+    updateRatioPlot() {
         this.ratioChartData.length = 0;
         this.config['widget']['ratios'].forEach(r => {
             const d = r['denominator'];
@@ -88,14 +93,7 @@ implements OnInit, AfterViewInit, OnDestroy {
             ratio['name'] = r['name'] || numerator.name + '/' + denominator.name;
             this.ratioChartData.push(ratio);
         });
-
         Plotly.redraw(this.ratioPlot.nativeElement, this.ratioChartData);
-    }
-
-    updateLive() {
-        console.log('before updateLive');
-        super.updateLive();
-        console.log('after updateLive');
     }
 
     onRelayout(event): boolean {
