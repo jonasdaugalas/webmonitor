@@ -54,6 +54,7 @@ implements OnInit, AfterViewInit, OnDestroy {
     ngOnInit() {
         super.ngOnInit();
         const wi = this.config['widget'];
+        wi['yAxisTitle'] = 'Ratio';
         this.ratioChartLayout = ChartUtils.configureDefaultLayout(wi);
         ChartUtils.disableNavigation2d(this.ratioChartLayout, this.ratioChartConfig);
         if (wi['ratioYRangeZoom']) {
