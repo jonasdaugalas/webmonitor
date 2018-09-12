@@ -10,4 +10,5 @@ export const widgetModuleSelector = {
     'array-heatmap': 'app/widgets/array-field/array-heatmap.module#ArrayHeatmapModule',
     'numeric-field-with-ratios': 'app/widgets/numeric-field-with-ratios/numeric-field-with-ratios.module#NumericFieldWithRatiosModule',
     'lumi': 'app/widgets/lumi/lumi.module#LumiModule',
+    'pileup': 'app/widgets/pileup/pileup.module#PileupModule',
 };
