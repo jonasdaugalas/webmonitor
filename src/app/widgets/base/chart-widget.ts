@@ -10,8 +10,8 @@ declare var Plotly: any;
 
 export abstract class ChartWidget implements OnInit, OnDestroy, AfterViewInit {
     @Input('config') config;
-    @ViewChild('plot') protected plot: ElementRef;
-    @ViewChild('widgetWrapper') protected widgetWrapper: WidgetComponent;
+    @ViewChild('plot') plot: ElementRef;
+    @ViewChild('widgetWrapper') widgetWrapper: WidgetComponent;
     resizeEventSubs: Subscription;
     queryEventSubs: Subscription;
     reflow: () => void;
