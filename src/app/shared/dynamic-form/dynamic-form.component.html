@@ -1,0 +1,10 @@
+<form
+    class="clr-form clr-form-horizontal"
+    *ngIf="form"
+    [formGroup]="form">
+    <formly-form
+        [fields]="fields"
+        [model]="model"
+        (modelChange)="onChange($event)">
+    </formly-form>
+</form>

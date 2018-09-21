@@ -3,7 +3,7 @@ import {
 } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms'
-import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
+import { ClarityModule } from '@clr/angular';
 import { DragulaModule } from 'ng2-dragula';
 import { NgxPopperModule } from 'ngx-popper';
 import { SharedModule } from '../shared/shared.module';
@@ -22,8 +22,7 @@ import { DashboardContainerResizeFormComponent } from './dashboard/dashboard-con
     imports: [
         HttpClientModule,
         FormsModule,
-        ClarityModule,
-        ClrFormsNextModule,
+        ClarityModule.forRoot(),
         DragulaModule,
         SharedModule,
         NgxPopperModule.forRoot({

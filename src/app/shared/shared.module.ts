@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ClarityModule } from '@clr/angular';
+import { ClarityModule, ClrFormsNextModule } from '@clr/angular';
 import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
+import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
 import { WidgetComponent } from './widget/widget.component';
 import { SettingsComponent } from './widget/settings/settings.component';
 import { DateRangeFormComponent } from './date-range-form/date-range-form.component';
@@ -14,20 +15,25 @@ import { QuickRangeFormComponent } from './quick-range-form/quick-range-form.com
     imports: [
         CommonModule,
         FormsModule,
+        ReactiveFormsModule,
+        ClrFormsNextModule,
         ClarityModule.forChild(),
         OwlNativeDateTimeModule,
-        OwlDateTimeModule
+        OwlDateTimeModule,
+        DynamicFormModule
     ],
     declarations: [
         WidgetComponent,
         SettingsComponent,
         DateRangeFormComponent,
         FillRunLsFormComponent,
-        QuickRangeFormComponent
+        QuickRangeFormComponent,
     ],
     exports: [
-        CommonModule, ClarityModule, FormsModule,
-        OwlNativeDateTimeModule, OwlDateTimeModule,
+        CommonModule,
+        ClarityModule, ClrFormsNextModule,
+        FormsModule, ReactiveFormsModule,
+        OwlNativeDateTimeModule, OwlDateTimeModule, DynamicFormModule,
         WidgetComponent, DateRangeFormComponent, FillRunLsFormComponent
     ]
 })
