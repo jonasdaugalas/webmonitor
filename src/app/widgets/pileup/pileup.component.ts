@@ -3,6 +3,7 @@ import {
 } from '@angular/core';
 import { Subscription, empty as emptyObservable } from 'rxjs';
 import { map, tap, catchError, share } from 'rxjs/operators';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import * as ChartUtils from 'app/shared/chart-utils';
 import * as Stats from 'app/shared/stats';
 import { ArraySnapshotComponent } from '../array-snapshot/array-snapshot.component';
@@ -22,6 +23,7 @@ export class PileupComponent extends ArraySnapshotComponent implements OnInit {
     public static STATISTICS_FILTER_DEFAULT = 1.0;
 
     pileups: Array<number>;
+    lastData = null;
 
     ngOnInit() {
         const wi = (<ChartWidget>this).config['widget'];
@@ -38,9 +40,11 @@ export class PileupComponent extends ArraySnapshotComponent implements OnInit {
             console.error(msg, wi);
             throw(msg);
         }
+        this.setupPileupOptions();
     }
 
     setData(newData) {
+        this.lastData = newData;
         const cw = <ChartWidget>this;
         const wi = cw.config['widget'];
         if (!newData[0]) {
@@ -102,6 +106,39 @@ export class PileupComponent extends ArraySnapshotComponent implements OnInit {
             mean: Stats.mean(filtered),
             stdDeviation: Stats.standardDeviation(filtered)
         };
+    }
+
+    protected setupPileupOptions() {
+        const cw = <ChartWidget>this;
+        const wi = cw.config['widget'];
+        const pileupOptions: Array<FormlyFieldConfig> = [{
+            key: 'histogramStep', type: 'number', templateOptions: {label: 'Histogram step'}
+        }, {
+            key: 'minbias', type: 'number', templateOptions: {label: 'Minbias'}
+        }, {
+            key: 'statisticsFilter', type: 'number', templateOptions: {label: 'Statistics filter', min: 0, step: 0.1}
+        }];
+        if (cw.widgetWrapper.extraOptions && cw.widgetWrapper.extraOptions.length) {
+            cw.widgetWrapper.extraOptions = cw.widgetWrapper.extraOptions.concat(pileupOptions);
+        } else {
+            cw.widgetWrapper.extraOptions = pileupOptions;
+        }
+        cw.widgetWrapper.extraOptionsModel = (<any>Object).assign(
+            {},
+            cw.widgetWrapper.extraOptionsModel,
+            {
+                'histogramStep': wi['histogramStep'],
+                'minbias': wi['minbias'],
+                'statisticsFilter': wi['statisticsFilter']
+            }
+        );
+        cw.widgetWrapper.extraOptionsModelChange.subscribe(model => {
+            wi['histogramStep'] = model['histogramStep'];
+            wi['minbias'] = model['minbias'];
+            wi['statisticsFilter'] = model['statisticsFilter'];
+            this.setData(this.lastData);
+        });
+
     }
 
 }

@@ -19,6 +19,10 @@ export const ROUTES: Array<PresetRoute> = [{
     path: '/bxlumi',
     config_url: 'assets/presets/bxlumi.json'
 }, {
+    title: 'Pileup',
+    path: '/pileup',
+    config_url: 'assets/presets/pileup.json'
+}, {
     title: 'BPTX',
     path: '/bptx',
     config_url: 'assets/presets/bptx-es2.json'

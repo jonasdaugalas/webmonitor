@@ -1,0 +1,142 @@
+{
+    "timers": [22],
+    "widgets": [{
+
+        "type": "fill-run-ls-query",
+        "config": {
+            "container": {
+                "width": 100,
+                "height": 64
+            },
+            "wrapper": {
+                "title": "RUN:LS query"
+            },
+            "widget": {
+                "channel": 1,
+                "fillEnabled": false,
+                "runEnabled": true,
+                "lsEnabled": true
+            }
+        }
+    }, {
+        "type": "pileup",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "PLTZERO pileup",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 1,
+                "legend": "left",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "pltlumizero"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltlumizero-101-"
+                }
+            }
+        }
+    }, {
+        "type": "pileup",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "BCM1F pileup",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 1,
+                "legend": "left",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "bcm1flumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-bcm1flumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "pileup",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "HFOC pileup",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 1,
+                "legend": "left",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "hfoclumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                }
+            }
+        }
+    }, {
+        "type": "pileup",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 320
+            },
+            "wrapper": {
+                "title": "HFET pileup",
+                "initialTimer": 0,
+                "started": true
+            },
+            "widget": {
+                "database": "daq_ES2",
+                "index": "shelflist",
+                "documentType": "detluminosity",
+                "runLsQueriesEnabled": true,
+                "runField": "runnum",
+                "lsField": "lsnum",
+                "queryChannel": 1,
+                "legend": "left",
+                "timestampField": "timestamp",
+                "fields": [
+                    {"name": "bx", "seriesName": "hfetlumi"}
+                ],
+                "terms": {
+                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfetlumi-101-"
+                }
+            }
+        }
+    }]
+}
