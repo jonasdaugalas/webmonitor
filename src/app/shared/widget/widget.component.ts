@@ -1,10 +1,12 @@
 import {
     Component, OnInit, Input, Output, EventEmitter, ChangeDetectionStrategy,
-    ChangeDetectorRef, OnDestroy
+    ChangeDetectorRef, OnDestroy, ComponentFactoryResolver, ViewContainerRef,
+    Type
 } from '@angular/core';
+import { FormlyFieldConfig } from '@ngx-formly/core';
 import { TimersService, Timer } from '../../core/timers.service';
 import { EventBusService } from '../../core/event-bus.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 
 @Component({
     selector: 'wm-widget',
@@ -13,6 +15,10 @@ import { Subscription } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WidgetComponent implements OnInit, OnDestroy {
+
+    public extraOptions: FormlyFieldConfig[] = null;
+    public extraOptionsModel = {};
+    public extraOptionsModelChange = new Subject();
 
     protected _config = {};
     @Input() set config(newConfig: any) {
@@ -216,5 +222,19 @@ export class WidgetComponent implements OnInit, OnDestroy {
         }
         this.changeDetector.detectChanges();
     }
+
+    loadComponent(
+        component: Type<any>,
+        componentFactoryResolver: ComponentFactoryResolver,
+        container: ViewContainerRef,
+        data?: {}) {
+
+        let componentFactory = componentFactoryResolver.resolveComponentFactory(component);
+        container.clear();
+        let componentRef = container.createComponent(componentFactory);
+        Object.keys(data).forEach(k => {
+            componentRef.instance[k] = data[k];
+        });
+  }
 
 }

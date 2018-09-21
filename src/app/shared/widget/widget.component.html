@@ -8,26 +8,26 @@
     <div class="controls" *ngIf="config.controlsEnabled">
         <div class="btn-group btn-sm">
             <button [class]="timer ? (config.started ? 'btn btn-success' : 'btn btn-primary') : 'btn disabled'"
-                    *ngIf="config.startEnabled"
-                    (click)="onClickStart()">
+                *ngIf="config.startEnabled"
+                (click)="onClickStart()">
                 <clr-icon [attr.shape]="(timer && config.started) ? 'stop' : 'play'"></clr-icon>
                 {{(timer && config.started) ? 'Stop' : 'Start'}}
             </button>
             <button class="btn"
-                    *ngIf="config.refreshEnabled"
-                    (click)="onClickRefresh()">
+                *ngIf="config.refreshEnabled"
+                (click)="onClickRefresh()">
                 <clr-icon shape="refresh"></clr-icon>
                 Refresh
             </button>
             <clr-checkbox type="checkbox" class="btn"
-                          [(ngModel)]="config.queriesOpen"
-                          *ngIf="config.queriesEnabled">
+                [(ngModel)]="config.queriesOpen"
+                *ngIf="config.queriesEnabled">
                 <clr-icon shape="search"></clr-icon>
                 Queries
             </clr-checkbox>
             <clr-checkbox type="checkbox" class="btn"
-                          [(ngModel)]="config.optionsOpen"
-                          *ngIf="config.optionsEnabled">
+                [(ngModel)]="config.optionsOpen"
+                *ngIf="config.optionsEnabled">
                 <clr-icon shape="cog"></clr-icon>
                 Options
             </clr-checkbox>
@@ -84,6 +84,12 @@
                     <button clrTabLink>Widget</button>
                     <clr-tab-content>
                         <ng-content select=".widget-options"></ng-content>
+
+                        <wm-dynamic-form
+                            [formFields]="extraOptions"
+                            [model]="extraOptionsModel"
+                            (modelChange)="extraOptionsModelChange.next($event)">
+                        </wm-dynamic-form>
                     </clr-tab-content>
                 </clr-tab>
             </clr-tabs>

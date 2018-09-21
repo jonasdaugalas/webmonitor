@@ -18,7 +18,6 @@ export class DynamicFormComponent implements OnInit {
 
     _formFields = {};
     @Input('formFields') set formFields(newFields) {
-        console.log('set new form fieldsd', newFields);
         this._formFields = newFields;
         this.fields = JSON.parse(JSON.stringify(this._formFields));
         if (this.fields && this.fields.length > 0) {
