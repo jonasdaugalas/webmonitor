@@ -1,20 +1,23 @@
 <wm-widget [config]="config.wrapper"
-           [info]="info"
-           (refresh)="onRefreshEvent()"
-           (start)="onStartEvent()"
-           (timer)="updateLive()"
-           #widgetWrapper>
+    [info]="info"
+    (refresh)="onRefreshEvent()"
+    (start)="onStartEvent()"
+    (timer)="updateLive()"
+    #widgetWrapper>
 
+    <!-- TODO: move widget options to dynamic form-->
     <div class="widget-options">
         <form clrForm>
-            <label>Annotations</label>
-            <clr-checkbox
-                *ngIf="config.widget.fieldChangeSeparators"
-                name="separatorsCheckbox"
-                [(ngModel)]="config.widget.fieldChangeSeparators.enabled"
-                (ngModelChange)="updateFieldSeparators(true)">
-                Enable annotations
-            </clr-checkbox>
+            <div class="form-group"
+                *ngIf="config.widget.fieldChangeSeparators" >
+                <label>Annotations</label>
+                <clr-checkbox
+                    name="separatorsCheckbox"
+                    [(ngModel)]="config.widget.fieldChangeSeparators.enabled"
+                    (ngModelChange)="updateFieldSeparators(true)">
+                    Enable annotations
+                </clr-checkbox>
+            </div>
         </form>
     </div>
 

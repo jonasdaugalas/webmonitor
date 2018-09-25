@@ -7,14 +7,16 @@
 
     <div class="widget-options">
         <form clrForm>
-            <label>Annotations</label>
-            <clr-checkbox
-                *ngIf="config.widget.fieldChangeSeparators"
-                name="separatorsCheckbox"
-                [(ngModel)]="config.widget.fieldChangeSeparators.enabled"
-                (ngModelChange)="updateFieldSeparators(true)">
-                Enable annotations
-            </clr-checkbox>
+            <div class="form-group"
+                *ngIf="config.widget.fieldChangeSeparators" >
+                <label>Annotations</label>
+                <clr-checkbox
+                    name="separatorsCheckbox"
+                    [(ngModel)]="config.widget.fieldChangeSeparators.enabled"
+                    (ngModelChange)="updateFieldSeparators(true)">
+                    Enable annotations
+                </clr-checkbox>
+            </div>
         </form>
     </div>
 
