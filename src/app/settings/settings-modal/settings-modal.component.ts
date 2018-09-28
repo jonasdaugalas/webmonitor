@@ -2,7 +2,7 @@ import {
     Component, OnInit, OnDestroy, ViewChild, ComponentFactory, ComponentRef,
     ComponentFactoryResolver, ViewContainerRef, Input
 } from '@angular/core';
-import { Modal } from '@clr/angular';
+import { ClrModal } from '@clr/angular';
 
 import { DashboardComponent } from 'app/core/dashboard/dashboard.component';
 import { TimersComponent } from '../settings/timers/timers.component';
@@ -32,7 +32,7 @@ export class SettingsModalComponent implements OnInit, OnDestroy {
 
     @Input('dashboard') dashboard: DashboardComponent;
 
-    @ViewChild('modal') modal: Modal;
+    @ViewChild('modal') modal: ClrModal;
     @ViewChild('settingsOutlet', { read: ViewContainerRef }) container;
     componentRef: ComponentRef<any>;
     settings = settingsViews;

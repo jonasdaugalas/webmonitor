@@ -16,8 +16,8 @@ import { QuickRangeFormComponent } from './quick-range-form/quick-range-form.com
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
+        ClarityModule,
         ClrFormsNextModule,
-        ClarityModule.forChild(),
         OwlNativeDateTimeModule,
         OwlDateTimeModule,
         DynamicFormModule

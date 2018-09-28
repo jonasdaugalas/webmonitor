@@ -22,7 +22,7 @@ import { DashboardContainerResizeFormComponent } from './dashboard/dashboard-con
     imports: [
         HttpClientModule,
         FormsModule,
-        ClarityModule.forRoot(),
+        ClarityModule,
         DragulaModule,
         SharedModule,
         NgxPopperModule.forRoot({
