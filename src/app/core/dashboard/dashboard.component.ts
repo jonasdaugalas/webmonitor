@@ -110,7 +110,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
             defaultContainer, widget['config']['container'])
         const cont = widget['config']['container'];
         cont['width'] = typeof cont['width'] === 'number' ? cont['width'] : 50;
-        cont['height'] = typeof cont['height'] === 'number' ? cont['height'] : 360;
+        cont['height'] = typeof cont['height'] === 'number' ? cont['height'] : NaN;
         cont['width'] = (cont['width'] < 5) ? 5 : cont['width'];
         cont['width'] = cont['width'] > 100 ? 100 : cont['width'];
         cont['height'] = cont['height'] < 40 ? 40 : cont['height'];

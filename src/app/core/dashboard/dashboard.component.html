@@ -16,7 +16,7 @@
 
     <div *ngFor="let widget of widgets"
          class="dashboard-widget"
-         [style.height]="widget.config.container.height + 'px'"
+         [style.height]="widget.config.container.height ? widget.config.container.height + 'px' : ''"
          [style.width]="widget.config.container.width + '%'">
 
         <div class="layout-mode-curtain" *ngIf="layoutMode">
