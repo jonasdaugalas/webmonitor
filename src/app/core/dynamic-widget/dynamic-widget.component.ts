@@ -27,7 +27,10 @@ export class DynamicWidgetComponent implements OnInit {
     load() {
         this.dynamicWidgets.loadWidget(this.widgetType, this.content, this.config)
             .then(loaded => this.loaded = loaded,
-                  err => this.message = err);
+                  err => {
+                      this.message = err;
+                      this.content.remove();
+                  });
     }
 
 }
