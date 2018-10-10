@@ -67,9 +67,7 @@ export class ArraySnapshotComponent extends ChartWidget implements OnInit {
                 type: 'linear',
                 title: widget['xAxisTitle']
             },
-            barmode: 'group',
-            bargap: 0,
-            bargroupgap: 0
+            barmode: 'group'
         }
         this.chartLayout = Object.assign(this.chartLayout, update);
     }
