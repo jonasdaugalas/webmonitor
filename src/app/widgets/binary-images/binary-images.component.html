@@ -1,0 +1,180 @@
+<wm-widget
+    #widgetWrapper
+    [config]="config ? config.wrapper : undefined">
+
+    <div class="widget-content">
+
+        <clr-tabs>
+            <clr-tab>
+                <button clrTabLink>Queries</button>
+                <clr-tab-content>
+
+                    <div class="clr-row">
+                        <div class="clr-col-auto selection type-selection">
+                            <h6>{{queryConfig.typeSelectionTitle}}</h6>
+
+                            <clr-datagrid class="datagrid-compact" [(clrDgSelected)]="selectedTypes">
+                                <clr-dg-column clrDgField="name">Name</clr-dg-column>
+
+                                <clr-dg-row *clrDgItems="let t of queryConfig.availableTypes" [clrDgItem]="t">
+                                    <clr-dg-cell>{{t.name}}</clr-dg-cell>
+                                </clr-dg-row>
+
+                                <clr-dg-footer>
+                                    <clr-dg-pagination [clrDgPageSize]="5"></clr-dg-pagination>
+                                </clr-dg-footer>
+                            </clr-datagrid>
+                        </div>
+
+                        <div class="clr-col-auto selection feature-selection">
+                            <h6>{{queryConfig.featuresSelectionTitle}}</h6>
+                            <wm-dynamic-form
+                                [formFields]="queryConfig.featuresSelectionFormFields"
+                                [(model)]="featuresSelectionModel">
+                            </wm-dynamic-form>
+                        </div>
+
+                        <div class="clr-col selection range-selection">
+                            <h6> {{queryConfig.querySelectionTitle}} </h6>
+
+                            <div class="clr-row">
+
+                                <div class="clr-col-auto">
+                                    <form clrForm clrLayout="vertical" >
+                                        <clr-select-container>
+                                            <label>Query type</label>
+                                            <select
+                                                name="query-select"
+                                                clrSelect
+                                                [(ngModel)]="selectedQuery">
+                                                <option
+                                                    *ngFor="let queryType of queryConfig.availableQueries"
+                                                    [ngValue]="queryType">
+                                                    {{queryType.label}}
+                                                </option>
+                                            </select>
+                                        </clr-select-container>
+                                    </form>
+                                </div>
+
+                                <div [ngSwitch]="selectedQuery.type" class="clr-col">
+
+                                    <wm-date-range-form
+                                        *ngSwitchCase="'daterange'"
+                                        (query)="onDateRangeQuery($event)">
+                                    </wm-date-range-form>
+
+                                    <wm-range-form
+                                        *ngSwitchCase="'range'"
+                                        [inputType]="selectedQuery.fieldType"
+                                        [key]="selectedQuery.field"
+                                        (query)="onRangeConditionQuery($event)">
+                                    </wm-range-form>
+
+                                    <wm-delimited-form
+                                        *ngSwitchCase="'list'"
+                                        [inputType]="selectedQuery.fieldType"
+                                        [key]="selectedQuery.field"
+                                        [label]="selectedQuery.label"
+                                        (query)="onListConditionQuery($event)">
+                                    </wm-delimited-form>
+
+                                    <div *ngSwitchDefault>Unknown query type :(</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </clr-tab-content>
+            </clr-tab>
+
+            <clr-tab>
+                <button clrTabLink>Filters</button>
+                <clr-tab-content>
+                    <div class="clr-col-12">
+                        <wm-dynamic-form
+                            [formFields]="filtersFormFields"
+                            [(model)]="filtersFormModel">
+                        </wm-dynamic-form>
+                        <button class="btn" (click)="onClickApplyFilters()">Apply filters</button>
+                        <button class="btn" (click)="onClickClearFilters()">Clear filters</button>
+                    </div>
+                </clr-tab-content>
+            </clr-tab>
+
+            <clr-tab>
+                <button clrTabLink>Options</button>
+                <clr-tab-content>
+                    <form clrForm clrLayout="horizontal" >
+                        <clr-select-container>
+                            <label>Group by</label>
+                            <select name="groupby-select" clrSelect
+                                [(ngModel)]="wi.groupBy"
+                                (ngModelChange)="updateImageGroups()">
+                                <option *ngFor="let opt of groupByOptions" [value]="opt.value">
+                                    {{opt.label}}
+                                </option>
+                            </select>
+                        </clr-select-container>
+
+                        <clr-select-container>
+                            <label>Sort by</label>
+                            <select
+                                name="sortby-select" clrSelect
+                                [(ngModel)]="wi.sortBy"
+                                (ngModelChange)="sortGroupedImages()">
+                                <option *ngFor="let opt of sortByOptions" [value]="opt.value">
+                                    {{opt.label}}
+                                </option>
+                            </select>
+                        </clr-select-container>
+
+                        <clr-input-container>
+                            <label>Image width</label>
+                            <input clrInput type="number"
+                                min="64"
+                                [(ngModel)]="wi.imageWidth"
+                                name="input-image-width" />
+                        </clr-input-container>
+
+                    </form>
+                </clr-tab-content>
+            </clr-tab>
+        </clr-tabs>
+
+        <span class="clr-col-12">
+            Number of images queried
+            <span class="badge badge-info">{{images.length}}</span>
+            <span *ngIf="images.length == max_query_size">
+                is also the query limit
+                <span class="badge badge-danger">{{max_query_size}}</span>.
+                Not everything matching the query may be retrieved.
+            </span>
+        </span>
+
+        <div class="image-container">
+            <div class="clr-row image-group" *ngFor="let group of groupedImages">
+                <span class="clr-col-12">Group: <code class="clr-code">{{wi.groupBy}} == {{group.groupName}}</code></span>
+                <div class="clr-col-auto" *ngFor="let img of group.images">
+                    <div class="card" [style.width]="wi.imageWidth + 'px'">
+                        <div class="card-header meta-header">
+                            <span *ngFor="let f of metaFieldsKeys" class="meta-field">
+                                <span>{{f}}</span>:
+                                <code class="clr-code">{{img.meta[f]}}</code>
+                            </span>
+                            <span *ngIf="wi.timestampField" class="meta-field">
+                                <span>{{wi.timestampField}}</span>:
+                                <code class="clr-code">{{img.meta[wi.timestampField].toISOString()}}</code>
+                            </span>
+                        </div>
+                        <div class="card-img">
+                            <img [src]="img.src" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</wm-widget>

@@ -11,4 +11,5 @@ export const widgetModuleSelector = {
     'numeric-field-with-ratios': 'app/widgets/numeric-field-with-ratios/numeric-field-with-ratios.module#NumericFieldWithRatiosModule',
     'lumi': 'app/widgets/lumi/lumi.module#LumiModule',
     'pileup': 'app/widgets/pileup/pileup.module#PileupModule',
+    'images': 'app/widgets/binary-images/binary-images.module#BinaryImagesModule',
 };

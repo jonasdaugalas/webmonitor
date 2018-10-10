@@ -1,0 +1,72 @@
+.clr-row {
+    margin: 0px;
+}
+
+h6 {
+    margin-top: 0.5rem;
+}
+
+form {
+    padding-top: 0px;
+}
+
+.clr-form-control {
+    margin-top: 0.5rem;
+}
+
+.selection:hover {
+    background-color: #F3F6FA;
+}
+
+.type-selection {
+    min-width: 240px;
+}
+
+.feature-selection {
+    min-width: 300px;
+}
+
+.range-selection {
+    min-width: 600px;
+    padding-bottom: 12px;
+}
+
+.image-container {
+    margin-top: 1rem;
+    width: 100%;
+    background-color: #F0F0F0;
+    box-shadow: 0px 0px 6px 0px #C0C0C0 inset;
+}
+
+.card {
+    margin-top: 0.5rem;
+}
+
+.card-block, .card-header {
+    padding: 0.2rem;
+}
+
+.meta-header {
+    font-size: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: center; breaks overflow*/
+    overflow-x: auto;
+}
+
+.meta-header-field-wrapper {
+
+}
+
+.meta-field {
+    padding: 0 0.1rem;
+    flex: 0 0 auto;
+}
+
+.meta-field::after {
+    content: ", "
+}
+
+.meta-field:last-child::after {
+    content: ""
+}
