@@ -12,7 +12,7 @@ import { NumberComponent } from './formly-fields/number/number.component';
 @NgModule({
     imports: [
         CommonModule,
-        ClarityModule.forChild(),
+        ClarityModule,
         ClrFormsNextModule,
         FormsModule, ReactiveFormsModule,
         FormlyModule.forRoot(FORMLY_FIELDS_CONFIG),
