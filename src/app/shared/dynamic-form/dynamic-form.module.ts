@@ -8,6 +8,7 @@ import { DynamicFormComponent } from './dynamic-form.component';
 import { FORMLY_FIELDS_CONFIG } from './formly-fields/formly-fields';
 
 import { NumberComponent } from './formly-fields/number/number.component';
+import { StringComponent } from './formly-fields/string/string.component';
 
 @NgModule({
     imports: [
@@ -18,7 +19,9 @@ import { NumberComponent } from './formly-fields/number/number.component';
         FormlyModule.forRoot(FORMLY_FIELDS_CONFIG),
 
     ],
-    declarations: [DynamicFormComponent, NumberComponent],
+    declarations: [
+        DynamicFormComponent, NumberComponent, StringComponent
+    ],
     exports: [DynamicFormComponent]
 })
 export class DynamicFormModule { }

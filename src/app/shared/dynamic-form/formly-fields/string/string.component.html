@@ -1,0 +1,8 @@
+<clr-input-container>
+    <label *ngIf="to.label">{{field.templateOptions.label}} </label>
+    <input
+        clrInput
+        type="text"
+        [formControl]="formControl"
+        [formlyAttributes]="field"/>
+</clr-input-container>
