@@ -1,8 +1,8 @@
 import {
     Component, OnInit, Input, ViewChild
 } from '@angular/core';
-import { Subscription, empty as emptyObservable } from 'rxjs';
-import { map, tap, catchError, share } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { FormlyFieldConfig } from '@ngx-formly/core';
 import * as ChartUtils from 'app/shared/chart-utils';
 import * as Stats from 'app/shared/stats';
@@ -132,7 +132,7 @@ export class PileupComponent extends ArraySnapshotComponent implements OnInit {
                 'statisticsFilter': wi['statisticsFilter']
             }
         );
-        cw.widgetWrapper.extraOptionsModelChange.subscribe(model => {
+        cw.widgetWrapper.extraOptionsModelChange.pipe(debounceTime(1000)).subscribe(model => {
             wi['histogramStep'] = model['histogramStep'];
             wi['minbias'] = model['minbias'];
             wi['statisticsFilter'] = model['statisticsFilter'];
