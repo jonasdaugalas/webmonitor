@@ -1,7 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
     selector: 'wm-dynamic-form',
@@ -10,11 +11,12 @@ import { Subject } from 'rxjs';
 })
 export class DynamicFormComponent implements OnInit {
 
+    @Input('debounce') debounce = 0;
     form: FormGroup = null;
     fields: FormlyFieldConfig[] = null;
     @Input('model') model = {};
     @Output('modelChange') modelChange = new EventEmitter();
-    rawModelChange = new Subject();
+    rawModelChange = new Subject<number>();
 
     _formFields = {};
     @Input('formFields') set formFields(newFields) {
@@ -28,9 +30,11 @@ export class DynamicFormComponent implements OnInit {
     }
 
     constructor() {
-        this.rawModelChange
-            .debounceTime(800)
-            .subscribe(model => this.modelChange.emit(model));
+        let modelChange = <Observable<number>>this.rawModelChange;
+        if (this.debounce > 0) {
+            modelChange = this.rawModelChange.pipe(debounceTime(this.debounce));
+        }
+        modelChange.subscribe(model => this.modelChange.emit(model));
     }
 
     ngOnInit() {
