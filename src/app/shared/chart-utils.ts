@@ -328,6 +328,10 @@ export function makeTooltipText(chartDataPoint, fields: Array<TooltipInfoField>)
         return '';
     }
     return fields.map(f => {
-        return f.text + ': ' + chartDataPoint[f.fieldname];
-    }).join('<br>');
+        if (typeof chartDataPoint[f.fieldname] != 'undefined') {
+            return f.text + ': ' + chartDataPoint[f.fieldname];
+        } else {
+            return undefined;
+        }
+    }).filter(Boolean).join('<br>');
 }
