@@ -1,3 +1,7 @@
+header {
+    z-index: 5;
+}
+
 .nav-link {
     cursor: pointer;
 }
