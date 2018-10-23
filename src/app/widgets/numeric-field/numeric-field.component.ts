@@ -291,7 +291,7 @@ export class NumericFieldComponent extends ChartWidget implements OnInit, AfterV
                     text: [],
                     name: field.seriesName || field.name,
                     type: 'scatter',
-                    line: { width: 1, color: field['color']},
+                    line: { width: field['lineWidth'] || 1, color: field['color']},
                     visible: (field['hidden'] ? 'legendonly' : true)
                 };
                 if (field['yAxis'] === 2) {
