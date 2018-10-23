@@ -21,6 +21,9 @@
                 "yAxisTitle": "[Hz/ub]",
                 "refreshSize": 200,
                 "tooltipInfo": [{
+                    "fieldname": "provider",
+                    "text": "PROVIDER"
+                }, {
                     "fieldname": "runnum",
                     "text": "RUN"
                 }, {
@@ -134,6 +137,23 @@
                     "extraFields": [{"name": "runnum"}, {"name": "fillnum"}, {"name": "lsnum"}],
                     "terms": {
                         "flash_key": "@http://srv-s2d16-15-01.cms:6868-pltslinklumi-101-"
+                    }
+                }, {
+                    "index": "shelflist",
+                    "documentType": "bestlumi",
+                    "timestampField": "timestamp",
+                    "fields": [{
+                        "name": "avg",
+                        "seriesName": "Bestlumi",
+                        "color": "#ff9000",
+                        "lineWidth": 2
+                    }],
+                    "extraFields": [
+                        {"name": "runnum"}, {"name": "fillnum"},
+                        {"name": "lsnum"}, {"name": "provider"}
+                    ],
+                    "terms": {
+                        "flash_key": "@http://srv-s2d16-21-01.cms:9236-101-"
                     }
                 }]
             }
