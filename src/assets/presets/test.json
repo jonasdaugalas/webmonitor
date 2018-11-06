@@ -43,20 +43,62 @@
             },
             "widget": {
                 "database": "daq_ES2",
-                "index": "shelflist",
-                "documentType": "detluminosity",
-                "runLsQueriesEnabled": true,
-                "runField": "runnum",
-                "lsField": "lsnum",
-                "queryChannel": 2,
-                "legend": "left",
+                "index": "images",
+                "useDocumentType": true,
+                "imageDataField": "img",
                 "timestampField": "timestamp",
-                "fields": [
-                    {"name": "bx", "seriesName": "hfoclumi"}
-                ],
-                "terms": {
-                    "flash_key": "@http://srv-s2d16-15-01.cms:6868-hfoclumi-101-"
+                "timestampFormat": "s",
+                "imageWidth": 360,
+                "sortBy": "ch",
+                "groupBy": "type",
+                "metaFields": {
+                    "fill": {
+                        "type": "number",
+                        "label": "Fill"},
+                    "ch": {
+                        "type": "number",
+                        "label": "Channel"
+                    },
+                    "type": {
+                        "type": "string",
+                        "label": "Type"
+                    }
+                },
+                "queryConfig": {
+                    "availableTypes": [
+                        {"name": "TestPulseSpectrum"}, {"name": "BaseLineSigma"},
+                        {"name": "AmplitudeSpectrum"}, {"name": "BaseLinePos"}],
+                    "featuresSelectionFormFields": [{
+                        "key": "ch",
+                        "type": "delimited-numbers",
+                        "templateOptions": {
+                            "label": "Channels", "min": 0, "step": 0.1
+                        }
+                    }],
+                    "availableQueries": [{
+                        "type": "daterange",
+                        "label": "Time range"
+                    }, {
+                        "type": "range",
+                        "label": "Fill range",
+                        "field": "fill",
+                        "fieldType": "number"
+                    }, {
+                        "type": "list",
+                        "label": "List of fills",
+                        "field": "fill",
+                        "fieldType": "number"
+                    }]
                 }
+
+            }
+        }
+    }, {
+        "type": "dynamic-form-test",
+        "config": {
+            "container": {
+                "width": 50,
+                "height": 300
             }
         }
     }, {

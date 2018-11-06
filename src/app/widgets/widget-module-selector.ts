@@ -12,4 +12,5 @@ export const widgetModuleSelector = {
     'lumi': 'app/widgets/lumi/lumi.module#LumiModule',
     'pileup': 'app/widgets/pileup/pileup.module#PileupModule',
     'images': 'app/widgets/binary-images/binary-images.module#BinaryImagesModule',
+    'dynamic-form-test': 'app/widgets/dynamic-form-test/dynamic-form-test.module#DynamicFormTestModule',
 };
