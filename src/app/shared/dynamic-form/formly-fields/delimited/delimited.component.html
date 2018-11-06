@@ -1,0 +1,9 @@
+<clr-input-container>
+    <label *ngIf="to.label">{{field.templateOptions.label}} </label>
+    <input
+        clrInput
+        type="text"
+        [(ngModel)]="inputModel"
+        (ngModelChange)="onModelChange($event)"
+        [formlyAttributes]="field"/>
+</clr-input-container>

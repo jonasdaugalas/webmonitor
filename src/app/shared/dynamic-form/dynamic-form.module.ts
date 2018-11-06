@@ -9,6 +9,7 @@ import { FORMLY_FIELDS_CONFIG } from './formly-fields/formly-fields';
 
 import { NumberComponent } from './formly-fields/number/number.component';
 import { StringComponent } from './formly-fields/string/string.component';
+import { DelimitedComponent } from './formly-fields/delimited/delimited.component';
 
 @NgModule({
     imports: [
@@ -20,7 +21,8 @@ import { StringComponent } from './formly-fields/string/string.component';
 
     ],
     declarations: [
-        DynamicFormComponent, NumberComponent, StringComponent
+        DynamicFormComponent, NumberComponent, StringComponent,
+        DelimitedComponent
     ],
     exports: [DynamicFormComponent]
 })
