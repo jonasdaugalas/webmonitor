@@ -1,0 +1,11 @@
+<div class="inline-form">
+    <div class="form-group">
+        <label>{{label || key}}:</label>
+        <input type="text" [(ngModel)]="inputModel"
+            [placeholder]="placeholder">
+    </div>
+
+    <button class="btn btn-primary" (click)="query()">
+        Query
+    </button>
+</div>

@@ -8,6 +8,8 @@ import { DynamicFormModule } from './dynamic-form/dynamic-form.module';
 import { WidgetComponent } from './widget/widget.component';
 import { SettingsComponent } from './widget/settings/settings.component';
 import { DateRangeFormComponent } from './date-range-form/date-range-form.component';
+import { RangeFormComponent } from './range-form/range-form.component';
+import { DelimitedFormComponent } from './delimited-form/delimited-form.component';
 import { FillRunLsFormComponent } from './fill-run-ls-form/fill-run-ls-form.component';
 
 @NgModule({
@@ -26,12 +28,16 @@ import { FillRunLsFormComponent } from './fill-run-ls-form/fill-run-ls-form.comp
         SettingsComponent,
         DateRangeFormComponent,
         FillRunLsFormComponent,
+        RangeFormComponent,
+        DelimitedFormComponent
     ],
     exports: [
         CommonModule,
         ClarityModule, ClrFormsNextModule,
         FormsModule, ReactiveFormsModule,
         OwlNativeDateTimeModule, OwlDateTimeModule, DynamicFormModule,
+        WidgetComponent, DateRangeFormComponent, FillRunLsFormComponent,
+        RangeFormComponent, DelimitedFormComponent
     ]
 })
 export class SharedModule { }

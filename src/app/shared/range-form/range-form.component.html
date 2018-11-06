@@ -1,0 +1,17 @@
+<div class="inline-form">
+    <div class="form-group">
+        <label>Min {{label || key}}:</label>
+        <input [type]="inputType"
+               [(ngModel)]="minValue">
+    </div>
+
+    <div class="form-group">
+        <label>Max {{label || key}}:</label>
+        <input [type]="inputType"
+               [(ngModel)]="maxValue">
+    </div>
+
+    <button class="btn btn-primary" (click)="query()">
+        Query
+    </button>
+</div>
