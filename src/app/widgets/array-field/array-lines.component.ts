@@ -11,6 +11,28 @@ import { WidgetComponent } from 'app/shared/widget/widget.component';
 import { ChartWidget } from 'app/widgets/base/chart-widget';
 declare var Plotly: any;
 
+export interface WidgetConfig {
+    database: string;
+    index: string;
+    documentType?: string;
+    timestampField?: string;
+    field: string;
+    errorField?: string;
+    series: Array<number>;
+    legendNames?: Array<string>;
+    liveWindow?: number;
+    refreshSize?: number;
+    aggregationThreshold?: number;
+    tooltipFields?: Array<string>;
+    nestedPath?: string;
+    terms?: Array<{string:string}>;
+    fillField?: string;
+    runField?: string;
+    extraFields?: Array<string>;
+    fillQueriesEnabled?: boolean;
+    runQueriesEnabled?: boolean;
+}
+
 @Component({
     selector: 'wm-widget-array-lines',
     templateUrl: './array-lines.component.html',
@@ -18,6 +40,7 @@ declare var Plotly: any;
 })
 export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterViewInit {
 
+    wi: WidgetConfig;
     queryParams;
     reflow = () => undefined;
     _aggregated = false;
@@ -36,27 +59,30 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     setupWidget() {
-        const wi = super.setupWidget({
+        this.wi = <WidgetConfig>super.setupWidget({
             'liveWindow': 600000,
             'refreshSize': 100,
             'series': [],
             'timestampField': 'timestamp'
         });
         this.queryParams = {
-            database: wi['database'],
-            index: wi['index'],
-            documentType: wi['documentType'],
-            timestampField: wi['timestampField'],
-            field: wi['field'],
-            series: wi['series'],
-            tooltipFields: wi['tooltipFields'],
-            nestedPath: wi['nestedPath'],
-            terms: wi['terms'],
-            fillField: wi['fillField'],
-            runField: wi['runField'],
-            extraFields: wi['extraFields'] || []
+            database: this.wi.database,
+            index: this.wi.index,
+            documentType: this.wi.documentType,
+            timestampField: this.wi.timestampField,
+            field: this.wi.field,
+            series: this.wi.series,
+            tooltipFields: this.wi.tooltipFields,
+            nestedPath: this.wi.nestedPath,
+            terms: this.wi.terms,
+            fillField: this.wi.fillField,
+            runField: this.wi.runField,
+            extraFields: this.wi.extraFields || []
         }
-        return wi;
+        if (this.wi.errorField) {
+            this.queryParams.extraFields.push(this.wi.errorField);
+        }
+        return this.wi;
     }
 
     ngAfterViewInit() {
@@ -73,8 +99,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             this.widgetWrapper.log('Received time range query', 'info');
             this.queryRange(event['payload']);
         } else if (event['type'] === 'fill_run_ls_query') {
-            const wi = this.config['widget'];
-            if (wi['fillQueriesEnabled'] || wi['runQueriesEnabled']) {
+            if (this.wi.fillQueriesEnabled || this.wi.runQueriesEnabled) {
                 this.widgetWrapper.log('Received FILL/RUN query', 'info');
                 this.queryFillRun(event['payload']);
             }
@@ -97,7 +122,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     refresh(size?) {
-        size = Number.isInteger(size) ? size : this.config['widget']['refreshSize'] || 50;
+        size = Number.isInteger(size) ? size : this.wi.refreshSize || 50;
         this.disableInteraction();
         const obs = this.dataService.queryNewest(this.queryParams, size).pipe(
             tap(() => this.aggregated = false),
@@ -110,9 +135,8 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     setChartData(hits) {
-        const wi = this.config['widget'];
         const extra = {};
-        this.queryParams['extraFields'].forEach(f => {
+        this.queryParams.extraFields.forEach(f => {
             extra[f] = hits.map(hit => hit[f]);
         });
         wi['series'].forEach((s, i) => {
@@ -129,7 +153,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     queryRange(range) {
         this.widgetWrapper.stop();
         let obs;
-        if (range['tsTo'] - range['tsFrom'] > this.config['widget']['aggregationThreshold']) {
+        if (range['tsTo'] - range['tsFrom'] > this.wi.aggregationThreshold) {
             obs = this.dataService.queryRangeAggregated(
                 this.queryParams, range['strFrom'], range['strTo']).pipe(
                     tap(() => this.aggregated = true),
@@ -193,15 +217,14 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         const lastX = x[x.length - 1];
         this.dataService.queryNewestSince(this.queryParams, lastX)
             .subscribe(hits => {
-                const wi = this.config['widget'];
                 const extra = this.chartData[0]['_extra'];
                 this.queryParams['extraFields'].forEach(f => {
                     extra[f] = extra[f].concat(hits.map(hit => hit[f]));
                 });
-                wi['series'].forEach((s, i) => {
+                this.wi.series.forEach((s, i) => {
                     const trace = this.chartData[i];
                     trace.y = trace.y.concat(
-                        hits.map(hit => hit[wi['field']][s]));
+                        hits.map(hit => hit[this.wi.field][s]));
                     trace.x = trace.x.concat(
                         hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField])));
                     trace.text = trace.text.concat(
@@ -216,11 +239,11 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
     }
 
     makeTooltipText(hit) {
-        if (!this.config['widget']['tooltipFields']) {
+        if (!this.wi.tooltipFields) {
             return undefined;
         }
         const lines = [];
-        this.config['widget']['tooltipFields'].forEach(f => {
+        this.wi.tooltipFields.forEach(f => {
             lines.push(f + ': ' + hit[f]);
         })
         return lines.join('\n');
@@ -228,7 +251,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     dropPointsOutsideLiveWindow(trace) {
         const lastX = this.tsToMilliseconds(trace.x[trace.x.length -1]);
-        const liveWindow = this.config['widget']['liveWindow'];
+        const liveWindow = this.wi.liveWindow;
         while(lastX - this.tsToMilliseconds(trace.x[0]) > liveWindow) {
             trace.x.shift();
             trace.y.shift();
@@ -245,7 +268,7 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         }
         const trace = this.chartData[0];
         const max = this.tsToMilliseconds(trace.x[trace.x.length -1]);
-        const min = max - this.config['widget']['liveWindow'];
+        const min = max - this.wi.liveWindow;
         const mod = ChartUtils.setXRange(
             this.plot.nativeElement['layout'],
             (new Date(min)).toISOString(),
@@ -255,14 +278,13 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
 
     makeSeries() {
         this.chartData.length = 0;
-        const wi = this.config['widget'];
-        const names = wi['legendNames'] || [];
-        wi['series'].forEach((s, i) => {
+        const names = this.wi.legendNames || [];
+        this.wi.series.forEach((s, i) => {
             const newSeries = {
                 x: [],
                 y: [],
                 text: [],
-                name: names[i] || wi['field'] + '.' + s,
+                name: names[i] || this.wi.field + '.' + s,
                 type: 'scatter',
                 line: { width: 1},
             };
