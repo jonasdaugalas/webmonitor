@@ -23,8 +23,8 @@ export class RangeFormComponent implements OnInit {
     query() {
         this.onQuery.emit({
             'key': this.key,
-            'min': this.minValue,
-            'max': this.maxValue
+            'min': this.inputType === 'number' ? parseFloat(this.minValue) : this.minValue,
+            'max': this.inputType === 'number' ? parseFloat(this.maxValue) : this.maxValue
         });
     }
 }
