@@ -3,7 +3,7 @@ import { DatabaseService } from 'app/core/database.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-export const MAX_QUERY_SIZE = 256;
+export const MAX_QUERY_SIZE = 200;
 
 export interface Parameters {
     database: string;
