@@ -144,10 +144,23 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
             this.chartData[i].x = hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField]));
             this.chartData[i].text = hits.map(this.makeTooltipText.bind(this));
             this.chartData[i]._extra = extra;
+            if (this.wi.errorField) {
+                this.chartData[i].error_y = this.makeErrorBars(hits, s);
+            }
         });
         this.updateFieldSeparators();
         ChartUtils.setAutorange(this.chartLayout);
         Plotly.redraw(this.plot.nativeElement);
+    }
+
+    makeErrorBars(hits, series) {
+        return {
+            type: 'data',
+            array: hits.map(hit => hit[this.wi.errorField][series]),
+            color: 'grey',
+            thickness: 1,
+            symmetric: true
+        }
     }
 
     queryRange(range) {
