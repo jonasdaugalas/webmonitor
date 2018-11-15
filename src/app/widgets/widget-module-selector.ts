@@ -7,6 +7,7 @@ export const widgetModuleSelector = {
     'numeric-field': 'app/widgets/numeric-field/numeric-field.module#NumericFieldModule',
     'array-snapshot': 'app/widgets/array-snapshot/array-snapshot.module#ArraySnapshotModule',
     'array-lines': 'app/widgets/array-field/array-lines.module#ArrayLinesModule',
+    'array-lines-basicx': 'app/widgets/array-field/array-lines-basicx.module#ArrayLinesBasicXModule',
     'array-heatmap': 'app/widgets/array-field/array-heatmap.module#ArrayHeatmapModule',
     'numeric-field-with-ratios': 'app/widgets/numeric-field-with-ratios/numeric-field-with-ratios.module#NumericFieldWithRatiosModule',
     'lumi': 'app/widgets/lumi/lumi.module#LumiModule',

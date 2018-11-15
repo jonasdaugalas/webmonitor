@@ -139,9 +139,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         this.queryParams.extraFields.forEach(f => {
             extra[f] = hits.map(hit => hit[f]);
         });
-        wi['series'].forEach((s, i) => {
-            this.chartData[i].y = hits.map(hit => hit[wi['field']][s]);
-            this.chartData[i].x = hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField]));
+        const x = this._parseXValues(hits);
+        this.wi.series.forEach((s, i) => {
+            this.chartData[i].y = hits.map(hit => hit[this.wi.field][s]);
+            this.chartData[i].x = x;
             this.chartData[i].text = hits.map(this.makeTooltipText.bind(this));
             this.chartData[i]._extra = extra;
             if (this.wi.errorField) {
@@ -151,6 +152,10 @@ export class ArrayLinesComponent extends ChartWidget implements OnInit, AfterVie
         this.updateFieldSeparators();
         ChartUtils.setAutorange(this.chartLayout);
         Plotly.redraw(this.plot.nativeElement);
+    }
+
+    protected _parseXValues(hits) {
+        return hits.map(hit => this.tsToChartTimestamp(hit[this.queryParams.timestampField]));
     }
 
     makeErrorBars(hits, series) {

@@ -22,6 +22,12 @@
             [fillEnabled]="false" [runEnabled]="true" [lsEnabled]="false"
             (query)="queryFillRun($event)">
         </wm-fill-run-ls-form>
+        <wm-range-form
+            *ngIf="wi.xField"
+            inputType="number"
+            [key]="wi.xField"
+            (query)="onBasicXRangeQuery($event)">
+        </wm-range-form>
     </div>
     <div class="widget-content">
         <div #plot style="height: 100%; width: 100%"></div>

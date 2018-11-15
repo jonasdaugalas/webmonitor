@@ -121,7 +121,7 @@ export class DataService {
 
     queryNewest(params: Parameters, size) {
         let query = this.makeQueryTemplate(params);
-        query[1]['size'] = size
+        query[1]['size'] = size > MAX_QUERY_SIZE ? MAX_QUERY_SIZE : size;
         this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
         return this._query(this.db.stringifyToNDJSON(query), params);
     }
@@ -148,6 +148,20 @@ export class DataService {
             range[params.timestampField] = {"gt": since}
         }
         query[1]['query']['bool']['filter'].push({"range": range});
+        this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
+        return this._query(this.db.stringifyToNDJSON(query), params);
+    }
+
+    queryBasicX(params: Parameters, xField, min?, max?, size=MAX_QUERY_SIZE) {
+        let query = this.makeQueryTemplate(params, xField);
+        query[1]['sort'] = {}
+        query[1]['sort'][xField] = 'desc';
+        query[1]['size'] = size > MAX_QUERY_SIZE ? MAX_QUERY_SIZE : size;
+        if (typeof min != 'undefined' || typeof max != 'undefined') {
+            const range = {};
+            range[xField] = {"gte": min, "lte": max};
+            query[1]['query']['bool']['filter'].push({"range": range});
+        }
         this.db.transformQueryWithNestedPath(query[1], params.nestedPath);
         return this._query(this.db.stringifyToNDJSON(query), params);
     }
@@ -187,13 +201,13 @@ export class DataService {
         return [header, body];
     }
 
-    protected makeQueryTemplate(params: Parameters) {
+    protected makeQueryTemplate(params: Parameters, xField=undefined) {
         const header = {
             index: params.index,
             type: params.documentType
         };
         const body = {
-            "_source": this.parseQueryFields(params),
+            "_source": this.parseQueryFields(params, xField),
             "sort": {},
             "size": MAX_QUERY_SIZE,
             "query": {
@@ -202,7 +216,11 @@ export class DataService {
                 }
             }
         };
-        body['sort'][params.timestampField] = 'desc';
+        if (xField) {
+            body['sort'][xField] = 'desc';
+        } else {
+            body['sort'][params.timestampField] = 'desc';
+        }
         if (params.terms) {
             Object.keys(params.terms).forEach(k => {
                 const term = {};
@@ -213,8 +231,9 @@ export class DataService {
         return [header, body];
     }
 
-    protected parseQueryFields(params: Parameters) {
-        const fields = [params.timestampField || 'timestamp', params.field];
+    protected parseQueryFields(params: Parameters, xField=undefined) {
+        const fields = [params.field];
+        xField ? fields.push(xField) : fields.push(params.timestampField);
         if (params.extraFields.length > 0) {
             return fields.concat(params.extraFields);
         }
